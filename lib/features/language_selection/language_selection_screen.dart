@@ -7,6 +7,7 @@ import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/custom_gradient_button.dart';
+import '../welcome/welcome_screen.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -169,18 +170,14 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                 left: 15.w,
                 right: 15.w,
                 bottom: 15.h,
-                child: CustomGradientButton(
+                child: CustomGradientArrowButton(
                   text: "Continue with ${_currentLanguage.displayName}",
                   onPressed: () {
-                    // Navigate to next screen or perform action
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Continuing with ${_currentLanguage.displayName}'),
-                        backgroundColor: Colors.green,
-                      ),
+                    // Navigate to welcome screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
                     );
-                    // TODO: Navigate to main screen
-                    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainScreen()));
                   },
                 ),
               )

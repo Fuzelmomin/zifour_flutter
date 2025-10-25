@@ -59,7 +59,13 @@ class AppColors {
 
   // App use Colors
   static const Color transparentBlue = Color(0x000C0B33);
-  static const Color darkBlue = Color(0xFF0C0B33);
+  static const Color darkBlue = Color(0xFF0c0a2e);
   static const Color selectedBoxColor = Color(0xFF15144F);
   static const Color unSelectedBoxColor = Color(0x1AFFFFFF);
+  static const Color hintTextColor = Color(0xFF747688);
+  static const Color blackColor10 = Color(0x1A000000);
+  static const Color pinkColor = Color(0xFFFF93D8);
+  static const Color pinkColor1 = Color(0xFFBD69AE);
+  static const Color pinkColor2 = Color(0xFFCF078A);
+  static const Color darkBlue2 = Color(0xFF0A091E);
 }

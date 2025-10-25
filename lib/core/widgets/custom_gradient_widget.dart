@@ -246,3 +246,22 @@ class DiagonalGradientWidget extends StatelessWidget {
     );
   }
 }
+
+BoxDecoration boxGradientDecoration() {
+  return BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.bottomLeft,
+        end: Alignment.topRight,
+        colors: [
+          AppColors.selectedBoxColor, // Deep blue bottom-left
+          Color(0xFF0c0a2e), // Cyan middle
+          Color(0xFF0c0a2e), // Light purple top-right
+          Color(0xFF0c0a2e), // Light purple top-right
+          Color(0xFF0c0a2e), // Light purple top-right
+          AppColors.selectedBoxColor,
+        ],
+
+      )
+  );
+
+}

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:zifour_sourcecode/features/auth/signup_screen.dart';
 import 'features/splash/splash_screen.dart';
 import 'features/language_selection/language_selection_screen.dart';
 import 'core/bloc/language_bloc.dart';
+import 'core/bloc/welcome_bloc.dart';
+import 'core/bloc/signup_bloc.dart';
 import 'core/localization/app_localizations.dart';
 
 void main() {
@@ -16,8 +19,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LanguageBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => LanguageBloc()),
+        BlocProvider(create: (context) => WelcomeBloc()),
+        BlocProvider(create: (context) => SignupBloc()),
+      ],
       child: BlocBuilder<LanguageBloc, LanguageState>(
         builder: (context, state) {
           Locale locale = const Locale('en');
@@ -49,7 +56,7 @@ class MyApp extends StatelessWidget {
                   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                   useMaterial3: true,
                 ),
-                home: const SplashScreen(), // Start with splash screen
+                home: const SignupScreen(), // Start with splash screen
               );
             },
           );
