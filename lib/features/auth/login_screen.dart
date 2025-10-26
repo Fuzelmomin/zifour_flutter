@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zifour_sourcecode/features/auth/forgot_password_screen.dart';
 import 'package:zifour_sourcecode/features/auth/signup_screen.dart';
+import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -186,8 +187,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             backgroundColor: Colors.green,
                           ),
                         );
-                        // TODO: Navigate to main screen
-                        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainScreen()));
+
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const DashboardScreen()), (route) => false,
+                        );
                       },
                     ),
 

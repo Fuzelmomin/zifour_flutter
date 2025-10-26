@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
 import 'features/splash/splash_screen.dart';
 import 'core/bloc/language_bloc.dart';
 import 'core/bloc/welcome_bloc.dart';
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
                       ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                   useMaterial3: true,
                 ),
-                home: const SplashScreen(), // Start with splash screen
+                home: const DashboardScreen(), // Start with splash screen
               );
             },
           );
