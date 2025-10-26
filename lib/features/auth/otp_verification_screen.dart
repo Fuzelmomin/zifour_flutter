@@ -5,13 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zifour_sourcecode/core/utils/alert_show.dart';
 import 'package:zifour_sourcecode/features/auth/change_password_screen.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/signup_field_box.dart';
-import '../../core/widgets/text_field_container.dart';
-import '../../core/localization/localization_helper.dart';
+import '../../l10n/app_localizations.dart';
 
 class OTPVerificationScreen extends StatefulWidget {
   const OTPVerificationScreen({super.key});
@@ -43,6 +43,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
     }
     super.dispose();
   }
+
   void startTimer() {
     _otpResendTimer.add(20); // reset to 20 if you want to restart
     _timer?.cancel();
@@ -55,7 +56,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +76,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                   height: double.infinity,
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: Column(
@@ -96,7 +95,7 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        context.localize('otpVerificationCode'),
+                        '${AppLocalizations.of(context)?.otpVerificationCode}',
                         style: AppTypography.inter24Bold,
                       ),
                     ),
@@ -104,115 +103,116 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
                     SizedBox(height: 40.h),
 
                     StreamBuilder(
-                      stream: _otpVerify,
-                      builder: (context, otpVerifySnapshot) {
-                        return Column(
-                          spacing: 20.h,
-                          children: [
-                            SignupFieldBox(
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: List.generate(4, (index) {
-                                      return Container(
-                                        width: 50.w,
-                                        height: 50.h,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.darkBlue2.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(12.r),
-                                          border: Border.all(
-                                            color: Colors.white.withOpacity(0.2),
-                                            width: 1,
-                                            style: BorderStyle.solid,
+                        stream: _otpVerify,
+                        builder: (context, otpVerifySnapshot) {
+                          return Column(
+                            spacing: 20.h,
+                            children: [
+                              SignupFieldBox(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: List.generate(4, (index) {
+                                        return Container(
+                                          width: 50.w,
+                                          height: 50.h,
+                                          decoration: BoxDecoration(
+                                            color: AppColors.darkBlue2.withOpacity(0.5),
+                                            borderRadius: BorderRadius.circular(12.r),
+                                            border: Border.all(
+                                              color: Colors.white.withOpacity(0.2),
+                                              width: 1,
+                                              style: BorderStyle.solid,
+                                            ),
                                           ),
-                                        ),
-                                        child: TextField(
-                                          controller: _otpControllers[index],
-                                          textAlign: TextAlign.center,
-                                          keyboardType: TextInputType.number,
-                                          maxLength: 1,
-                                          style: AppTypography.inter16Medium.copyWith(color: Colors.white),
-                                          decoration: InputDecoration(
-                                            counterText: '',
-                                            border: InputBorder.none,
-                                            hintText: '-',
-                                            hintStyle: AppTypography.inter16Medium.copyWith(color: AppColors.white),
-                                          ),
-                                          onChanged: (value) {
-                                            if (value.isNotEmpty && index < 3) {
-                                              FocusScope.of(context).nextFocus();
-                                            } else if (value.isEmpty && index > 0) {
-                                              FocusScope.of(context).previousFocus();
-                                            }
+                                          child: TextField(
+                                            controller: _otpControllers[index],
+                                            textAlign: TextAlign.center,
+                                            keyboardType: TextInputType.number,
+                                            maxLength: 1,
+                                            style: AppTypography.inter16Medium.copyWith(color: Colors.white),
+                                            decoration: InputDecoration(
+                                              counterText: '',
+                                              border: InputBorder.none,
+                                              hintText: '-',
+                                              hintStyle: AppTypography.inter16Medium.copyWith(color: AppColors.white),
+                                            ),
+                                            onChanged: (value) {
+                                              if (value.isNotEmpty && index < 3) {
+                                                FocusScope.of(context).nextFocus();
+                                              } else if (value.isEmpty && index > 0) {
+                                                FocusScope.of(context).previousFocus();
+                                              }
 
-                                            // Update OTP in BLoC
-                                            List<String> otpDigits = _otpControllers.map((controller) => controller.text).toList();
-                                            String otp = otpDigits.join();
-                                            if(otp.length == 4){
-                                              _otpVerify.add(2);
-                                            }
-                                            print('OTP Value ${otpDigits}');
-                                            //context.read<SignupBloc>().add(UpdateOTP(otpDigits));
-                                          },
-                                        ),
-                                      );
-                                    }),
-                                  ),
-                                  SizedBox(height: 20.h),
-                                  otpVerifySnapshot.data == 1 || otpVerifySnapshot.data == 3 ?
-                                  StreamBuilder<int>(
-                                      stream: _otpResendTimer,
-                                      builder: (context, asyncSnapshot) {
-                                  return Row(
-                                    children: [
-                                      Text(
-                                          asyncSnapshot.data == 0 ? context.localize('reSendCode') : context.localize('reSendCodeIn'),
-                                          style: AppTypography.inter12Regular
-                                      ),
-                                      GestureDetector(
-                                        onTap: asyncSnapshot.data == 0 ? (){
-                                          startTimer();
-                                        } : null,
-                                        child: Text(
-                                          asyncSnapshot.data == 0 ? context.localize('resend') : '0:${asyncSnapshot.data.toString().padLeft(2, '0')}',
-                                          style: AppTypography.inter12Bold.copyWith(
-                                            color: AppColors.pinkColor,
-                                            decoration: TextDecoration.underline,
-                                            decorationColor: AppColors.pinkColor, // ensure underline color visible
-                                            decorationThickness: 1.5,
+                                              // Update OTP in BLoC
+                                              List<String> otpDigits = _otpControllers.map((controller) => controller.text).toList();
+                                              String otp = otpDigits.join();
+                                              if (otp.length == 4) {
+                                                _otpVerify.add(2);
+                                              }
+                                              print('OTP Value ${otpDigits}');
+                                              //context.read<SignupBloc>().add(UpdateOTP(otpDigits));
+                                            },
                                           ),
-                                        ),
-                                      )
-                                    ],
-                                  );
-                                      }
-                                  ) : Container(),
-                                ],
+                                        );
+                                      }),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                    otpVerifySnapshot.data == 1 || otpVerifySnapshot.data == 3
+                                        ? StreamBuilder<int>(
+                                            stream: _otpResendTimer,
+                                            builder: (context, asyncSnapshot) {
+                                              return Row(
+                                                children: [
+                                                  Text(
+                                                      asyncSnapshot.data == 0
+                                                          ? '${AppLocalizations.of(context)?.reSendCode}'
+                                                          : '${AppLocalizations.of(context)?.class11}'
+                                                              '${AppLocalizations.of(context)?.reSendCodeIn}',
+                                                      style: AppTypography.inter12Regular),
+                                                  GestureDetector(
+                                                    onTap: asyncSnapshot.data == 0
+                                                        ? () {
+                                                            startTimer();
+                                                          }
+                                                        : null,
+                                                    child: Text(
+                                                      asyncSnapshot.data == 0
+                                                          ? '${AppLocalizations.of(context)?.resend}'
+                                                          : '0:${asyncSnapshot.data.toString().padLeft(2, '0')}',
+                                                      style: AppTypography.inter12Bold.copyWith(
+                                                        color: AppColors.pinkColor,
+                                                        decoration: TextDecoration.underline,
+                                                        decorationColor: AppColors.pinkColor, // ensure underline color visible
+                                                        decorationThickness: 1.5,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              );
+                                            })
+                                        : Container(),
+                                  ],
+                                ),
                               ),
-                            ),
-                            // Verify In Button
-                            otpVerifySnapshot.data == 2 ?
-                            CustomGradientButton(
-                              text: context.localize('verify'),
-                              onPressed: () {
-
-                                AlertShow.alertShowSnackBar(
-                                    context,
-                                    context.localize('verificationSuccessfully'),
-                                    Colors.green
-                                );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
-                                );
-                              },
-                            ) : Container(),
-
-                          ],
-                        );
-                      }
-                    ),
+                              // Verify In Button
+                              otpVerifySnapshot.data == 2
+                                  ? CustomGradientButton(
+                                      text: '${AppLocalizations.of(context)?.verify}',
+                                      onPressed: () {
+                                        AlertShow.alertShowSnackBar(
+                                            context, '${AppLocalizations.of(context)?.verificationSuccessfully}', Colors.green);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => const ChangePasswordScreen()),
+                                        );
+                                      },
+                                    )
+                                  : Container(),
+                            ],
+                          );
+                        }),
                   ],
                 ),
               ),

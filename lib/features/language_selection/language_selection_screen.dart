@@ -8,7 +8,7 @@ import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../welcome/welcome_screen.dart';
-import '../../core/localization/localization_helper.dart';
+import '../../l10n/app_localizations.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -110,12 +110,12 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        context.localize('chooseLanguage'),
+                        AppLocalizations.of(context)!.chooseLanguage,
                         style: AppTypography.inter22Bold.copyWith(fontSize: 34.sp),
                       ),
                       SizedBox(height: 16.h),
                       Text(
-                        context.localize('selectLanguage'),
+                        AppLocalizations.of(context)!.selectLanguage,
                         style: AppTypography.inter14Regular.copyWith(
                           fontSize: 16.sp,
                           color: Colors.white.withOpacity(0.9),
@@ -156,7 +156,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                 right: 15.w,
                 bottom: 15.h,
                 child: CustomGradientArrowButton(
-                  text: "${context.localize('continueWith')} ${_currentLanguage.displayName}",
+                  text: "${AppLocalizations.of(context)!.continueWith} ${_currentLanguage.displayName}",
                   onPressed: () {
                     // Navigate to welcome screen
                     Navigator.pushReplacement(

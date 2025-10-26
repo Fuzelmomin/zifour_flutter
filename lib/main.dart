@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:zifour_sourcecode/features/auth/forgot_password_screen.dart';
-import 'package:zifour_sourcecode/features/auth/signup_screen.dart';
-import 'features/auth/change_password_screen.dart';
-import 'features/auth/otp_verification_screen.dart';
 import 'features/splash/splash_screen.dart';
-import 'features/language_selection/language_selection_screen.dart';
 import 'core/bloc/language_bloc.dart';
 import 'core/bloc/welcome_bloc.dart';
 import 'core/bloc/signup_bloc.dart';
-import 'core/localization/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +30,7 @@ class MyApp extends StatelessWidget {
           } else if (state is LanguageChanged) {
             locale = state.locale;
           }
-          
+
           return ScreenUtilInit(
             designSize: const Size(375, 812), // iPhone X design size
             minTextAdapt: true,
@@ -46,17 +40,11 @@ class MyApp extends StatelessWidget {
                 title: 'Zifour',
                 debugShowCheckedModeBanner: false,
                 locale: locale,
-                supportedLocales: const [
-                  Locale('en', ''), // English
-                  Locale('gu', ''), // Gujarati
-                ],
-                localizationsDelegates: const [
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
+                supportedLocales: AppLocalizations.supportedLocales,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
                 theme: ThemeData(
-                  colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  colorScheme:
+                      ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                   useMaterial3: true,
                 ),
                 home: const SplashScreen(), // Start with splash screen

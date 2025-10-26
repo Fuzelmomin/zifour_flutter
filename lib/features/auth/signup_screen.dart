@@ -11,7 +11,6 @@ import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/gradient_text.dart';
 import 'package:zifour_sourcecode/features/auth/login_screen.dart';
-import '../../core/localization/localization_helper.dart';
 
 import '../../core/bloc/signup_bloc.dart';
 import '../../core/constants/assets_path.dart';
@@ -19,6 +18,7 @@ import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/signup_field_box.dart';
 import '../../core/widgets/text_field_container.dart';
+import '../../l10n/app_localizations.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -47,7 +47,6 @@ class _SignupScreenState extends State<SignupScreen> {
     // Initialize BLoC
     context.read<SignupBloc>().add(SignupInitialized());
   }
-
 
   @override
   void dispose() {
@@ -83,36 +82,29 @@ class _SignupScreenState extends State<SignupScreen> {
         color: AppColors.darkBlue,
         child: Stack(
           children: [
-
             // Background Decoration set
             Column(
               children: [
                 Expanded(
-                  flex: 6,
+                    flex: 6,
                     child: Image.asset(
                       AssetsPath.signupBgImg,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
-                    )
-                ),
+                    )),
                 Expanded(
                     flex: 4,
                     child: Container(
                       width: double.infinity,
                       height: double.infinity,
                       decoration: boxGradientDecoration(),
-                    )
-                )
+                    ))
               ],
             ),
 
             // App Bar
-            Positioned(
-              top: 40.h,
-                left: 15.w,
-                right: 15.w,
-                child: SignupAppBar()),
+            Positioned(top: 40.h, left: 15.w, right: 15.w, child: SignupAppBar()),
 
             // Main Content with BLoC
             Positioned(
@@ -143,22 +135,23 @@ class _SignupScreenState extends State<SignupScreen> {
                     physics: BouncingScrollPhysics(),
                     padding: EdgeInsets.symmetric(horizontal: 15.w),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Main Heading
                         Text(
-                          context.localize('letsGetStarted'),
+                          '${AppLocalizations.of(context)?.letsGetStarted}',
                           style: AppTypography.inter24Bold,
                         ),
                         SizedBox(height: 30.h),
-                        
+
                         // Full Name Field
                         SignupFieldBox(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CustomTextField(
-                                hint: context.localize('fullName'),
+                                hint: '${AppLocalizations.of(context)?.fullName}',
                                 editingController: _fullNameController,
                                 type: 'text',
                                 textFieldBgColor: Colors.black.withOpacity(0.1),
@@ -167,7 +160,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                 },
                               ),
                               SizedBox(height: 10.h),
-
                               _buildGenderSelection(state),
                             ],
                           ),
@@ -181,36 +173,40 @@ class _SignupScreenState extends State<SignupScreen> {
                             children: [
                               // Select Standard Dropdown
                               _buildStandardDropdown(state),
-                              SizedBox(height: 20.h,),
+                              SizedBox(
+                                height: 20.h,
+                              ),
                               // Course Selection
                               _buildCourseSelection(state),
                               SizedBox(height: 20.h),
 
-                              DottedBorder(
-                                options: RectDottedBorderOptions(
-                                  dashPattern: [5, 2],
-                                  strokeWidth: 1,
-                                  padding: EdgeInsets.all(12),
-                                  color: AppColors.white.withOpacity(0.3)
-                                ),
-                                child: Row(
-                                  spacing: 10.w,
-                                  children: [
-                                    SvgPicture.asset(
-                                      AssetsPath.svgUploadDoc,
-                                      width: 40.h,
-                                      height: 40.h,
-                                    ),
-                                      Expanded(
-                                      child: Text(
-                                        context.localize('uploadMarksheet'),
-                                        style: AppTypography.inter12Regular.copyWith(
-                                          color: Colors.white.withOpacity(0.7),
-                                        ),
-                                        textAlign: TextAlign.left,
+                              SizedBox(
+                                width: double.infinity,
+                                child: DottedBorder(
+                                  options: RectDottedBorderOptions(
+                                      dashPattern: [5, 2],
+                                      strokeWidth: 1,
+                                      padding: EdgeInsets.all(12),
+                                      color: AppColors.white.withOpacity(0.3)),
+                                  child: Row(
+                                    spacing: 10.w,
+                                    children: [
+                                      SvgPicture.asset(
+                                        AssetsPath.svgUploadDoc,
+                                        width: 40.h,
+                                        height: 40.h,
                                       ),
-                                    ),
-                                  ],
+                                      Expanded(
+                                        child: Text(
+                                          '${AppLocalizations.of(context)?.uploadMarksheet}',
+                                          style: AppTypography.inter12Regular.copyWith(
+                                            color: Colors.white.withOpacity(0.7),
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               )
                             ],
@@ -226,7 +222,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             spacing: 10.h,
                             children: [
                               CustomTextField(
-                                hint: context.localize('password'),
+                                hint: '${AppLocalizations.of(context)?.password}',
                                 editingController: _passwordController,
                                 type: 'pass',
                                 isSuffixIcon: true,
@@ -235,9 +231,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   context.read<SignupBloc>().add(UpdateFullName(value));
                                 },
                               ),
-
                               CustomTextField(
-                                hint: context.localize('confirmPassword'),
+                                hint: '${AppLocalizations.of(context)?.confirmPassword}',
                                 editingController: _confirmPassController,
                                 type: 'pass',
                                 isSuffixIcon: true,
@@ -250,7 +245,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         SizedBox(height: 20.h),
-                        
+
                         // Mobile Number and OTP Section
                         SignupFieldBox(
                           child: Column(
@@ -262,7 +257,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
 
                         SizedBox(height: 20.h),
-                        
+
                         // Safety Message
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -273,19 +268,18 @@ class _SignupScreenState extends State<SignupScreen> {
                               height: 1.0,
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                    colors: [ // Deep blue bottom-left
-                                      Color(0xFF4F1B4E), // Cyan middle
-                                      AppColors.white,
-                                    ],
-
-                                  )
-                              ),
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  // Deep blue bottom-left
+                                  Color(0xFF4F1B4E), // Cyan middle
+                                  AppColors.white,
+                                ],
+                              )),
                             ),
                             Center(
                               child: Text(
-                                context.localize('yourDetailsAreSafe'),
+                                '${AppLocalizations.of(context)?.yourDetailsAreSafe}',
                                 style: AppTypography.inter12Regular.copyWith(
                                   color: AppColors.white.withOpacity(0.7),
                                 ),
@@ -296,20 +290,19 @@ class _SignupScreenState extends State<SignupScreen> {
                               height: 1.0,
                               decoration: BoxDecoration(
                                   gradient: LinearGradient(
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                    colors: [ // Deep blue bottom-left
-                                      AppColors.white,
-                                      Color(0xFF4F1B4E), // Cyan middle
-                                    ],
-
-                                  )
-                              ),
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  // Deep blue bottom-left
+                                  AppColors.white,
+                                  Color(0xFF4F1B4E), // Cyan middle
+                                ],
+                              )),
                             ),
                           ],
                         ),
                         SizedBox(height: 30.h),
-                        
+
                         // Sign Up Button
                         _buildSignUpButton(state),
                         SizedBox(height: 80.h),
@@ -325,9 +318,8 @@ class _SignupScreenState extends State<SignupScreen> {
               right: 0.0,
               bottom: 0.0,
               child: // Login Link
-              _buildLoginLink(),
+                  _buildLoginLink(),
             )
-
           ],
         ),
       ),
@@ -346,17 +338,14 @@ class _SignupScreenState extends State<SignupScreen> {
               AssetsPath.appTitleLogo,
               height: 40.h,
             ),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  '🔥'
-                ),
+                Text('🔥'),
                 GradientText(
-                  text: ' ${context.localize('beZiddi')}',
+                  text: ' ${AppLocalizations.of(context)?.beZiddi}',
                   gradient: const LinearGradient(
                     colors: [AppColors.white, AppColors.pinkColor1],
                   ),
@@ -366,7 +355,6 @@ class _SignupScreenState extends State<SignupScreen> {
             )
           ],
         ),
-
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 10.w,
@@ -374,13 +362,12 @@ class _SignupScreenState extends State<SignupScreen> {
             Flexible(
               flex: 3,
               child: Text(
-                context.localize('signupNow').toUpperCase(),
+                '${AppLocalizations.of(context)?.signupNow}'.toUpperCase(),
                 style: AppTypography.inter12Regular.copyWith(
-                    color: AppColors.white.withOpacity(0.5),
+                  color: AppColors.white.withOpacity(0.5),
                 ),
               ),
             ),
-
             Expanded(
               flex: 7,
               child: Container(
@@ -400,19 +387,19 @@ class _SignupScreenState extends State<SignupScreen> {
     if (state is SignupLoaded) {
       selectedStandard = state.data.standard;
     }
-    
+
     // Get the displayed value based on current language
     String? displayValue;
     if (selectedStandard.isNotEmpty) {
       if (selectedStandard == 'Class 11') {
-        displayValue = context.localize('class11');
+        displayValue = '${AppLocalizations.of(context)?.class11}';
       } else if (selectedStandard == 'Class 12') {
-        displayValue = context.localize('class12');
+        displayValue = '${AppLocalizations.of(context)?.class12}';
       } else if (selectedStandard == 'Dropper') {
-        displayValue = context.localize('dropper');
+        displayValue = '${AppLocalizations.of(context)?.dropper}';
       }
     }
-    
+
     return Container(
       height: 56.h,
       width: double.infinity,
@@ -430,7 +417,7 @@ class _SignupScreenState extends State<SignupScreen> {
           hint: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Text(
-              context.localize('selectStandard'),
+              '${AppLocalizations.of(context)?.selectStandard}',
               style: AppTypography.inter14Regular.copyWith(
                 color: AppColors.hintTextColor,
               ),
@@ -447,11 +434,11 @@ class _SignupScreenState extends State<SignupScreen> {
             return ['Class 11', 'Class 12', 'Dropper'].map((value) {
               String displayText;
               if (value == 'Class 11') {
-                displayText = context.localize('class11');
+                displayText = '${AppLocalizations.of(context)?.class11}';
               } else if (value == 'Class 12') {
-                displayText = context.localize('class12');
+                displayText = '${AppLocalizations.of(context)?.class12}';
               } else {
-                displayText = context.localize('dropper');
+                displayText = '${AppLocalizations.of(context)?.dropper}';
               }
               return Container(
                 width: double.infinity,
@@ -467,13 +454,13 @@ class _SignupScreenState extends State<SignupScreen> {
           items: ['Class 11', 'Class 12', 'Dropper'].map((String value) {
             String displayText;
             if (value == 'Class 11') {
-              displayText = context.localize('class11');
+              displayText = '${AppLocalizations.of(context)?.class11}';
             } else if (value == 'Class 12') {
-              displayText = context.localize('class12');
+              displayText = '${AppLocalizations.of(context)?.class12}';
             } else {
-              displayText = context.localize('dropper');
+              displayText = '${AppLocalizations.of(context)?.dropper}';
             }
-            
+
             return DropdownMenuItem<String>(
               value: value,
               child: Padding(
@@ -500,7 +487,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (state is SignupLoaded) {
       selectedCourse = state.data.course;
     }
-    
+
     return Row(
       children: [
         Expanded(
@@ -534,7 +521,7 @@ class _SignupScreenState extends State<SignupScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              course == 'NEET' ? context.localize('neet') : context.localize('jee'),
+              course == 'NEET' ? '${AppLocalizations.of(context)?.neet}' : '${AppLocalizations.of(context)?.jee}',
               style: AppTypography.inter14Medium.copyWith(
                 color: Colors.white,
               ),
@@ -553,10 +540,10 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               child: isSelected
                   ? Icon(
-                Icons.check,
-                color: AppColors.darkBlue,
-                size: 12.sp,
-              )
+                      Icons.check,
+                      color: AppColors.darkBlue,
+                      size: 12.sp,
+                    )
                   : null,
             ),
           ],
@@ -570,14 +557,12 @@ class _SignupScreenState extends State<SignupScreen> {
     if (state is SignupLoaded) {
       selectedGender = state.data.gender;
     }
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Expanded(
-          child: Container(
-              margin: EdgeInsets.only(left: 5.0),
-              child: _buildGenderOption('Male', selectedGender == 'Male')),
+          child: Container(margin: EdgeInsets.only(left: 5.0), child: _buildGenderOption('Male', selectedGender == 'Male')),
         ),
         SizedBox(width: 15.w),
         Expanded(
@@ -622,7 +607,11 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             SizedBox(width: 8.w),
             Text(
-              gender == 'Male' ? context.localize('male') : gender == 'Female' ? context.localize('female') : context.localize('other'),
+              gender == 'Male'
+                  ? '${AppLocalizations.of(context)?.male}'
+                  : gender == 'Female'
+                      ? '${AppLocalizations.of(context)?.female}'
+                      : '${AppLocalizations.of(context)?.other}',
               style: AppTypography.inter12Medium.copyWith(
                 color: isSelected ? Colors.white : AppColors.hintTextColor,
               ),
@@ -669,161 +658,172 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Widget _buildMobileSection(SignupState state) {
     return StreamBuilder<int>(
-      stream: _mobileVerify,
-      builder: (context, mobileVerifySnapshot) {
-        return Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: CustomTextField(
-                    hint: context.localize('mobileNumber'),
-                    type: "phone",
-                    maxLength: 10,
-                    editingController: _mobileController,
-                    textFieldBgColor: Colors.black.withOpacity(0.1),
-                    changedValue: (value) {
-                      context.read<SignupBloc>().add(UpdateMobileNumber(value));
-                    },
-                  ),
-                ),
-                SizedBox(width: 15.w),
-                mobileVerifySnapshot.data == 0 || mobileVerifySnapshot.data == 3 ? Expanded(
-                  flex: 1,
-                  child: GestureDetector(
-                    onTap: () {
-                      startTimer();
-                      _mobileVerify.add(1);
-                      //context.read<SignupBloc>().add(SendOTP(mobileNumber));
-                    },
-                    child: Container(
-                      height: 45.h,
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 1,
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          context.localize('sendOtp'),
-                          style: AppTypography.inter14Bold.copyWith(
-                            color: AppColors.darkBlue,
-                          ),
-                        ),
-                      ),
+        stream: _mobileVerify,
+        builder: (context, mobileVerifySnapshot) {
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: CustomTextField(
+                      hint: '${AppLocalizations.of(context)?.mobileNumber}',
+                      type: "phone",
+                      maxLength: 10,
+                      editingController: _mobileController,
+                      textFieldBgColor: Colors.black.withOpacity(0.1),
+                      changedValue: (value) {
+                        context.read<SignupBloc>().add(UpdateMobileNumber(value));
+                      },
                     ),
                   ),
-                ) : Container(),
-              ],
-            ),
-            SizedBox(height: 20.h),
-            mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3 ?
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(4, (index) {
-                return Container(
-                  width: 50.w,
-                  height: 50.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.darkBlue2.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
-                      style: BorderStyle.solid,
-                    ),
-                  ),
-                  child: TextField(
-                    controller: _otpControllers[index],
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    maxLength: 1,
-                    style: AppTypography.inter16Medium.copyWith(color: Colors.white),
-                    decoration: InputDecoration(
-                      counterText: '',
-                      border: InputBorder.none,
-                      hintText: '-',
-                      hintStyle: AppTypography.inter16Medium.copyWith(color: AppColors.white),
-                    ),
-                    onChanged: (value) {
-                      if (value.isNotEmpty && index < 3) {
-                        FocusScope.of(context).nextFocus();
-                      } else if (value.isEmpty && index > 0) {
-                        FocusScope.of(context).previousFocus();
-                      }
-
-                      // Update OTP in BLoC
-                      List<String> otpDigits = _otpControllers.map((controller) => controller.text).toList();
-                      String otp = otpDigits.join();
-                      if(otp.length == 4){
-                        _mobileVerify.add(2);
-                      }
-                      print('OTP Value ${otpDigits}');
-                      //context.read<SignupBloc>().add(UpdateOTP(otpDigits));
-                    },
-                  ),
-                );
-              }),
-            ) : Container(),
-            SizedBox(height: 15.h),
-            mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3 ?
-            StreamBuilder<int>(
-              stream: _otpResendTimer,
-              builder: (context, asyncSnapshot) {
-                    return Row(
-                      children: [
-                        Text(
-                            asyncSnapshot.data == 0 ? context.localize('reSendCode') : context.localize('reSendCodeIn'),
-                            style: AppTypography.inter12Regular
-                        ),
-                        GestureDetector(
-                          onTap: asyncSnapshot.data == 0 ? (){
-                            startTimer();
-                          } : null,
-                          child: Text(
-                            asyncSnapshot.data == 0 ? context.localize('resend') : '0:${asyncSnapshot.data.toString().padLeft(2, '0')}',
-                            style: AppTypography.inter12Bold.copyWith(
-                              color: AppColors.pinkColor,
-                              decoration: TextDecoration.underline,
-                              decorationColor: AppColors.pinkColor, // ensure underline color visible
-                              decorationThickness: 1.5,
+                  SizedBox(width: 15.w),
+                  mobileVerifySnapshot.data == 0 || mobileVerifySnapshot.data == 3
+                      ? Expanded(
+                          flex: 1,
+                          child: GestureDetector(
+                            onTap: () {
+                              startTimer();
+                              _mobileVerify.add(1);
+                              //context.read<SignupBloc>().add(SendOTP(mobileNumber));
+                            },
+                            child: Container(
+                              height: 45.h,
+                              decoration: BoxDecoration(
+                                color: AppColors.white,
+                                borderRadius: BorderRadius.circular(12.r),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.3),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${AppLocalizations.of(context)?.sendOtp}',
+                                  style: AppTypography.inter14Bold.copyWith(
+                                    color: AppColors.darkBlue,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         )
+                      : Container(),
+                ],
+              ),
+              SizedBox(height: 20.h),
+              mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(4, (index) {
+                        return Container(
+                          width: 50.w,
+                          height: 50.h,
+                          decoration: BoxDecoration(
+                            color: AppColors.darkBlue2.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12.r),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 1,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                          child: TextField(
+                            controller: _otpControllers[index],
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            maxLength: 1,
+                            style: AppTypography.inter16Medium.copyWith(color: Colors.white),
+                            decoration: InputDecoration(
+                              counterText: '',
+                              border: InputBorder.none,
+                              hintText: '-',
+                              hintStyle: AppTypography.inter16Medium.copyWith(color: AppColors.white),
+                            ),
+                            onChanged: (value) {
+                              if (value.isNotEmpty && index < 3) {
+                                FocusScope.of(context).nextFocus();
+                              } else if (value.isEmpty && index > 0) {
+                                FocusScope.of(context).previousFocus();
+                              }
+
+                              // Update OTP in BLoC
+                              List<String> otpDigits = _otpControllers.map((controller) => controller.text).toList();
+                              String otp = otpDigits.join();
+                              if (otp.length == 4) {
+                                _mobileVerify.add(2);
+                              }
+                              print('OTP Value ${otpDigits}');
+                              //context.read<SignupBloc>().add(UpdateOTP(otpDigits));
+                            },
+                          ),
+                        );
+                      }),
+                    )
+                  : Container(),
+              SizedBox(height: 15.h),
+              mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3
+                  ? StreamBuilder<int>(
+                      stream: _otpResendTimer,
+                      builder: (context, asyncSnapshot) {
+                        return Row(
+                          children: [
+                            Text(
+                                asyncSnapshot.data == 0
+                                    ? '${AppLocalizations.of(context)?.reSendCode}'
+                                    : '${AppLocalizations.of(context)?.reSendCodeIn}',
+                                style: AppTypography.inter12Regular),
+                            GestureDetector(
+                              onTap: asyncSnapshot.data == 0
+                                  ? () {
+                                      startTimer();
+                                    }
+                                  : null,
+                              child: Text(
+                                asyncSnapshot.data == 0
+                                    ? '${AppLocalizations.of(context)?.resend}'
+                                    : '0:${asyncSnapshot.data.toString().padLeft(2, '0')}',
+                                style: AppTypography.inter12Bold.copyWith(
+                                  color: AppColors.pinkColor,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: AppColors.pinkColor, // ensure underline color visible
+                                  decorationThickness: 1.5,
+                                ),
+                              ),
+                            )
+                          ],
+                        );
+                      })
+                  : Container(),
+              mobileVerifySnapshot.data == 3 || mobileVerifySnapshot.data == 2
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          mobileVerifySnapshot.data == 3 ? Icons.close : Icons.check_circle,
+                          color: mobileVerifySnapshot.data == 3 ? AppColors.error : AppColors.success,
+                          size: 16.sp,
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          mobileVerifySnapshot.data == 3
+                              ? '${AppLocalizations.of(context)?.mobileVerificationFailed}'
+                              : '${AppLocalizations.of(context)?.mobileVerifiedSuccessfully}',
+                          style: AppTypography.inter12Medium.copyWith(
+                            color: mobileVerifySnapshot.data == 3 ? AppColors.error : AppColors.success,
+                          ),
+                        ),
                       ],
-                    );
-              }
-            ) : Container(),
-            mobileVerifySnapshot.data == 3 || mobileVerifySnapshot.data == 2 ? Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Icon(
-                  mobileVerifySnapshot.data == 3 ? Icons.close : Icons.check_circle,
-                  color: mobileVerifySnapshot.data == 3 ? AppColors.error : AppColors.success,
-                  size: 16.sp,
-                ),
-                SizedBox(width: 8.w),
-                Text(
-                  mobileVerifySnapshot.data == 3 ? context.localize('mobileVerificationFailed') : context.localize('mobileVerifiedSuccessfully'),
-                  style: AppTypography.inter12Medium.copyWith(
-                    color: mobileVerifySnapshot.data == 3 ? AppColors.error : AppColors.success,
-                  ),
-                ),
-              ],
-            ) : Container(),
-          ],
-        );
-      }
-    );
+                    )
+                  : Container(),
+            ],
+          );
+        });
   }
 
   Widget _buildSignUpButton(SignupState state) {
     bool isLoading = state is SignupLoading;
-    
+
     // return Container(
     //   width: double.infinity,
     //   height: 56.h,
@@ -865,7 +865,7 @@ class _SignupScreenState extends State<SignupScreen> {
     // );
 
     return CustomGradientButton(
-      text: context.localize('signUpButton'),
+      text: '${AppLocalizations.of(context)?.signUpButton}',
       onPressed: () {
         // TODO: Implement login logic
         // if (_phoneController.text.isEmpty || _passwordController.text.isEmpty) {
@@ -880,7 +880,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(context.localize('signupSuccessful')),
+            content: Text('${AppLocalizations.of(context)?.signupSuccessful}'),
             backgroundColor: Colors.green,
           ),
         );
@@ -902,19 +902,18 @@ class _SignupScreenState extends State<SignupScreen> {
           text: TextSpan(
             children: [
               TextSpan(
-                text: context.localize('alreadyAMember'),
+                text: '${AppLocalizations.of(context)?.alreadyAMember}',
                 style: AppTypography.inter14Regular.copyWith(
                   color: Colors.white.withOpacity(0.7),
                 ),
               ),
               TextSpan(
-                text: context.localize('signIn'),
+                text: '${AppLocalizations.of(context)?.signIn}',
                 style: AppTypography.inter14Medium.copyWith(
-                  color: AppColors.pinkColor,
-                  decoration: TextDecoration.underline,
-                  decorationColor: AppColors.pinkColor,
-                  decorationThickness: 1.0
-                ),
+                    color: AppColors.pinkColor,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.pinkColor,
+                    decorationThickness: 1.0),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     Navigator.pushReplacement(
@@ -930,4 +929,3 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 }
-

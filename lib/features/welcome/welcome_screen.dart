@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:zifour_sourcecode/features/auth/signup_screen.dart';
+
 import '../../core/bloc/welcome_bloc.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
-import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/custom_gradient_button.dart';
+import '../../l10n/app_localizations.dart';
 import '../auth/login_screen.dart';
-import '../../core/localization/localization_helper.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -17,8 +16,7 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen>
-    with TickerProviderStateMixin {
+class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateMixin {
   late AnimationController _imageAnimationController;
   late AnimationController _contentAnimationController;
   late Animation<double> _imageAnimation;
@@ -85,7 +83,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             // TODO: implement listener
           },
           builder: (context, state) {
-
             if (state is WelcomeInitial) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -182,7 +179,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     right: 0.w,
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 15.w,),
+                        horizontal: 15.w,
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -195,9 +193,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                 width: index == currentIndex ? 24.w : 8.w,
                                 height: 4.h,
                                 decoration: BoxDecoration(
-                                  color: index == currentIndex
-                                      ? Colors.white
-                                      : Colors.white.withOpacity(0.3),
+                                  color: index == currentIndex ? Colors.white : Colors.white.withOpacity(0.3),
                                   borderRadius: BorderRadius.circular(2.r),
                                 ),
                               );
@@ -208,21 +204,19 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
                           // Next button
                           CustomGradientButton(
-                            text: canGoNext ? context.localize('next') : context.localize('getStarted'),
+                            text: canGoNext ? '${AppLocalizations.of(context)?.next}' : '${AppLocalizations.of(context)?.getStarted}',
                             onPressed: () {
                               if (canGoNext) {
-                                context.read<WelcomeBloc>().add(
-                                    NextWelcomeScreen());
-                               } else {
-                                 // Navigate to login screen
-                                 Navigator.pushReplacement(
-                                   context,
-                                   MaterialPageRoute(builder: (context) => const LoginScreen()),
-                                 );
-                               }
+                                context.read<WelcomeBloc>().add(NextWelcomeScreen());
+                              } else {
+                                // Navigate to login screen
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                );
+                              }
                             },
                           ),
-
                         ],
                       ),
                     ),

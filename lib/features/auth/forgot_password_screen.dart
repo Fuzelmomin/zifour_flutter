@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zifour_sourcecode/core/utils/alert_show.dart';
 import 'package:zifour_sourcecode/features/auth/otp_verification_screen.dart';
+
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/text_field_container.dart';
-import '../../core/localization/localization_helper.dart';
+import '../../l10n/app_localizations.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -44,7 +45,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   height: double.infinity,
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: Column(
@@ -64,7 +64,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        context.localize('forgotPasswordTitle'),
+                        '${AppLocalizations.of(context)?.forgotPasswordTitle}',
                         style: AppTypography.inter24Bold,
                       ),
                     ),
@@ -76,8 +76,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       editingController: _phoneController,
                       type: 'phone',
                       maxLength: 10,
-                      changedValue: (value){},
-                      hint: context.localize('phoneNumber'),
+                      changedValue: (value) {},
+                      hint: '${AppLocalizations.of(context)?.phoneNumber}',
                       isPrefixIcon: true,
                       prefixIcon: Icon(
                         Icons.phone,
@@ -92,32 +92,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                     // Sign In Button
                     CustomGradientButton(
-                      text: context.localize('send'),
+                      text: '${AppLocalizations.of(context)?.send}',
                       onPressed: () {
                         // TODO: Implement login logic
                         if (_phoneController.text.isEmpty) {
-                          AlertShow.alertShowSnackBar(
-                              context,
-                              context.localize('pleaseEnterPhoneNumber'),
-                              Colors.red
-                          );
+                          AlertShow.alertShowSnackBar(context, '${AppLocalizations.of(context)?.pleaseEnterPhoneNumber}', Colors.red);
                           return;
                         }
 
                         if (_phoneController.text.length != 10) {
-                          AlertShow.alertShowSnackBar(
-                              context,
-                              context.localize('pleaseEnterValidPhoneNumber'),
-                              Colors.red
-                          );
+                          AlertShow.alertShowSnackBar(context, '${AppLocalizations.of(context)?.pleaseEnterValidPhoneNumber}', Colors.red);
                           return;
                         }
 
                         AlertShow.alertShowSnackBar(
-                            context,
-                            '${context.localize('sendOtpOnNumber')} ${_phoneController.text}',
-                            Colors.green
-                        );
+                            context, '${AppLocalizations.of(context)?.sendOtpOnNumber} ${_phoneController.text}', Colors.green);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const OTPVerificationScreen()),
