@@ -1,10 +1,14 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zifour_sourcecode/features/auth/forgot_password_screen.dart';
+import 'package:zifour_sourcecode/features/auth/signup_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/text_field_container.dart';
+import '../../core/localization/localization_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -64,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Sign in",
+                        context.localize('signIn'),
                         style: AppTypography.inter24Bold,
                       ),
                     ),
@@ -77,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       type: 'phone',
                       maxLength: 10,
                       changedValue: (value){},
-                      hint: 'Phone Number',
+                      hint: context.localize('phoneNumber'),
                       isPrefixIcon: true,
                       prefixIcon: Icon(
                         Icons.phone,
@@ -93,9 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Password Field
                     CustomTextField(
                       editingController: _passwordController,
-                      hint: 'Password',
+                      hint: context.localize('password'),
                       type: 'pass',
                       isPrefixIcon: true,
+                      isSuffixIcon: true,
                       prefixIcon: Icon(
                         Icons.lock,
                         color: Colors.grey[400],
@@ -130,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             SizedBox(width: 8.w),
                             Text(
-                              "Remember Me",
+                              context.localize('rememberMe'),
                               style: AppTypography.inter14Regular,
                             ),
                           ],
@@ -139,10 +145,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Forgot Password
                         GestureDetector(
                           onTap: () {
-
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                            );
                           },
                           child: Text(
-                            "Forgot Password?",
+                            context.localize('forgotPassword'),
                             style: AppTypography.inter14Bold.copyWith(
                                 color: AppColors.pinkColor,
                                 decoration: TextDecoration.underline,
@@ -158,13 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Sign In Button
                     CustomGradientButton(
-                      text: "Sign In",
+                      text: context.localize('signInButton'),
                       onPressed: () {
                         // TODO: Implement login logic
                         if (_phoneController.text.isEmpty || _passwordController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Please fill all fields'),
+                            SnackBar(
+                              content: Text(context.localize('pleaseFillAllFields')),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -172,8 +181,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         }
 
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Login successful!'),
+                          SnackBar(
+                            content: Text(context.localize('loginSuccessful')),
                             backgroundColor: Colors.green,
                           ),
                         );
@@ -185,6 +194,52 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 40.h),
                   ],
                 ),
+              ),
+              Positioned(
+                left: 0.0,
+                right: 0.0,
+                bottom: 0.0,
+                child: // Login Link
+                _buildSignupLink(),
+              )
+
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignupLink() {
+    return Container(
+      width: double.infinity,
+      height: 50.h,
+      color: AppColors.darkBlue,
+      child: Center(
+        child: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: context.localize('dontHaveAccount'),
+                style: AppTypography.inter14Regular.copyWith(
+                  color: Colors.white.withOpacity(0.7),
+                ),
+              ),
+              TextSpan(
+                text: context.localize('signUp'),
+                style: AppTypography.inter14Medium.copyWith(
+                    color: AppColors.pinkColor,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.pinkColor,
+                    decorationThickness: 1.0
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SignupScreen()),
+                    );
+                  },
               ),
             ],
           ),

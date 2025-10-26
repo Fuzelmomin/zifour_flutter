@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zifour_sourcecode/features/auth/signup_screen.dart';
 import '../../core/bloc/welcome_bloc.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../auth/login_screen.dart';
+import '../../core/localization/localization_helper.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -206,7 +208,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
                           // Next button
                           CustomGradientButton(
-                            text: canGoNext ? "Next" : "Get Started",
+                            text: canGoNext ? context.localize('next') : context.localize('getStarted'),
                             onPressed: () {
                               if (canGoNext) {
                                 context.read<WelcomeBloc>().add(

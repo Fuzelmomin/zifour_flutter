@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,9 +10,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/gradient_text.dart';
+import 'package:zifour_sourcecode/features/auth/login_screen.dart';
+import '../../core/localization/localization_helper.dart';
 
 import '../../core/bloc/signup_bloc.dart';
 import '../../core/constants/assets_path.dart';
+import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/signup_field_box.dart';
 import '../../core/widgets/text_field_container.dart';
@@ -26,6 +30,8 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   // Controllers
   final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPassController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final List<TextEditingController> _otpControllers = List.generate(4, (index) => TextEditingController());
 
@@ -141,7 +147,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       children: [
                         // Main Heading
                         Text(
-                          "Let's get your started!",
+                          context.localize('letsGetStarted'),
                           style: AppTypography.inter24Bold,
                         ),
                         SizedBox(height: 30.h),
@@ -152,7 +158,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CustomTextField(
-                                hint: "Full Name",
+                                hint: context.localize('fullName'),
                                 editingController: _fullNameController,
                                 type: 'text',
                                 textFieldBgColor: Colors.black.withOpacity(0.1),
@@ -195,9 +201,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                       width: 40.h,
                                       height: 40.h,
                                     ),
-                                    Expanded(
+                                      Expanded(
                                       child: Text(
-                                        "Upload your last year marksheet or 10th Exam Receipt",
+                                        context.localize('uploadMarksheet'),
                                         style: AppTypography.inter12Regular.copyWith(
                                           color: Colors.white.withOpacity(0.7),
                                         ),
@@ -211,6 +217,38 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
 
+                        SizedBox(height: 20.h),
+
+                        // Password Section
+                        SignupFieldBox(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            spacing: 10.h,
+                            children: [
+                              CustomTextField(
+                                hint: context.localize('password'),
+                                editingController: _passwordController,
+                                type: 'pass',
+                                isSuffixIcon: true,
+                                textFieldBgColor: Colors.black.withOpacity(0.1),
+                                changedValue: (value) {
+                                  context.read<SignupBloc>().add(UpdateFullName(value));
+                                },
+                              ),
+
+                              CustomTextField(
+                                hint: context.localize('confirmPassword'),
+                                editingController: _confirmPassController,
+                                type: 'pass',
+                                isSuffixIcon: true,
+                                textFieldBgColor: Colors.black.withOpacity(0.1),
+                                changedValue: (value) {
+                                  context.read<SignupBloc>().add(UpdateFullName(value));
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
                         SizedBox(height: 20.h),
                         
                         // Mobile Number and OTP Section
@@ -226,28 +264,68 @@ class _SignupScreenState extends State<SignupScreen> {
                         SizedBox(height: 20.h),
                         
                         // Safety Message
-                        Center(
-                          child: Text(
-                            "Your Details are safe with us",
-                            style: AppTypography.inter12Regular.copyWith(
-                              color: AppColors.white.withOpacity(0.7),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 70.w,
+                              height: 1.0,
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                    colors: [ // Deep blue bottom-left
+                                      Color(0xFF4F1B4E), // Cyan middle
+                                      AppColors.white,
+                                    ],
+
+                                  )
+                              ),
                             ),
-                          ),
+                            Center(
+                              child: Text(
+                                context.localize('yourDetailsAreSafe'),
+                                style: AppTypography.inter12Regular.copyWith(
+                                  color: AppColors.white.withOpacity(0.7),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 70.w,
+                              height: 1.0,
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                    colors: [ // Deep blue bottom-left
+                                      AppColors.white,
+                                      Color(0xFF4F1B4E), // Cyan middle
+                                    ],
+
+                                  )
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 30.h),
                         
                         // Sign Up Button
                         _buildSignUpButton(state),
-                        SizedBox(height: 20.h),
-                        
-                        // Login Link
-                        _buildLoginLink(),
-                        SizedBox(height: 30.h),
+                        SizedBox(height: 80.h),
                       ],
                     ),
                   );
                 },
               ),
+            ),
+
+            Positioned(
+              left: 0.0,
+              right: 0.0,
+              bottom: 0.0,
+              child: // Login Link
+              _buildLoginLink(),
             )
 
           ],
@@ -278,7 +356,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   '🔥'
                 ),
                 GradientText(
-                  text: ' Be Ziddi. Be a Topper.',
+                  text: ' ${context.localize('beZiddi')}',
                   gradient: const LinearGradient(
                     colors: [AppColors.white, AppColors.pinkColor1],
                   ),
@@ -296,7 +374,7 @@ class _SignupScreenState extends State<SignupScreen> {
             Flexible(
               flex: 3,
               child: Text(
-                ('Signup Now!').toUpperCase(),
+                context.localize('signupNow').toUpperCase(),
                 style: AppTypography.inter12Regular.copyWith(
                     color: AppColors.white.withOpacity(0.5),
                 ),
@@ -323,6 +401,18 @@ class _SignupScreenState extends State<SignupScreen> {
       selectedStandard = state.data.standard;
     }
     
+    // Get the displayed value based on current language
+    String? displayValue;
+    if (selectedStandard.isNotEmpty) {
+      if (selectedStandard == 'Class 11') {
+        displayValue = context.localize('class11');
+      } else if (selectedStandard == 'Class 12') {
+        displayValue = context.localize('class12');
+      } else if (selectedStandard == 'Dropper') {
+        displayValue = context.localize('dropper');
+      }
+    }
+    
     return Container(
       height: 56.h,
       width: double.infinity,
@@ -338,11 +428,11 @@ class _SignupScreenState extends State<SignupScreen> {
         child: DropdownButton<String>(
           value: selectedStandard.isEmpty ? null : selectedStandard,
           hint: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Text(
-              "Select Standard",
-              style: AppTypography.inter16Medium.copyWith(
-                color: Colors.white.withOpacity(0.7),
+              context.localize('selectStandard'),
+              style: AppTypography.inter14Regular.copyWith(
+                color: AppColors.hintTextColor,
               ),
             ),
           ),
@@ -353,20 +443,52 @@ class _SignupScreenState extends State<SignupScreen> {
               color: Colors.white.withOpacity(0.7),
             ),
           ),
+          selectedItemBuilder: (context) {
+            return ['Class 11', 'Class 12', 'Dropper'].map((value) {
+              String displayText;
+              if (value == 'Class 11') {
+                displayText = context.localize('class11');
+              } else if (value == 'Class 12') {
+                displayText = context.localize('class12');
+              } else {
+                displayText = context.localize('dropper');
+              }
+              return Container(
+                width: double.infinity,
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Text(
+                  displayText,
+                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
+                ),
+              );
+            }).toList();
+          },
           items: ['Class 11', 'Class 12', 'Dropper'].map((String value) {
+            String displayText;
+            if (value == 'Class 11') {
+              displayText = context.localize('class11');
+            } else if (value == 'Class 12') {
+              displayText = context.localize('class12');
+            } else {
+              displayText = context.localize('dropper');
+            }
+            
             return DropdownMenuItem<String>(
               value: value,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Text(
-                  value,
-                  style: AppTypography.inter16Medium.copyWith(color: Colors.white),
+                  displayText,
+                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
                 ),
               ),
             );
           }).toList(),
           onChanged: (String? newValue) {
-            context.read<SignupBloc>().add(UpdateStandard(newValue ?? ''));
+            if (newValue != null) {
+              context.read<SignupBloc>().add(UpdateStandard(newValue));
+            }
           },
         ),
       ),
@@ -412,7 +534,7 @@ class _SignupScreenState extends State<SignupScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              course,
+              course == 'NEET' ? context.localize('neet') : context.localize('jee'),
               style: AppTypography.inter14Medium.copyWith(
                 color: Colors.white,
               ),
@@ -500,7 +622,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             SizedBox(width: 8.w),
             Text(
-              gender,
+              gender == 'Male' ? context.localize('male') : gender == 'Female' ? context.localize('female') : context.localize('other'),
               style: AppTypography.inter12Medium.copyWith(
                 color: isSelected ? Colors.white : AppColors.hintTextColor,
               ),
@@ -556,7 +678,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 Expanded(
                   flex: 3,
                   child: CustomTextField(
-                    hint: "Mobile Number",
+                    hint: context.localize('mobileNumber'),
                     type: "phone",
                     maxLength: 10,
                     editingController: _mobileController,
@@ -587,7 +709,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          "Send OTP",
+                          context.localize('sendOtp'),
                           style: AppTypography.inter14Bold.copyWith(
                             color: AppColors.darkBlue,
                           ),
@@ -599,7 +721,8 @@ class _SignupScreenState extends State<SignupScreen> {
               ],
             ),
             SizedBox(height: 20.h),
-            mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3 ? Row(
+            mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3 ?
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(4, (index) {
                 return Container(
@@ -647,31 +770,32 @@ class _SignupScreenState extends State<SignupScreen> {
               }),
             ) : Container(),
             SizedBox(height: 15.h),
-            mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3 ? StreamBuilder<int>(
+            mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3 ?
+            StreamBuilder<int>(
               stream: _otpResendTimer,
               builder: (context, asyncSnapshot) {
-                return Row(
-                  children: [
-                    Text(
-                        asyncSnapshot.data == 0 ? 'Re-send Code ' : 'Re-send Code in ',
-                        style: AppTypography.inter12Regular
-                    ),
-                    GestureDetector(
-                      onTap: asyncSnapshot.data == 0 ? (){
-                        startTimer();
-                      } : null,
-                      child: Text(
-                        asyncSnapshot.data == 0 ? 'Resend' : '0:${asyncSnapshot.data.toString().padLeft(2, '0')}',
-                        style: AppTypography.inter12Bold.copyWith(
-                          color: AppColors.pinkColor,
-                          decoration: TextDecoration.underline,
-                          decorationColor: AppColors.pinkColor, // ensure underline color visible
-                          decorationThickness: 1.5,
+                    return Row(
+                      children: [
+                        Text(
+                            asyncSnapshot.data == 0 ? context.localize('reSendCode') : context.localize('reSendCodeIn'),
+                            style: AppTypography.inter12Regular
                         ),
-                      ),
-                    )
-                  ],
-                );
+                        GestureDetector(
+                          onTap: asyncSnapshot.data == 0 ? (){
+                            startTimer();
+                          } : null,
+                          child: Text(
+                            asyncSnapshot.data == 0 ? context.localize('resend') : '0:${asyncSnapshot.data.toString().padLeft(2, '0')}',
+                            style: AppTypography.inter12Bold.copyWith(
+                              color: AppColors.pinkColor,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppColors.pinkColor, // ensure underline color visible
+                              decorationThickness: 1.5,
+                            ),
+                          ),
+                        )
+                      ],
+                    );
               }
             ) : Container(),
             mobileVerifySnapshot.data == 3 || mobileVerifySnapshot.data == 2 ? Row(
@@ -684,7 +808,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
                 SizedBox(width: 8.w),
                 Text(
-                  mobileVerifySnapshot.data == 3 ? "Mobile Verification Failed" : "Mobile Verified Successfully",
+                  mobileVerifySnapshot.data == 3 ? context.localize('mobileVerificationFailed') : context.localize('mobileVerifiedSuccessfully'),
                   style: AppTypography.inter12Medium.copyWith(
                     color: mobileVerifySnapshot.data == 3 ? AppColors.error : AppColors.success,
                   ),
@@ -700,65 +824,107 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget _buildSignUpButton(SignupState state) {
     bool isLoading = state is SignupLoading;
     
-    return Container(
-      width: double.infinity,
-      height: 56.h,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.pinkColor, AppColors.pinkColor1],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12.r),
-          onTap: isLoading ? null : () {
-            context.read<SignupBloc>().add(SignupSubmitted());
-          },
-          child: Center(
-            child: isLoading
-                ? SizedBox(
-                    width: 20.w,
-                    height: 20.h,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                : Text(
-                    "Sign Up Now!",
-                    style: AppTypography.inter16Medium.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+    // return Container(
+    //   width: double.infinity,
+    //   height: 56.h,
+    //   decoration: BoxDecoration(
+    //     gradient: const LinearGradient(
+    //       colors: [AppColors.pinkColor, AppColors.pinkColor1],
+    //       begin: Alignment.centerLeft,
+    //       end: Alignment.centerRight,
+    //     ),
+    //     borderRadius: BorderRadius.circular(12.r),
+    //   ),
+    //   child: Material(
+    //     color: Colors.transparent,
+    //     child: InkWell(
+    //       borderRadius: BorderRadius.circular(12.r),
+    //       onTap: isLoading ? null : () {
+    //         context.read<SignupBloc>().add(SignupSubmitted());
+    //       },
+    //       child: Center(
+    //         child: isLoading
+    //             ? SizedBox(
+    //                 width: 20.w,
+    //                 height: 20.h,
+    //                 child: CircularProgressIndicator(
+    //                   strokeWidth: 2,
+    //                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+    //                 ),
+    //               )
+    //             : Text(
+    //                 "Sign Up Now!",
+    //                 style: AppTypography.inter16Medium.copyWith(
+    //                   color: Colors.white,
+    //                   fontWeight: FontWeight.w600,
+    //                 ),
+    //               ),
+    //       ),
+    //     ),
+    //   ),
+    // );
+
+    return CustomGradientButton(
+      text: context.localize('signUpButton'),
+      onPressed: () {
+        // TODO: Implement login logic
+        // if (_phoneController.text.isEmpty || _passwordController.text.isEmpty) {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(
+        //       content: Text('Please fill all fields'),
+        //       backgroundColor: Colors.red,
+        //     ),
+        //   );
+        //   return;
+        // }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.localize('signupSuccessful')),
+            backgroundColor: Colors.green,
           ),
-        ),
-      ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      },
     );
   }
 
   Widget _buildLoginLink() {
-    return Center(
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: "Already a Member? ",
-              style: AppTypography.inter14Regular.copyWith(
-                color: Colors.white.withOpacity(0.7),
+    return Container(
+      width: double.infinity,
+      height: 50.h,
+      color: AppColors.darkBlue,
+      child: Center(
+        child: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: context.localize('alreadyAMember'),
+                style: AppTypography.inter14Regular.copyWith(
+                  color: Colors.white.withOpacity(0.7),
+                ),
               ),
-            ),
-            TextSpan(
-              text: "Sign In",
-              style: AppTypography.inter14Medium.copyWith(
-                color: AppColors.pinkColor,
+              TextSpan(
+                text: context.localize('signIn'),
+                style: AppTypography.inter14Medium.copyWith(
+                  color: AppColors.pinkColor,
+                  decoration: TextDecoration.underline,
+                  decorationColor: AppColors.pinkColor,
+                  decorationThickness: 1.0
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    );
+                  },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

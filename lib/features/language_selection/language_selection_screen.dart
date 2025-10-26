@@ -8,6 +8,7 @@ import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../welcome/welcome_screen.dart';
+import '../../core/localization/localization_helper.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
   const LanguageSelectionScreen({super.key});
@@ -107,36 +108,20 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                  right: 15.w,
                  child: Column(
                    crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     Text(
-                       "Choose your Language",
-                       style: AppTypography.inter22Bold.copyWith(fontSize: 34.sp),
-                     ),
-                     SizedBox(height: 16.h),
-                     RichText(
-                       text: TextSpan(
-                         style: TextStyle(
-                           fontSize: 16.sp,
-                           color: Colors.white.withOpacity(0.9),
-                           height: 1.5,
-                         ),
-                         children: [
-                           TextSpan(
-                               text: 'Select the ',
-                             style: AppTypography.inter14Regular,
-                           ),
-                           TextSpan(
-                             text: 'language',
-                             style: AppTypography.inter14Medium.copyWith(color: const Color(0xFFFFA726),
-                             )
-                           ),
-                           TextSpan(
-                               text: ' you\'re most comfortable with to continue using the platform smoothly.',
-                             style: AppTypography.inter14Regular,
-                           ),
-                         ],
-                       ),
-                     ),
+                    children: [
+                      Text(
+                        context.localize('chooseLanguage'),
+                        style: AppTypography.inter22Bold.copyWith(fontSize: 34.sp),
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        context.localize('selectLanguage'),
+                        style: AppTypography.inter14Regular.copyWith(
+                          fontSize: 16.sp,
+                          color: Colors.white.withOpacity(0.9),
+                          height: 1.5,
+                        ),
+                      ),
                      SizedBox(height: 40.h),
                      
                      // Language selection boxes
@@ -171,7 +156,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                 right: 15.w,
                 bottom: 15.h,
                 child: CustomGradientArrowButton(
-                  text: "Continue with ${_currentLanguage.displayName}",
+                  text: "${context.localize('continueWith')} ${_currentLanguage.displayName}",
                   onPressed: () {
                     // Navigate to welcome screen
                     Navigator.pushReplacement(
