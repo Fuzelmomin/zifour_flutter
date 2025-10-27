@@ -62,6 +62,8 @@
   "home": "Home",
   "settings": "Settings",
   "profile": "Profile",
-  "logout": "Logout"
+  "logout": "Logout",
+  "trendingCourse": "Trending Courses",
+  "viewAll": "View All"
 }
 

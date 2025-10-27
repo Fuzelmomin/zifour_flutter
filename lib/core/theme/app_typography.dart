@@ -89,6 +89,22 @@ class AppTypography {
     color: AppColors.white,
   );
 
+  static TextStyle get inter18SemiBold => GoogleFonts.inter(
+    fontSize: 18.sp,
+    fontWeight: FontWeight.w600,
+    height: 18 / 16,
+    letterSpacing: 0,
+    color: AppColors.white,
+  );
+
+  static TextStyle get inter10SemiBold => GoogleFonts.inter(
+    fontSize: 10.sp,
+    fontWeight: FontWeight.w600,
+    height: 10 / 16,
+    letterSpacing: 0,
+    color: AppColors.white,
+  );
+
   static TextStyle get inter24Bold => GoogleFonts.inter(
     fontSize: 24.sp,
     fontWeight: FontWeight.w700,

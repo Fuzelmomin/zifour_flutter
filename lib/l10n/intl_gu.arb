@@ -62,6 +62,9 @@
   "home": "ઘર",
   "settings": "સેટિંગ્સ",
   "profile": "પ્રોફાઇલ",
-  "logout": "લોગઆઉટ"
+  "logout": "લોગઆઉટ",
+
+  "trendingCourse": "Trending Courses",
+  "viewAll": "View All"
 }
 

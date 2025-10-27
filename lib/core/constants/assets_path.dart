@@ -16,6 +16,12 @@ class AssetsPath {
   static const String svgUnSelModules = "assets/icons/ic_unsel_modules.svg";
   static const String svgSelProfile = "assets/icons/ic_sel_profile.svg";
   static const String svgUnSelProfile = "assets/icons/ic_unsel_profile.svg";
+  static const String svgNotification = "assets/icons/ic_notification.svg";
+  static const String svgFreeTrial = "assets/icons/ic_free_trial.svg";
+  static const String svgLiveClass = "assets/icons/ic_live_class.svg";
+  static const String svgMyCourse = "assets/icons/ic_my_course.svg";
+  static const String svgPractice = "assets/icons/ic_practice.svg";
+  static const String svgChallenger = "assets/icons/ic_challenger.svg";
 
 
   // Images Paths
@@ -31,4 +37,6 @@ class AssetsPath {
   static const String loginBgImg = "assets/images/login_bg_img.png";
   static const String signupBgImg = "assets/images/signup_bg_img.png";
   static const String dashboardBgImg = "assets/images/dashboard_bg.png";
+  static const String BannerImg = "assets/images/bennar_img.png";
+  static const String trendingCourseImg = "assets/images/trending_course_img.png";
 }

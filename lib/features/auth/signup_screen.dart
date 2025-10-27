@@ -10,6 +10,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/gradient_text.dart';
+import 'package:zifour_sourcecode/core/widgets/be_ziddi_item_widget.dart';
 import 'package:zifour_sourcecode/features/auth/login_screen.dart';
 
 import '../../core/bloc/signup_bloc.dart';
@@ -338,21 +339,7 @@ class _SignupScreenState extends State<SignupScreen> {
               AssetsPath.appTitleLogo,
               height: 40.h,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('🔥'),
-                GradientText(
-                  text: ' ${AppLocalizations.of(context)?.beZiddi}',
-                  gradient: const LinearGradient(
-                    colors: [AppColors.white, AppColors.pinkColor1],
-                  ),
-                  style: AppTypography.inter14SemiBold,
-                ),
-              ],
-            )
+            BeZiddiItemWidget()
           ],
         ),
         Row(

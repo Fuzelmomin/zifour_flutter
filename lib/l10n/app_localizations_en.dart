@@ -198,4 +198,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logout => 'Logout';
+
+  @override
+  String get trendingCourse => 'Trending Courses';
+
+  @override
+  String get viewAll => 'View All';
 }

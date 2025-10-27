@@ -475,6 +475,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Logout'**
   String get logout;
+
+  /// No description provided for @trendingCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending Courses'**
+  String get trendingCourse;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get viewAll;
 }
 
 class _AppLocalizationsDelegate

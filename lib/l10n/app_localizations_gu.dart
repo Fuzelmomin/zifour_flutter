@@ -199,4 +199,10 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get logout => 'લોગઆઉટ';
+
+  @override
+  String get trendingCourse => 'Trending Courses';
+
+  @override
+  String get viewAll => 'View All';
 }
