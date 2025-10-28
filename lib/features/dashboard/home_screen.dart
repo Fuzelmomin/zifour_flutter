@@ -8,7 +8,9 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/be_ziddi_item_widget.dart';
 import '../../core/widgets/courses_item_widget.dart';
+import '../../core/widgets/custom_drawer.dart';
 import '../../core/widgets/home_app_bar.dart';
+import '../../core/widgets/home_option_widget.dart';
 import '../../core/widgets/home_options_item.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -22,11 +24,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _bannerController = PageController();
   final BehaviorSubject<int> _bannerIndex = BehaviorSubject<int>.seeded(0);
-  
+
   List<Map<String, dynamic>> _banners = [];
   List<Map<String, dynamic>> _trendingCourses = [];
   List<Map<String, dynamic>> _mentors = [];
   Map<String, dynamic> _userProfile = {};
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -44,25 +48,82 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _initDummyData() {
     _banners = [
-      {'imageUrl': 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1973'},
-      {'imageUrl': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170'},
-      {'imageUrl': 'https://images.unsplash.com/photo-1535982330050-f1c2fb79ff78?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1074'},
+      {
+        'imageUrl':
+            'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1973'
+      },
+      {
+        'imageUrl':
+            'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170'
+      },
+      {
+        'imageUrl':
+            'https://images.unsplash.com/photo-1535982330050-f1c2fb79ff78?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1074'
+      },
     ];
-    
+
     _trendingCourses = [
-      {'id': 1, 'title': 'Flutter Development', 'imageUrl': 'https://picsum.photos/300/200?random=10', 'rating': 4.8, 'studentsCount': 1250},
-      {'id': 2, 'title': 'React Native Course', 'imageUrl': 'https://picsum.photos/300/200?random=11', 'rating': 4.6, 'studentsCount': 980},
-      {'id': 3, 'title': 'Node.js Masterclass', 'imageUrl': 'https://picsum.photos/300/200?random=12', 'rating': 4.9, 'studentsCount': 1500},
-      {'id': 4, 'title': 'Python Programming', 'imageUrl': 'https://picsum.photos/300/200?random=13', 'rating': 4.7, 'studentsCount': 2100},
+      {
+        'id': 1,
+        'title': 'Flutter Development',
+        'imageUrl': 'https://picsum.photos/300/200?random=10',
+        'rating': 4.8,
+        'studentsCount': 1250
+      },
+      {
+        'id': 2,
+        'title': 'React Native Course',
+        'imageUrl': 'https://picsum.photos/300/200?random=11',
+        'rating': 4.6,
+        'studentsCount': 980
+      },
+      {
+        'id': 3,
+        'title': 'Node.js Masterclass',
+        'imageUrl': 'https://picsum.photos/300/200?random=12',
+        'rating': 4.9,
+        'studentsCount': 1500
+      },
+      {
+        'id': 4,
+        'title': 'Python Programming',
+        'imageUrl': 'https://picsum.photos/300/200?random=13',
+        'rating': 4.7,
+        'studentsCount': 2100
+      },
     ];
-    
+
     _mentors = [
-      {'id': 1, 'name': 'John Doe', 'imageUrl': 'https://i.pravatar.cc/150?img=1', 'designation': 'Senior Developer', 'rating': 4.9},
-      {'id': 2, 'name': 'Jane Smith', 'imageUrl': 'https://i.pravatar.cc/150?img=2', 'designation': 'Tech Lead', 'rating': 4.8},
-      {'id': 3, 'name': 'Mike Johnson', 'imageUrl': 'https://i.pravatar.cc/150?img=3', 'designation': 'Full Stack Dev', 'rating': 4.7},
-      {'id': 4, 'name': 'Sarah Williams', 'imageUrl': 'https://i.pravatar.cc/150?img=4', 'designation': 'Senior Engineer', 'rating': 4.9},
+      {
+        'id': 1,
+        'name': 'John Doe',
+        'imageUrl': 'https://i.pravatar.cc/150?img=1',
+        'designation': 'Senior Developer',
+        'rating': 4.9
+      },
+      {
+        'id': 2,
+        'name': 'Jane Smith',
+        'imageUrl': 'https://i.pravatar.cc/150?img=2',
+        'designation': 'Tech Lead',
+        'rating': 4.8
+      },
+      {
+        'id': 3,
+        'name': 'Mike Johnson',
+        'imageUrl': 'https://i.pravatar.cc/150?img=3',
+        'designation': 'Full Stack Dev',
+        'rating': 4.7
+      },
+      {
+        'id': 4,
+        'name': 'Sarah Williams',
+        'imageUrl': 'https://i.pravatar.cc/150?img=4',
+        'designation': 'Senior Engineer',
+        'rating': 4.9
+      },
     ];
-    
+
     _userProfile = {
       'name': 'John Doe',
       'profileImageUrl': 'https://i.pravatar.cc/150?img=5',
@@ -85,47 +146,58 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: AppColors.darkBlue,
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.dashboardBgImg,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.fill,
+    return Scaffold(
+      key: _scaffoldKey,
+      drawer: CustomDrawer(),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: AppColors.darkBlue,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.dashboardBgImg,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.fill,
+                ),
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w).copyWith(top: 40.h),
-                  child: HomeAppBar(profileImg: 'https://i.pravatar.cc/150?img=3',),
-                ),
-                SizedBox(height: 20.h),
-                _buildBannerSection(),
-                SizedBox(height: 15.h),
-                _buildTrendingCoursesSection(),
-                SizedBox(height: 20.h),
-                _buildMentorsSection(),
-                SizedBox(height: 25.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    BeZiddiItemWidget()
-                  ],
-                ),
-                SizedBox(height: 20.h,),
-                _buildHomeOptionSection(),
-              ],
-            ),
-          ],
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w)
+                            .copyWith(top: 40.h),
+                    child: HomeAppBar(
+                      profileImg: 'https://i.pravatar.cc/150?img=3',
+                      profileClick: () {
+                        _scaffoldKey.currentState?.openDrawer();
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  _buildBannerSection(),
+                  SizedBox(height: 15.h),
+                  _buildTrendingCoursesSection(),
+                  SizedBox(height: 20.h),
+                  _buildMentorsSection(),
+                  SizedBox(height: 25.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [BeZiddiItemWidget()],
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  _buildHomeOptionSection(),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -156,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         SizedBox(
           height: 200.h,
-            child: PageView.builder(
+          child: PageView.builder(
             controller: _bannerController,
             itemCount: _banners.length,
             onPageChanged: (index) {
@@ -311,15 +383,17 @@ class _HomeScreenState extends State<HomeScreen> {
           HomeOptionsItem(
             title: 'Test Series',
             subTitle: 'Full Syllabus Mock Test',
+            imagePath: AssetsPath.svgTestSeries,
           ),
-
           HomeOptionsItem(
             title: 'AI Based Performance Analysis',
             subTitle: 'Know Your Complete Progress',
+            imagePath: AssetsPath.svgAIBase,
           ),
           HomeOptionsItem(
             title: 'Ask Your Doubts',
             subTitle: 'Get Expert Solutions',
+            imagePath: AssetsPath.svgAskDoubts,
           ),
         ],
       ),
@@ -394,8 +468,8 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(50.r),
-            child: CachedNetworkImage(
-              imageUrl: mentor['profileImageUrl'],
+              child: CachedNetworkImage(
+                imageUrl: mentor['profileImageUrl'],
                 width: 80.w,
                 height: 80.h,
                 fit: BoxFit.cover,

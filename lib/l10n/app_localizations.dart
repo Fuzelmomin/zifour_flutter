@@ -487,6 +487,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View All'**
   String get viewAll;
+
+  /// No description provided for @studentInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Student Information'**
+  String get studentInfo;
+
+  /// No description provided for @mentors.
+  ///
+  /// In en, this message translates to:
+  /// **'Mentors'**
+  String get mentors;
+
+  /// No description provided for @myCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'My Courses'**
+  String get myCourse;
+
+  /// No description provided for @recentActivities.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activities'**
+  String get recentActivities;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPassword;
+
+  /// No description provided for @studentName.
+  ///
+  /// In en, this message translates to:
+  /// **'Student Name'**
+  String get studentName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @city.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get city;
+
+  /// No description provided for @pincode.
+  ///
+  /// In en, this message translates to:
+  /// **'Pincode'**
+  String get pincode;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @updateProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Profile'**
+  String get updateProfile;
 }
 
 class _AppLocalizationsDelegate

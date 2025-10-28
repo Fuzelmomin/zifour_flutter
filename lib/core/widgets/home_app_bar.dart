@@ -28,37 +28,42 @@ class HomeAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(30.r),
-            child: CachedNetworkImage(
-              imageUrl: profileImg ?? '',
-              width: 50.w,
-              height: 50.h,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
+          GestureDetector(
+            onTap: (){
+              profileClick!();
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30.r),
+              child: CachedNetworkImage(
+                imageUrl: profileImg ?? '',
                 width: 50.w,
                 height: 50.h,
-                decoration: BoxDecoration(
-                  color: AppColors.pinkColor.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(30.r),
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  width: 50.w,
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.pinkColor.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(30.r),
+                  ),
+                  child: Icon(
+                    Icons.person,
+                    color: AppColors.pinkColor,
+                    size: 30.sp,
+                  ),
                 ),
-                child: Icon(
-                  Icons.person,
-                  color: AppColors.pinkColor,
-                  size: 30.sp,
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                width: 50.w,
-                height: 50.h,
-                decoration: BoxDecoration(
-                  color: AppColors.pinkColor.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(30.r),
-                ),
-                child: Icon(
-                  Icons.person,
-                  color: AppColors.pinkColor,
-                  size: 30.sp,
+                errorWidget: (context, url, error) => Container(
+                  width: 50.w,
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.pinkColor.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(30.r),
+                  ),
+                  child: Icon(
+                    Icons.person,
+                    color: AppColors.pinkColor,
+                    size: 30.sp,
+                  ),
                 ),
               ),
             ),

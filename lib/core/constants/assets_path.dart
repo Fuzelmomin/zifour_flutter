@@ -22,6 +22,23 @@ class AssetsPath {
   static const String svgMyCourse = "assets/icons/ic_my_course.svg";
   static const String svgPractice = "assets/icons/ic_practice.svg";
   static const String svgChallenger = "assets/icons/ic_challenger.svg";
+  static const String svgTestSeries = "assets/icons/ic_test_series.svg";
+  static const String svgAIBase = "assets/icons/ic_ai_base.svg";
+  static const String svgAskDoubts = "assets/icons/ic_ask_doubts.svg";
+
+  // Drawer Icons
+  static const String svgUser = "assets/icons/ic_user.svg";
+  static const String svgEdit = "assets/icons/ic_edit.svg";
+  static const String svgCalendar = "assets/icons/ic_calendar.svg";
+  static const String svgBookmark = "assets/icons/ic_bookmark.svg";
+  static const String svgHelpCircle = "assets/icons/ic_help_circle.svg";
+  static const String svgNote = "assets/icons/ic_note.svg";
+  static const String svgBarChart = "assets/icons/ic_bar_chart.svg";
+  static const String svgStar = "assets/icons/ic_star.svg";
+  static const String svgRefresh = "assets/icons/ic_refresh.svg";
+  static const String svgPlayCircle = "assets/icons/ic_play_circle.svg";
+  static const String svgLogout = "assets/icons/ic_logout.svg";
+  static const String svgBack = "assets/icons/ic_back.svg";
 
 
   // Images Paths

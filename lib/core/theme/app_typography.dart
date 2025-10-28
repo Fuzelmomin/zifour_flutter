@@ -57,6 +57,13 @@ class AppTypography {
     color: AppColors.white,
   );
 
+  static TextStyle get inter10Medium => GoogleFonts.inter(
+    fontSize: 10.sp,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0,
+    color: AppColors.white,
+  );
+
   static TextStyle get inter14Medium => GoogleFonts.inter(
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
@@ -67,6 +74,28 @@ class AppTypography {
 
   static TextStyle get inter16Medium => GoogleFonts.inter(
     fontSize: 16.sp,
+    fontWeight: FontWeight.w500,
+    height: 22 / 16,
+    letterSpacing: 0,
+    color: AppColors.white,
+  );
+
+  static TextStyle get inter24Medium => GoogleFonts.inter(
+    fontSize: 24.sp,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0,
+    color: AppColors.white,
+  );
+
+  static TextStyle get inter16SemiBold => GoogleFonts.inter(
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0,
+    color: AppColors.white,
+  );
+
+  static TextStyle get inter18Medium => GoogleFonts.inter(
+    fontSize: 18.sp,
     fontWeight: FontWeight.w500,
     height: 22 / 16,
     letterSpacing: 0,

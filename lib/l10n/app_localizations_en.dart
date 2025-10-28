@@ -204,4 +204,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewAll => 'View All';
+
+  @override
+  String get studentInfo => 'Student Information';
+
+  @override
+  String get mentors => 'Mentors';
+
+  @override
+  String get myCourse => 'My Courses';
+
+  @override
+  String get recentActivities => 'Recent Activities';
+
+  @override
+  String get resetPassword => 'Reset Password';
+
+  @override
+  String get studentName => 'Student Name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get city => 'City';
+
+  @override
+  String get pincode => 'Pincode';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get updateProfile => 'Update Profile';
 }

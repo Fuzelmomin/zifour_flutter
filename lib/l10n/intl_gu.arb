@@ -65,6 +65,17 @@
   "logout": "લોગઆઉટ",
 
   "trendingCourse": "Trending Courses",
-  "viewAll": "View All"
+  "viewAll": "View All",
+  "studentInfo": "Student Information",
+  "mentors": "Mentors",
+  "myCourse": "My Courses",
+  "recentActivities": "Recent Activities",
+  "resetPassword": "Reset Password",
+  "studentName": "Student Name",
+  "email": "Email",
+  "city": "City",
+  "pincode": "Pincode",
+  "address": "Address",
+  "updateProfile": "Update Profile"
 }
 
