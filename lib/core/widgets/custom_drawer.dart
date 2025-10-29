@@ -5,6 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/constants/assets_path.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
+import 'package:zifour_sourcecode/core/utils/dialogs_utils.dart';
+import 'package:zifour_sourcecode/features/courses/change_courses_screen.dart';
+import 'package:zifour_sourcecode/features/give_feedback/give_feedback_screen.dart';
+import 'package:zifour_sourcecode/features/help_support/help_support_screen.dart';
+
+import '../../l10n/app_localizations.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -90,6 +96,10 @@ class CustomDrawer extends StatelessWidget {
                     }),
                     _drawerItem(AssetsPath.svgEdit, "Change Course", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ChangeCourseScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgCalendar, "Zifour Calendar", (){
                       Navigator.pop(context);
@@ -108,9 +118,17 @@ class CustomDrawer extends StatelessWidget {
                     }),
                     _drawerItem(AssetsPath.svgStar, "Feedback", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const GiveFeedbackScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgHelpCircle, "Help/Support", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HelpSupportScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgRefresh, "Reset Password", (){
                       Navigator.pop(context);
@@ -120,6 +138,19 @@ class CustomDrawer extends StatelessWidget {
                     }),
                     _drawerItem(AssetsPath.svgLogout, "Logout", (){
                       Navigator.pop(context);
+                      DialogsUtils.confirmDialog(
+                          context,
+                        title: '${AppLocalizations.of(context)?.logout}?',
+                        message: '${AppLocalizations.of(context)?.areYouWantLogout}',
+                        negativeBtnName: '${AppLocalizations.of(context)?.no}',
+                        positiveBtnName: '${AppLocalizations.of(context)?.yes}',
+                        positiveClick: (){
+                          Navigator.pop(context, false);
+                        },
+                        negativeClick: (){
+
+                        }
+                      );
                     }),
                   ],
                 ),

@@ -39,6 +39,10 @@ class AssetsPath {
   static const String svgPlayCircle = "assets/icons/ic_play_circle.svg";
   static const String svgLogout = "assets/icons/ic_logout.svg";
   static const String svgBack = "assets/icons/ic_back.svg";
+  static const String svgWhatsApp = "assets/icons/ic_whatsapp.svg";
+  static const String svgFacebook = "assets/icons/ic_facebook.svg";
+  static const String svgInstagram = "assets/icons/ic_instagram.svg";
+  static const String svgGlobe = "assets/icons/ic_globe.svg";
 
 
   // Images Paths

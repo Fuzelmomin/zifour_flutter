@@ -121,6 +121,9 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController editingController;
   final Color? textFieldBgColor;
 
+  final bool? isMessageTextField;
+  final double? textFieldHeight;
+
   const CustomTextField({
     super.key,
     this.hint,
@@ -134,6 +137,8 @@ class CustomTextField extends StatefulWidget {
     this.maxLength,
     required this.editingController,
     this.textFieldBgColor,
+    this.isMessageTextField,
+    this.textFieldHeight,
   });
 
   @override
@@ -148,7 +153,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     bool isPasswordField = widget.type == 'pass';
 
     return Container(
-      height: 56.h,
+      height: widget.textFieldHeight ?? 56.h,
       decoration: BoxDecoration(
         color: widget.textFieldBgColor ?? Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.r),
@@ -166,6 +171,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ? TextInputType.emailAddress
             : TextInputType.text,
         maxLength: widget.maxLength ?? 50,
+        maxLines: widget.isMessageTextField == true ? null : 1,
         obscureText: isPasswordField ? _obscureText : false,
         style: AppTypography.inter14Medium.copyWith(color: Colors.white),
         onChanged: (val) {

@@ -238,4 +238,43 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get updateProfile => 'Update Profile';
+
+  @override
+  String get zMentors => 'Z Mentors';
+
+  @override
+  String get enterOldPass => 'Enter Old Password';
+
+  @override
+  String get giveFeedback => 'Give Feedback';
+
+  @override
+  String get howDidWe => 'How did we do?';
+
+  @override
+  String get careToShare => 'Care To Share More Ab Out it?';
+
+  @override
+  String get publishFeedback => 'Publish Feedback';
+
+  @override
+  String get changeCourse => 'Change Course';
+
+  @override
+  String get saveChanges => 'Save changes';
+
+  @override
+  String get areYouWantLogout => 'Are you sure want to logout?';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get helpSupport => 'Help Support';
+
+  @override
+  String get contactUs => 'CONTACT US';
 }

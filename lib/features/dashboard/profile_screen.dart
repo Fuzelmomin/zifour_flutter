@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/auth/edit_profile_screen.dart';
 import 'package:zifour_sourcecode/features/courses/my_courses_screen.dart';
+import 'package:zifour_sourcecode/features/demo_ui.dart';
+import 'package:zifour_sourcecode/features/mentor/mentors_list_screen.dart';
+import 'package:zifour_sourcecode/features/reset_password/reset_password_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
@@ -171,6 +174,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     ProfileOptionWidget(
                       title: '${AppLocalizations.of(context)?.mentors}',
+                      itemClick: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MentorsListScreen()),
+                        );
+                      },
                     ),
                     ProfileOptionWidget(
                       title: '${AppLocalizations.of(context)?.myCourse}',
@@ -186,6 +195,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     ProfileOptionWidget(
                       title: '${AppLocalizations.of(context)?.resetPassword}',
+                      itemClick: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                        );
+                      },
                     ),
                   ],
                 ),

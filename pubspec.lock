@@ -283,6 +283,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_rating_bar_plus:
+    dependency: "direct main"
+    description:
+      name: flutter_rating_bar_plus
+      sha256: c9246457d160a2355403480b53ab462bda224f77759633ec28b170fca745cc7c
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.2"
   flutter_screenutil:
     dependency: "direct main"
     description:

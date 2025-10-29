@@ -1,47 +1,49 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
+import '../../core/widgets/all_mentors_item.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/my_course_item.dart';
 import '../../l10n/app_localizations.dart';
 
-class MyCoursesScreen extends StatefulWidget {
-  const MyCoursesScreen({super.key});
+class MentorsListScreen extends StatefulWidget {
+  const MentorsListScreen({super.key});
 
   @override
-  State<MyCoursesScreen> createState() => _MyCoursesScreenState();
+  State<MentorsListScreen> createState() => _MentorsListScreenState();
 }
 
-class _MyCoursesScreenState extends State<MyCoursesScreen> {
+class _MentorsListScreenState extends State<MentorsListScreen> {
   @override
   Widget build(BuildContext context) {
-    List<Map<String, String>> courses = [
+    final List<Map<String, String>> mentors = [
       {
-        'price': '₹ 1,999',
-        'title': '11th & 12th Science - Full Syllabus',
-        'start': '27 Feb, 2021',
-        'end': '27 Feb, 2021',
-        'image':
-        'https://images.unsplash.com/photo-1581093588401-22d0a9f6f1b4?auto=format&fit=crop&w=900&q=60'
+        'name': 'Jhone Doe',
+        'desc': 'Video Description',
+        'img': 'https://i.pravatar.cc/300?img=1',
+        'time': '10:30',
       },
       {
-        'price': '₹ 1,999',
-        'title': '11th & 12th Science - Full Syllabus',
-        'start': '27 Feb, 2021',
-        'end': '27 Feb, 2021',
-        'image':
-        'https://images.unsplash.com/photo-1581093588401-22d0a9f6f1b4?auto=format&fit=crop&w=900&q=60'
+        'name': 'Jhone Doe',
+        'desc': 'Video Description',
+        'img': 'https://i.pravatar.cc/300?img=2',
+        'time': '10:30',
       },
       {
-        'price': '₹ 1,999',
-        'title': '11th & 12th Science - Full Syllabus',
-        'start': '27 Feb, 2021',
-        'end': '27 Feb, 2021',
-        'image':
-        'https://images.unsplash.com/photo-1581093588401-22d0a9f6f1b4?auto=format&fit=crop&w=900&q=60'
+        'name': 'Jhone Doe',
+        'desc': 'Video Description',
+        'img': 'https://i.pravatar.cc/300?img=3',
+        'time': '10:30',
+      },
+      {
+        'name': 'Jhone Doe',
+        'desc': 'Video Description',
+        'img': 'https://i.pravatar.cc/300?img=4',
+        'time': '10:30',
       },
     ];
     return Scaffold(
@@ -67,12 +69,22 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                 right: 20.w,
                 child: CustomAppBar(
                   isBack: true,
-                  title: '${AppLocalizations.of(context)?.myCourse}',
+                  title: '${AppLocalizations.of(context)?.mentors}',
+                )),
+
+
+            Positioned(
+                top: 110.h,
+                left: 20.w,
+                right: 20.w,
+                child: Text(
+                  '${AppLocalizations.of(context)?.zMentors}',
+                  style: AppTypography.inter18SemiBold,
                 )),
 
             // Main Content with BLoC
             Positioned(
-              top: 110.h,
+              top: 140.h,
               left: 20.w,
               right: 20.w,
               bottom: 0,
@@ -80,13 +92,13 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: courses.length,
+                itemCount: mentors.length,
                 padding: EdgeInsets.only(bottom: 20.h),
                 itemBuilder: (context, index) {
-                  var item = courses[index];
+                  var item = mentors[index];
                   return Padding(
                     padding: EdgeInsets.only(bottom: 16.h),
-                    child: MyCourseItem(item: item,),
+                    child: AllMentorsItem(item: item,),
                   );
                 },
               ),

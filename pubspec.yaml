@@ -65,6 +65,8 @@ dependencies:
   
   # Network image caching
   cached_network_image: ^3.3.1
+
+  flutter_rating_bar_plus: ^4.0.2
   
   # Internationalization
   intl: ^0.20.2

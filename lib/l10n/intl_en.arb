@@ -75,6 +75,19 @@
   "city": "City",
   "pincode": "Pincode",
   "address": "Address",
-  "updateProfile": "Update Profile"
+  "updateProfile": "Update Profile",
+  "zMentors": "Z Mentors",
+  "enterOldPass": "Enter Old Password",
+  "giveFeedback": "Give Feedback",
+  "howDidWe": "How did we do?",
+  "careToShare": "Care To Share More Ab Out it?",
+  "publishFeedback": "Publish Feedback",
+  "changeCourse": "Change Course",
+  "saveChanges": "Save changes",
+  "areYouWantLogout": "Are you sure want to logout?",
+  "yes": "Yes",
+  "no": "No",
+  "helpSupport": "Help Support",
+  "contactUs": "CONTACT US"
 }
 

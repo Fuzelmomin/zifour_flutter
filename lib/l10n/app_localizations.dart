@@ -553,6 +553,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update Profile'**
   String get updateProfile;
+
+  /// No description provided for @zMentors.
+  ///
+  /// In en, this message translates to:
+  /// **'Z Mentors'**
+  String get zMentors;
+
+  /// No description provided for @enterOldPass.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Old Password'**
+  String get enterOldPass;
+
+  /// No description provided for @giveFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Give Feedback'**
+  String get giveFeedback;
+
+  /// No description provided for @howDidWe.
+  ///
+  /// In en, this message translates to:
+  /// **'How did we do?'**
+  String get howDidWe;
+
+  /// No description provided for @careToShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Care To Share More Ab Out it?'**
+  String get careToShare;
+
+  /// No description provided for @publishFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish Feedback'**
+  String get publishFeedback;
+
+  /// No description provided for @changeCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Course'**
+  String get changeCourse;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get saveChanges;
+
+  /// No description provided for @areYouWantLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure want to logout?'**
+  String get areYouWantLogout;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help Support'**
+  String get helpSupport;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'CONTACT US'**
+  String get contactUs;
 }
 
 class _AppLocalizationsDelegate
