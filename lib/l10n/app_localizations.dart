@@ -631,6 +631,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'CONTACT US'**
   String get contactUs;
+
+  /// No description provided for @zifour_calender.
+  ///
+  /// In en, this message translates to:
+  /// **'Zifour Calender'**
+  String get zifour_calender;
+
+  /// No description provided for @createEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Event'**
+  String get createEvent;
+
+  /// No description provided for @bookmarked.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarked'**
+  String get bookmarked;
+
+  /// No description provided for @myNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'My Notes'**
+  String get myNotes;
+
+  /// No description provided for @multimediaLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Multimedia Library'**
+  String get multimediaLibrary;
 }
 
 class _AppLocalizationsDelegate

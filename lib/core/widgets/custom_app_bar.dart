@@ -8,12 +8,18 @@ class CustomAppBar extends StatelessWidget {
   String? title;
   bool? isBack;
   Function()? onBack;
+  bool? isActionWidget;
+  Widget? actionWidget;
+  Function()? actionClick;
 
   CustomAppBar({
     super.key,
     this.title,
     this.isBack,
-    this.onBack
+    this.onBack,
+    this.isActionWidget,
+    this.actionWidget,
+    this.actionClick,
   });
 
   @override
@@ -22,24 +28,38 @@ class CustomAppBar extends StatelessWidget {
       width: double.infinity,
       height: 60.h,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          isBack == true ? GestureDetector(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              isBack == true ? GestureDetector(
+                onTap: (){
+                  onBack!();
+                },
+                child: SvgPicture.asset(
+                  AssetsPath.svgBack,
+                  width: 32.w,
+                  height: 32.h,
+                ),
+              ) : Container(),
+              SizedBox(width: 10.w,),
+              Text(
+                title ?? '',
+                style: AppTypography.inter16SemiBold,
+              ),
+            ],
+          ),
+
+          isActionWidget == true ? GestureDetector(
             onTap: (){
-              onBack!();
+              actionClick!();
             },
-            child: SvgPicture.asset(
-              AssetsPath.svgBack,
-              width: 32.w,
-              height: 32.h,
-            ),
-          ) : Container(),
-          SizedBox(width: 10.w,),
-          Text(
-            title ?? '',
-            style: AppTypography.inter16SemiBold,
-          )
+              child: actionWidget!
+          ) : Container()
         ],
       ),
     );

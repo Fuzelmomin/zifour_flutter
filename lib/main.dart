@@ -47,6 +47,17 @@ class MyApp extends StatelessWidget {
                   colorScheme:
                       ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                   useMaterial3: true,
+                  menuTheme: MenuThemeData(
+                    style: MenuStyle(
+                      backgroundColor: MaterialStatePropertyAll(Color(0xFF2B1C4D)),
+                      elevation: MaterialStatePropertyAll(10),
+                      shape: MaterialStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 home: const DashboardScreen(), // Start with splash screen
               );

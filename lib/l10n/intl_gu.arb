@@ -89,6 +89,11 @@
   "yes": "Yes",
   "no": "No",
   "helpSupport": "Help Support",
-  "contactUs": "CONTACT US"
+  "contactUs": "CONTACT US",
+  "zifour_calender": "Zifour Calender",
+  "createEvent": "Create Event",
+  "bookmarked": "Bookmarked",
+  "myNotes": "My Notes",
+  "multimediaLibrary": "Multimedia Library"
 }
 

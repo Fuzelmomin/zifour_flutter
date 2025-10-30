@@ -6,10 +6,16 @@ import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/constants/assets_path.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/dialogs_utils.dart';
+import 'package:zifour_sourcecode/core/widgets/my_notes_item.dart';
+import 'package:zifour_sourcecode/features/bookmarked/bookmarked_list_screen.dart';
 import 'package:zifour_sourcecode/features/courses/change_courses_screen.dart';
 import 'package:zifour_sourcecode/features/give_feedback/give_feedback_screen.dart';
 import 'package:zifour_sourcecode/features/help_support/help_support_screen.dart';
+import 'package:zifour_sourcecode/features/multimedia_library/multimedia_library_screen.dart';
+import 'package:zifour_sourcecode/features/zifour_calender/zifour_calender_screen.dart';
 
+import '../../features/demo_ui.dart';
+import '../../features/my_notes/my_notes_list_screen.dart';
 import '../../l10n/app_localizations.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -103,18 +109,34 @@ class CustomDrawer extends StatelessWidget {
                     }),
                     _drawerItem(AssetsPath.svgCalendar, "Zifour Calendar", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ZifourCalenderScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgBookmark, "Bookmarked Question", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const BookmarkedListScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgHelpCircle, "My Doubts", (){
                       Navigator.pop(context);
                     }),
                     _drawerItem(AssetsPath.svgNote, "My Notes", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyNotesListScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgBarChart, "My Performance", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MyPerformanceScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgStar, "Feedback", (){
                       Navigator.pop(context);
@@ -135,6 +157,10 @@ class CustomDrawer extends StatelessWidget {
                     }),
                     _drawerItem(AssetsPath.svgPlayCircle, "Multimedia Library", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MultimediaLibraryScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgLogout, "Logout", (){
                       Navigator.pop(context);

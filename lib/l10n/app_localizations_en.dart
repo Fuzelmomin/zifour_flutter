@@ -276,4 +276,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactUs => 'CONTACT US';
+
+  @override
+  String get zifour_calender => 'Zifour Calender';
+
+  @override
+  String get createEvent => 'Create Event';
+
+  @override
+  String get bookmarked => 'Bookmarked';
+
+  @override
+  String get myNotes => 'My Notes';
+
+  @override
+  String get multimediaLibrary => 'Multimedia Library';
 }

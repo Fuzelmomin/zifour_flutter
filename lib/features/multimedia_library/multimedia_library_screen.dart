@@ -1,54 +1,40 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:zifour_sourcecode/core/theme/app_typography.dart';
+import 'package:zifour_sourcecode/core/widgets/profile_option_widget.dart';
+import 'package:zifour_sourcecode/features/mentor/mentors_list_screen.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
-import '../../core/widgets/all_mentors_item.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/my_course_item.dart';
 import '../../l10n/app_localizations.dart';
 
-class MentorsListScreen extends StatefulWidget {
-  String? mentorName;
-
-  MentorsListScreen({
-    super.key,
-    this.mentorName
-  });
+class MultimediaLibraryScreen extends StatefulWidget {
+  const MultimediaLibraryScreen({super.key});
 
   @override
-  State<MentorsListScreen> createState() => _MentorsListScreenState();
+  State<MultimediaLibraryScreen> createState() => _MultimediaLibraryScreenState();
 }
 
-class _MentorsListScreenState extends State<MentorsListScreen> {
+class _MultimediaLibraryScreenState extends State<MultimediaLibraryScreen> {
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, String>> mentors = [
+    List<Map<String, String>> courses = [
       {
-        'name': 'Jhone Doe',
-        'desc': 'Video Description',
-        'img': 'https://i.pravatar.cc/300?img=1',
-        'time': '10:30',
+        'name': 'Sajiv Vishwa'
       },
       {
-        'name': 'Jhone Doe',
-        'desc': 'Video Description',
-        'img': 'https://i.pravatar.cc/300?img=2',
-        'time': '10:30',
+        'name': 'Prani Vanaspati'
       },
       {
-        'name': 'Jhone Doe',
-        'desc': 'Video Description',
-        'img': 'https://i.pravatar.cc/300?img=3',
-        'time': '10:30',
+        'name': 'Sajiv Vishwa'
       },
       {
-        'name': 'Jhone Doe',
-        'desc': 'Video Description',
-        'img': 'https://i.pravatar.cc/300?img=4',
-        'time': '10:30',
+        'name': 'Prani Vanaspati'
+      },
+      {
+        'name': 'Sajiv Vishwa'
       },
     ];
     return Scaffold(
@@ -74,22 +60,12 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
                 right: 20.w,
                 child: CustomAppBar(
                   isBack: true,
-                  title: widget.mentorName ?? '${AppLocalizations.of(context)?.mentors}',
+                  title: '${AppLocalizations.of(context)?.multimediaLibrary}',
                 )),
-
-
-            widget.mentorName == null ? Positioned(
-                top: 110.h,
-                left: 20.w,
-                right: 20.w,
-                child: Text(
-                  '${AppLocalizations.of(context)?.zMentors}',
-                  style: AppTypography.inter18SemiBold,
-                )) : Container(),
 
             // Main Content with BLoC
             Positioned(
-              top: 140.h,
+              top: 110.h,
               left: 20.w,
               right: 20.w,
               bottom: 0,
@@ -97,13 +73,24 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
                 physics: BouncingScrollPhysics(),
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: mentors.length,
+                itemCount: courses.length,
                 padding: EdgeInsets.only(bottom: 20.h),
                 itemBuilder: (context, index) {
-                  var item = mentors[index];
+                  var item = courses[index];
                   return Padding(
                     padding: EdgeInsets.only(bottom: 16.h),
-                    child: AllMentorsItem(item: item,),
+                    child: ProfileOptionWidget(
+                      title: item['name'],
+                      itemClick: (){
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MentorsListScreen(
+                            mentorName: item['name'],
+                          )),
+                        );
+                      },
+                    ),
                   );
                 },
               ),
