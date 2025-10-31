@@ -291,4 +291,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get multimediaLibrary => 'Multimedia Library';
+
+  @override
+  String get myPerformance => 'My Performance';
+
+  @override
+  String get askYourDoubts => 'Ask Your Doubts';
+
+  @override
+  String get pastDoubts => 'Past Doubts';
+
+  @override
+  String get getExpertAnswer => 'Get expert answers from mentors and toppers';
+
+  @override
+  String get typeYourDoubt => 'Type your doubt clearly';
+
+  @override
+  String get uploadYourImage => 'Upload your image';
+
+  @override
+  String get submitDoubt => 'Submit Doubt';
+
+  @override
+  String get myDoubts => 'My Doubts';
 }

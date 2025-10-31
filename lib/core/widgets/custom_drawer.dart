@@ -9,9 +9,11 @@ import 'package:zifour_sourcecode/core/utils/dialogs_utils.dart';
 import 'package:zifour_sourcecode/core/widgets/my_notes_item.dart';
 import 'package:zifour_sourcecode/features/bookmarked/bookmarked_list_screen.dart';
 import 'package:zifour_sourcecode/features/courses/change_courses_screen.dart';
+import 'package:zifour_sourcecode/features/doubts/ask_doubts_screen.dart';
 import 'package:zifour_sourcecode/features/give_feedback/give_feedback_screen.dart';
 import 'package:zifour_sourcecode/features/help_support/help_support_screen.dart';
 import 'package:zifour_sourcecode/features/multimedia_library/multimedia_library_screen.dart';
+import 'package:zifour_sourcecode/features/my_performance/my_performance_screen.dart';
 import 'package:zifour_sourcecode/features/zifour_calender/zifour_calender_screen.dart';
 
 import '../../features/demo_ui.dart';
@@ -123,6 +125,10 @@ class CustomDrawer extends StatelessWidget {
                     }),
                     _drawerItem(AssetsPath.svgHelpCircle, "My Doubts", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AskDoubtsScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgNote, "My Notes", (){
                       Navigator.pop(context);
@@ -135,7 +141,7 @@ class CustomDrawer extends StatelessWidget {
                       Navigator.pop(context);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const MyPerformanceScreen()),
+                        MaterialPageRoute(builder: (context) => MyPerformanceScreen()),
                       );
                     }),
                     _drawerItem(AssetsPath.svgStar, "Feedback", (){

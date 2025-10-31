@@ -661,6 +661,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Multimedia Library'**
   String get multimediaLibrary;
+
+  /// No description provided for @myPerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'My Performance'**
+  String get myPerformance;
+
+  /// No description provided for @askYourDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Your Doubts'**
+  String get askYourDoubts;
+
+  /// No description provided for @pastDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Past Doubts'**
+  String get pastDoubts;
+
+  /// No description provided for @getExpertAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Get expert answers from mentors and toppers'**
+  String get getExpertAnswer;
+
+  /// No description provided for @typeYourDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Type your doubt clearly'**
+  String get typeYourDoubt;
+
+  /// No description provided for @uploadYourImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your image'**
+  String get uploadYourImage;
+
+  /// No description provided for @submitDoubt.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Doubt'**
+  String get submitDoubt;
+
+  /// No description provided for @myDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'My Doubts'**
+  String get myDoubts;
 }
 
 class _AppLocalizationsDelegate

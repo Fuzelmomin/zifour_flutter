@@ -11,6 +11,7 @@ import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/gradient_text.dart';
 import 'package:zifour_sourcecode/core/widgets/be_ziddi_item_widget.dart';
+import 'package:zifour_sourcecode/core/widgets/upload_box_widget.dart';
 import 'package:zifour_sourcecode/features/auth/login_screen.dart';
 
 import '../../core/bloc/signup_bloc.dart';
@@ -84,24 +85,12 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Stack(
           children: [
             // Background Decoration set
-            Column(
-              children: [
-                Expanded(
-                    flex: 6,
-                    child: Image.asset(
-                      AssetsPath.signupBgImg,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
-                    )),
-                Expanded(
-                    flex: 4,
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: boxGradientDecoration(),
-                    ))
-              ],
+
+            Positioned.fill(
+              child: Image.asset(
+                AssetsPath.signupBgImg,
+                fit: BoxFit.cover,
+              ),
             ),
 
             // App Bar
@@ -132,182 +121,166 @@ class _SignupScreenState extends State<SignupScreen> {
                   }
                 },
                 builder: (context, state) {
-                  return SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: 15.w),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Main Heading
-                        Text(
-                          '${AppLocalizations.of(context)?.letsGetStarted}',
-                          style: AppTypography.inter24Bold,
-                        ),
-                        SizedBox(height: 30.h),
+                  return SafeArea(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Main Heading
+                            Text(
+                              '${AppLocalizations.of(context)?.letsGetStarted}',
+                              style: AppTypography.inter24Bold,
+                            ),
+                            SizedBox(height: 30.h),
 
-                        // Full Name Field
-                        SignupFieldBox(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CustomTextField(
-                                hint: '${AppLocalizations.of(context)?.fullName}',
-                                editingController: _fullNameController,
-                                type: 'text',
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {
-                                  context.read<SignupBloc>().add(UpdateFullName(value));
-                                },
+                            // Full Name Field
+                            SignupFieldBox(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  CustomTextField(
+                                    hint: '${AppLocalizations.of(context)?.fullName}',
+                                    editingController: _fullNameController,
+                                    type: 'text',
+                                    textFieldBgColor: Colors.black.withOpacity(0.1),
+                                    changedValue: (value) {
+                                      context.read<SignupBloc>().add(UpdateFullName(value));
+                                    },
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  _buildGenderSelection(state),
+                                ],
                               ),
-                              SizedBox(height: 10.h),
-                              _buildGenderSelection(state),
-                            ],
-                          ),
-                        ),
+                            ),
 
-                        SizedBox(height: 20.h),
+                            SizedBox(height: 20.h),
 
-                        SignupFieldBox(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              // Select Standard Dropdown
-                              _buildStandardDropdown(state),
-                              SizedBox(
-                                height: 20.h,
+                            SignupFieldBox(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  // Select Standard Dropdown
+                                  _buildStandardDropdown(state),
+                                  SizedBox(
+                                    height: 20.h,
+                                  ),
+                                  // Course Selection
+                                  _buildCourseSelection(state),
+                                  SizedBox(height: 20.h),
+
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: UploadDocBoxWidget(
+                                      title: '${AppLocalizations.of(context)?.uploadMarksheet}',
+                                      itemClick: (){
+
+                                      },
+                                    ),
+                                  )
+                                ],
                               ),
-                              // Course Selection
-                              _buildCourseSelection(state),
-                              SizedBox(height: 20.h),
+                            ),
 
-                              SizedBox(
-                                width: double.infinity,
-                                child: DottedBorder(
-                                  options: RectDottedBorderOptions(
-                                      dashPattern: [5, 2],
-                                      strokeWidth: 1,
-                                      padding: EdgeInsets.all(12),
-                                      color: AppColors.white.withOpacity(0.3)),
-                                  child: Row(
-                                    spacing: 10.w,
-                                    children: [
-                                      SvgPicture.asset(
-                                        AssetsPath.svgUploadDoc,
-                                        width: 40.h,
-                                        height: 40.h,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          '${AppLocalizations.of(context)?.uploadMarksheet}',
-                                          style: AppTypography.inter12Regular.copyWith(
-                                            color: Colors.white.withOpacity(0.7),
-                                          ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
+                            SizedBox(height: 20.h),
+
+                            // Password Section
+                            SignupFieldBox(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                spacing: 10.h,
+                                children: [
+                                  CustomTextField(
+                                    hint: '${AppLocalizations.of(context)?.password}',
+                                    editingController: _passwordController,
+                                    type: 'pass',
+                                    isSuffixIcon: true,
+                                    textFieldBgColor: Colors.black.withOpacity(0.1),
+                                    changedValue: (value) {
+                                      context.read<SignupBloc>().add(UpdateFullName(value));
+                                    },
+                                  ),
+                                  CustomTextField(
+                                    hint: '${AppLocalizations.of(context)?.confirmPassword}',
+                                    editingController: _confirmPassController,
+                                    type: 'pass',
+                                    isSuffixIcon: true,
+                                    textFieldBgColor: Colors.black.withOpacity(0.1),
+                                    changedValue: (value) {
+                                      context.read<SignupBloc>().add(UpdateFullName(value));
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 20.h),
+
+                            // Mobile Number and OTP Section
+                            SignupFieldBox(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  _buildMobileSection(state),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 20.h),
+
+                            // Safety Message
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: 70.w,
+                                  height: 1.0,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                    colors: [
+                                      // Deep blue bottom-left
+                                      Color(0xFF4F1B4E), // Cyan middle
+                                      AppColors.white,
                                     ],
+                                  )),
+                                ),
+                                Center(
+                                  child: Text(
+                                    '${AppLocalizations.of(context)?.yourDetailsAreSafe}',
+                                    style: AppTypography.inter12Regular.copyWith(
+                                      color: AppColors.white.withOpacity(0.7),
+                                    ),
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 20.h),
-
-                        // Password Section
-                        SignupFieldBox(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            spacing: 10.h,
-                            children: [
-                              CustomTextField(
-                                hint: '${AppLocalizations.of(context)?.password}',
-                                editingController: _passwordController,
-                                type: 'pass',
-                                isSuffixIcon: true,
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {
-                                  context.read<SignupBloc>().add(UpdateFullName(value));
-                                },
-                              ),
-                              CustomTextField(
-                                hint: '${AppLocalizations.of(context)?.confirmPassword}',
-                                editingController: _confirmPassController,
-                                type: 'pass',
-                                isSuffixIcon: true,
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {
-                                  context.read<SignupBloc>().add(UpdateFullName(value));
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
-
-                        // Mobile Number and OTP Section
-                        SignupFieldBox(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              _buildMobileSection(state),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 20.h),
-
-                        // Safety Message
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 70.w,
-                              height: 1.0,
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  // Deep blue bottom-left
-                                  Color(0xFF4F1B4E), // Cyan middle
-                                  AppColors.white,
-                                ],
-                              )),
-                            ),
-                            Center(
-                              child: Text(
-                                '${AppLocalizations.of(context)?.yourDetailsAreSafe}',
-                                style: AppTypography.inter12Regular.copyWith(
-                                  color: AppColors.white.withOpacity(0.7),
+                                Container(
+                                  width: 70.w,
+                                  height: 1.0,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                    colors: [
+                                      // Deep blue bottom-left
+                                      AppColors.white,
+                                      Color(0xFF4F1B4E), // Cyan middle
+                                    ],
+                                  )),
                                 ),
-                              ),
+                              ],
                             ),
-                            Container(
-                              width: 70.w,
-                              height: 1.0,
-                              decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  // Deep blue bottom-left
-                                  AppColors.white,
-                                  Color(0xFF4F1B4E), // Cyan middle
-                                ],
-                              )),
-                            ),
+                            SizedBox(height: 30.h),
+
+                            // Sign Up Button
+                            _buildSignUpButton(state),
+                            SizedBox(height: 80.h),
                           ],
                         ),
-                        SizedBox(height: 30.h),
-
-                        // Sign Up Button
-                        _buildSignUpButton(state),
-                        SizedBox(height: 80.h),
-                      ],
+                      ),
                     ),
                   );
                 },

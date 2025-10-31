@@ -159,10 +159,10 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Positioned.fill(
                 child: Image.asset(
-                  AssetsPath.dashboardBgImg,
+                  AssetsPath.homeImgBg,
                   width: double.infinity,
                   height: double.infinity,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
               ),
               Column(

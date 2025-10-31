@@ -9,7 +9,7 @@ class AssetsPath {
   // SVG Icons
   static const String svgUploadDoc = "assets/icons/ic_upload_doc.svg";
   static const String svgSelHome = "assets/icons/ic_home.svg";
-  static const String svgUnSelHome = "assets/icons/ic_home.svg";
+  static const String svgUnSelHome = "assets/icons/ic_unsel_home.svg";
   static const String svgSelMentor = "assets/icons/ic_sel_mentor.svg";
   static const String svgUnSelMentor = "assets/icons/ic_unsel_mentor.svg";
   static const String svgSelModules = "assets/icons/ic_sel_modules.svg";
@@ -45,6 +45,7 @@ class AssetsPath {
   static const String svgGlobe = "assets/icons/ic_globe.svg";
   static const String svgAdd = "assets/icons/ic_add.svg";
   static const String svgCloseCircle = "assets/icons/close_circle.svg";
+  static const String svgFour = "assets/icons/ic_four.svg";
 
 
   // Images Paths
@@ -62,4 +63,5 @@ class AssetsPath {
   static const String dashboardBgImg = "assets/images/dashboard_bg.png";
   static const String BannerImg = "assets/images/bennar_img.png";
   static const String trendingCourseImg = "assets/images/trending_course_img.png";
+  static const String homeImgBg = "assets/images/home_img_bg.png";
 }

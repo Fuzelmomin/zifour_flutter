@@ -93,6 +93,15 @@
   "createEvent": "Create Event",
   "bookmarked": "Bookmarked",
   "myNotes": "My Notes",
-  "multimediaLibrary": "Multimedia Library"
+  "multimediaLibrary": "Multimedia Library",
+  "myPerformance": "My Performance",
+  "askYourDoubts": "Ask Your Doubts",
+  "pastDoubts": "Past Doubts",
+  "getExpertAnswer": "Get expert answers from mentors and toppers",
+  "typeYourDoubt": "Type your doubt clearly",
+  "uploadYourImage": "Upload your image",
+  "submitDoubt": "Submit Doubt",
+  "myDoubts": "My Doubts"
+
 }
 

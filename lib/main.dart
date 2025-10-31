@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                home: const DashboardScreen(), // Start with splash screen
+                home: const SplashScreen(), // Start with splash screen
               );
             },
           );

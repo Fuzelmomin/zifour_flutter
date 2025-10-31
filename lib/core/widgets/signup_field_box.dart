@@ -4,12 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SignupFieldBox extends StatelessWidget {
   Widget? child;
   Color? boxBgColor;
-  SignupFieldBox({super.key, this.child, this.boxBgColor});
+  EdgeInsets? padding;
+  EdgeInsets? margin;
+  SignupFieldBox({super.key, this.child, this.boxBgColor, this.padding, this.margin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10.0),
+      padding: padding ?? EdgeInsets.all(10.0),
+        margin: margin ?? null,
         decoration: BoxDecoration(
           color: boxBgColor ?? Colors.white.withOpacity(0.1),
           borderRadius: BorderRadius.circular(12.r),
