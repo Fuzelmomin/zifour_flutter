@@ -709,6 +709,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'My Doubts'**
   String get myDoubts;
+
+  /// No description provided for @challengerZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenger Zone'**
+  String get challengerZone;
+
+  /// No description provided for @chooseChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you want to challenge yourself today.'**
+  String get chooseChallenge;
+
+  /// No description provided for @createOwnChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Own Challenge'**
+  String get createOwnChallenge;
+
+  /// No description provided for @expertsChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Expert’s Challenge'**
+  String get expertsChallenge;
+
+  /// No description provided for @expertChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Expert Challenge'**
+  String get expertChallenge;
+
+  /// No description provided for @selectYourSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your subjects, Chapters, Topics and take control of your practice.'**
+  String get selectYourSubject;
+
+  /// No description provided for @completeInFaculty.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete in faculty-designed challenges held twice a month with fixed syllabus.'**
+  String get completeInFaculty;
+
+  /// No description provided for @selectAnySubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Select any subjects, Chapters, and Topics to build your custom test.'**
+  String get selectAnySubject;
+
+  /// No description provided for @selectChapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Chapters'**
+  String get selectChapter;
+
+  /// No description provided for @selectTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Topics'**
+  String get selectTopic;
+
+  /// No description provided for @generateMyChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate My Challenge'**
+  String get generateMyChallenge;
+
+  /// No description provided for @youCanSaveChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'You can save this challenge for later practice'**
+  String get youCanSaveChallenge;
+
+  /// No description provided for @chooseOneMoreTopics.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose one or more topics to include in your challenge.'**
+  String get chooseOneMoreTopics;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @challengeReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge is Ready!'**
+  String get challengeReady;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @reviewYourSelections.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your selections and start when you’re ready.'**
+  String get reviewYourSelections;
+
+  /// No description provided for @subjectsSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Subjects Selected'**
+  String get subjectsSelected;
+
+  /// No description provided for @chapterSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter Selected'**
+  String get chapterSelected;
+
+  /// No description provided for @topicsIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Topics Included'**
+  String get topicsIncluded;
+
+  /// No description provided for @totalQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Questions'**
+  String get totalQuestions;
+
+  /// No description provided for @startChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Challenge'**
+  String get startChallenge;
+
+  /// No description provided for @challengesList.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenges List'**
+  String get challengesList;
+
+  /// No description provided for @subject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get subject;
+
+  /// No description provided for @chapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter'**
+  String get chapter;
+
+  /// No description provided for @topic.
+  ///
+  /// In en, this message translates to:
+  /// **'Topic'**
+  String get topic;
 }
 
 class _AppLocalizationsDelegate

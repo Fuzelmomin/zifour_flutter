@@ -13,6 +13,7 @@ import '../../core/widgets/home_app_bar.dart';
 import '../../core/widgets/home_option_widget.dart';
 import '../../core/widgets/home_options_item.dart';
 import '../../l10n/app_localizations.dart';
+import '../challenger_zone/challenger_zone_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -379,6 +380,12 @@ class _HomeScreenState extends State<HomeScreen> {
             title: 'All india Challenger Zone',
             subTitle: 'Compete Across India',
             imagePath: AssetsPath.svgChallenger,
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChallengerZoneScreen()),
+              );
+            },
           ),
           HomeOptionsItem(
             title: 'Test Series',

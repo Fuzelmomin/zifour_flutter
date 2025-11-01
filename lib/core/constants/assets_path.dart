@@ -25,6 +25,10 @@ class AssetsPath {
   static const String svgTestSeries = "assets/icons/ic_test_series.svg";
   static const String svgAIBase = "assets/icons/ic_ai_base.svg";
   static const String svgAskDoubts = "assets/icons/ic_ask_doubts.svg";
+  static const String svgOwnChallenger = "assets/icons/ic_own_challenger.svg";
+  static const String svgExpertChallenger = "assets/icons/ic_expert_challenger.svg";
+  static const String svgBook = "assets/icons/ic_book.svg";
+  static const String svgBook2 = "assets/icons/ic_book_2.svg";
 
   // Drawer Icons
   static const String svgUser = "assets/icons/ic_user.svg";

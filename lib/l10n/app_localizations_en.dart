@@ -315,4 +315,92 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myDoubts => 'My Doubts';
+
+  @override
+  String get challengerZone => 'Challenger Zone';
+
+  @override
+  String get chooseChallenge =>
+      'Choose how you want to challenge yourself today.';
+
+  @override
+  String get createOwnChallenge => 'Create Own Challenge';
+
+  @override
+  String get expertsChallenge => 'Expert’s Challenge';
+
+  @override
+  String get expertChallenge => 'Expert Challenge';
+
+  @override
+  String get selectYourSubject =>
+      'Select your subjects, Chapters, Topics and take control of your practice.';
+
+  @override
+  String get completeInFaculty =>
+      'Complete in faculty-designed challenges held twice a month with fixed syllabus.';
+
+  @override
+  String get selectAnySubject =>
+      'Select any subjects, Chapters, and Topics to build your custom test.';
+
+  @override
+  String get selectChapter => 'Select Chapters';
+
+  @override
+  String get selectTopic => 'Select Topics';
+
+  @override
+  String get generateMyChallenge => 'Generate My Challenge';
+
+  @override
+  String get youCanSaveChallenge =>
+      'You can save this challenge for later practice';
+
+  @override
+  String get chooseOneMoreTopics =>
+      'Choose one or more topics to include in your challenge.';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get challengeReady => 'Challenge is Ready!';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get reviewYourSelections =>
+      'Review your selections and start when you’re ready.';
+
+  @override
+  String get subjectsSelected => 'Subjects Selected';
+
+  @override
+  String get chapterSelected => 'Chapter Selected';
+
+  @override
+  String get topicsIncluded => 'Topics Included';
+
+  @override
+  String get totalQuestions => 'Total Questions';
+
+  @override
+  String get startChallenge => 'Start Challenge';
+
+  @override
+  String get challengesList => 'Challenges List';
+
+  @override
+  String get subject => 'Subject';
+
+  @override
+  String get chapter => 'Chapter';
+
+  @override
+  String get topic => 'Topic';
 }

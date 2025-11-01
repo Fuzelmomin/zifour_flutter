@@ -18,6 +18,7 @@ import '../../core/bloc/signup_bloc.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
+import '../../core/widgets/line_label_row.dart';
 import '../../core/widgets/signup_field_box.dart';
 import '../../core/widgets/text_field_container.dart';
 import '../../l10n/app_localizations.dart';
@@ -231,47 +232,8 @@ class _SignupScreenState extends State<SignupScreen> {
                             SizedBox(height: 20.h),
 
                             // Safety Message
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: 70.w,
-                                  height: 1.0,
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                    colors: [
-                                      // Deep blue bottom-left
-                                      Color(0xFF4F1B4E), // Cyan middle
-                                      AppColors.white,
-                                    ],
-                                  )),
-                                ),
-                                Center(
-                                  child: Text(
-                                    '${AppLocalizations.of(context)?.yourDetailsAreSafe}',
-                                    style: AppTypography.inter12Regular.copyWith(
-                                      color: AppColors.white.withOpacity(0.7),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: 70.w,
-                                  height: 1.0,
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                    colors: [
-                                      // Deep blue bottom-left
-                                      AppColors.white,
-                                      Color(0xFF4F1B4E), // Cyan middle
-                                    ],
-                                  )),
-                                ),
-                              ],
+                            LineLabelRow(
+                              label: '${AppLocalizations.of(context)?.yourDetailsAreSafe}',
                             ),
                             SizedBox(height: 30.h),
 

@@ -118,6 +118,7 @@ class CustomGradientButton extends StatelessWidget {
   final bool isLoading;
   final Color? loadingColor;
   final String? assetPath;
+  final BoxDecoration? customDecoration;
 
   const CustomGradientButton({
     super.key,
@@ -133,7 +134,8 @@ class CustomGradientButton extends StatelessWidget {
     this.textStyle,
     this.isLoading = false,
     this.loadingColor,
-    this.assetPath
+    this.assetPath,
+    this.customDecoration
   });
 
   // Default gradient colors (pink to purple)
@@ -148,7 +150,7 @@ class CustomGradientButton extends StatelessWidget {
       width: width ?? double.infinity,
       height: height ?? 50.h,
       margin: margin,
-      decoration: BoxDecoration(
+      decoration: customDecoration ?? BoxDecoration(
         borderRadius: borderRadius ?? BorderRadius.circular(12.r),
         gradient: LinearGradient(
           begin: Alignment.centerLeft,

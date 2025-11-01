@@ -1,165 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class AskDoubtScreen extends StatelessWidget {
-  AskDoubtScreen({super.key});
-
-  // Behavior Subjects
-  final BehaviorSubject<String> _subjectCtrl = BehaviorSubject<String>.seeded("Subject");
-  final BehaviorSubject<String> _standardCtrl = BehaviorSubject<String>.seeded("Standard");
-  final BehaviorSubject<String> _topicCtrl = BehaviorSubject<String>.seeded("Select Topic");
-
-  final TextEditingController _doubtController = TextEditingController();
-
-  final List<String> subjectList = ["Maths", "Science", "English"];
-  final List<String> standardList = ["8th", "9th", "10th"];
-  final List<String> topicList = ["Algebra", "Physics", "Grammar"];
+class ChallengerZoneScreen extends StatelessWidget {
+  const ChallengerZoneScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: Icon(Icons.arrow_back, color: Colors.white, size: 22.sp),
+        ),
+        title: Text(
+          "Challenger Zone",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       body: Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF1C0F5F), Color(0xFF030617)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF4A148C), // purple shade like screenshot top
+              Color(0xFF0D1B3E), // deep navy
+              Color(0xFF000000), // dark gradient bottom
+            ],
           ),
         ),
         child: SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                // Header
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.arrow_back, color: Colors.white),
-                    ),
-                    SizedBox(width: 10.w),
-                    Text(
-                      "Ask Your Doubts",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      "Past Doubts",
-                      style: TextStyle(
-                        color: Colors.pinkAccent,
-                        fontSize: 12.sp,
-                        decoration: TextDecoration.underline,
-                      ),
-                    )
-                  ],
-                ),
-
-                SizedBox(height: 20.h),
-
                 Text(
-                  "Get expert answers from mentors and toppers",
+                  "Choose how you want to challenge\nyourself today.",
                   style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12.sp,
+                    color: Colors.white.withOpacity(0.85),
+                    fontSize: 14.sp,
                   ),
                 ),
-
                 SizedBox(height: 25.h),
 
-                // Subject dropdown
-                _buildDropdown(_subjectCtrl, subjectList),
+                /// Create Own Challenge Card
+                _challengeCard(
+                  icon: Icons.all_inclusive,
+                  title: "Create your own challenge",
+                  subtitle:
+                  "Select your subjects, Chapters, Topics and take\ncontrol of your practice.",
+                  buttonText: "Create Own Challenge",
+                  onTap: () {},
+                ),
+                SizedBox(height: 20.h),
 
-                SizedBox(height: 15.h),
-
-                // Standard dropdown
-                _buildDropdown(_standardCtrl, standardList),
-
-                SizedBox(height: 15.h),
-
-                // Topic dropdown
-                _buildDropdown(_topicCtrl, topicList),
-
-                SizedBox(height: 15.h),
-
-                // Doubt text input
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                  height: 120.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(10.r),
-                    border: Border.all(color: Colors.white24),
-                  ),
-                  child: TextField(
-                    controller: _doubtController,
-                    maxLines: 4,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Type your doubt clearly",
-                      hintStyle: TextStyle(color: Colors.white54, fontSize: 12.sp),
-                      border: InputBorder.none,
-                    ),
-                  ),
+                /// Expert Challenge Card
+                _challengeCard(
+                  icon: Icons.person_outline,
+                  title: "Expert’s Challenge",
+                  subtitle:
+                  "Complete in faculty-designed challenges held\ntwice a month with fixed syllabus.",
+                  buttonText: "Expert Challenge",
+                  onTap: () {},
                 ),
 
-                SizedBox(height: 15.h),
-
-                // Upload box
-                Container(
-                  height: 70.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.white30, style: BorderStyle.solid),
-                    color: Colors.white.withOpacity(0.05),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.camera_alt_outlined, color: Colors.white70),
-                        SizedBox(width: 10.w),
-                        Text(
-                          "Upload Your Image",
-                          style: TextStyle(color: Colors.white70, fontSize: 12.sp),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-
-                const Spacer(),
-
-                // Submit Button
-                Container(
-                  height: 50.h,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFFD4CBB), Color(0xFF8A4FFF)],
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Submit Doubt",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h)
+                SizedBox(height: 30.h),
               ],
             ),
           ),
@@ -168,50 +83,96 @@ class AskDoubtScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDropdown(BehaviorSubject<String> controller, List<String> items) {
-    return StreamBuilder<String>(
-      stream: controller.stream,
-      builder: (context, snapshot) {
-        return GestureDetector(
-          onTap: () {
-            // simple popup sheet
-            showModalBottomSheet(
-              backgroundColor: Colors.black,
-              context: context,
-              builder: (context) => Column(
-                children: items.map((e) {
-                  return ListTile(
-                    title: Text(e, style: const TextStyle(color: Colors.white)),
-                    onTap: () {
-                      controller.add(e);
-                      Navigator.pop(context);
-                    },
-                  );
-                }).toList(),
-              ),
-            );
-          },
-          child: Container(
-            height: 50.h,
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.r),
-              border: Border.all(color: Colors.white24),
-              color: Colors.white.withOpacity(0.08),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  snapshot.data ?? "",
-                  style: TextStyle(color: Colors.white, fontSize: 13.sp),
+  Widget _challengeCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required String buttonText,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(18.h),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16.r),
+        color: Colors.white.withOpacity(0.09),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.15),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: 36.h,
+                width: 36.h,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.4),
+                  ),
                 ),
-                const Icon(Icons.keyboard_arrow_down, color: Colors.white70)
-              ],
+                child: Icon(icon, color: Colors.white, size: 20.sp),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            subtitle,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 12.sp,
+              height: 1.4,
             ),
           ),
-        );
-      },
+          SizedBox(height: 15.h),
+
+          /// Button
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              height: 42.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50.r),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFFFE3C80),
+                    Color(0xFF8F00FF),
+                  ],
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    buttonText,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Icon(Icons.arrow_forward, color: Colors.white, size: 18.sp),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

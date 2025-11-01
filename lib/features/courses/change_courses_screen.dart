@@ -7,6 +7,7 @@ import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
+import '../../core/widgets/chapter_selection_box.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/my_course_item.dart';
@@ -183,7 +184,7 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
                                 children: _chapters.map((chapter) {
                                   final isSelected =
                                   selectedList.contains(chapter);
-                                  return GestureDetector(
+                                  return ChapterSelectionBox(
                                     onTap: (){
                                       final newList =
                                       List<String>.from(
@@ -195,70 +196,9 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
                                       }
                                       _selectedChapters.add(newList);
                                     },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 12),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF1B193D),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: isSelected
-                                              ? AppColors.purple
-                                              : Colors.transparent,
-                                          width: 1.5,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Checkbox(
-                                                value: isSelected,
-                                                activeColor:
-                                                AppColors.purple,
-                                                onChanged: (_) {
-                                                  final newList =
-                                                  List<String>.from(
-                                                      selectedList);
-                                                  if (isSelected) {
-                                                    newList.remove(chapter);
-                                                  } else {
-                                                    newList.add(chapter);
-                                                  }
-                                                  _selectedChapters.add(newList);
-                                                },
-                                              ),
-                                              Text(
-                                                chapter,
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15),
-                                              ),
-                                            ],
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 16, vertical: 6),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(8),
-                                              border: Border.all(
-                                                color: Colors.white.withOpacity(0.3),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              isSelected ? "Selected": "Select",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 13),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    title: chapter,
+                                    isButton: true,
+                                    isSelected: isSelected,
                                   );
                                 }).toList(),
                               );
