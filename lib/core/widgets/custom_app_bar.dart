@@ -11,6 +11,7 @@ class CustomAppBar extends StatelessWidget {
   bool? isActionWidget;
   Widget? actionWidget;
   Function()? actionClick;
+  bool? isLongText;
 
   CustomAppBar({
     super.key,
@@ -20,6 +21,7 @@ class CustomAppBar extends StatelessWidget {
     this.isActionWidget,
     this.actionWidget,
     this.actionClick,
+    this.isLongText,
   });
 
   @override
@@ -48,12 +50,15 @@ class CustomAppBar extends StatelessWidget {
                 ),
               ) : Container(),
               SizedBox(width: 10.w,),
-              SizedBox(
+              isLongText == true ? SizedBox(
                 width: MediaQuery.widthOf(context) * 0.4,
                 child: Text(
                   title ?? '',
                   style: AppTypography.inter16SemiBold,
                 ),
+              ) : Text(
+                title ?? '',
+                style: AppTypography.inter16SemiBold,
               ),
             ],
           ),

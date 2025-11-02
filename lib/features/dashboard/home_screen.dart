@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zifour_sourcecode/core/widgets/mentors_item_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/title_view_row_widget.dart';
+import 'package:zifour_sourcecode/features/al_based_performance/al_based_performanc_screen.dart';
 import 'package:zifour_sourcecode/features/courses/all_course_list_screen.dart';
 import 'package:zifour_sourcecode/features/india_test_series/all_india_test_series_screen.dart';
 import 'package:zifour_sourcecode/features/live_class/live_class_screen.dart';
@@ -432,6 +433,12 @@ class _HomeScreenState extends State<HomeScreen> {
             title: 'AI Based Performance Analysis',
             subTitle: 'Know Your Complete Progress',
             imagePath: AssetsPath.svgAIBase,
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AiBasedPerformanceScreen()),
+              );
+            },
           ),
           HomeOptionsItem(
             title: 'Ask Your Doubts',

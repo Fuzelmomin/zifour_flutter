@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
+import 'package:zifour_sourcecode/features/faq/faq_screen.dart';
+import 'features/chatbot/chatbot_screen.dart';
+import 'features/demo_ui.dart';
+import 'features/leaderboard/leaderboard_screen.dart';
 import 'features/live_class/live_class_details_screen.dart';
 import 'features/live_class/live_class_screen.dart';
 import 'features/splash/splash_screen.dart';
@@ -61,7 +65,7 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                home: const SplashScreen(), // Start with splash screen
+                home: SplashScreen(), // Start with splash screen
               );
             },
           );

@@ -62,6 +62,7 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
                 child: CustomAppBar(
                   isBack: true,
                   title: 'Select your topics from chapter mechanics',
+                  isLongText: true,
                 )),
 
             // Main Content with BLoC
