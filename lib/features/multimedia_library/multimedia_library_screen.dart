@@ -42,60 +42,62 @@ class _MultimediaLibraryScreenState extends State<MultimediaLibraryScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
-          children: [
-            // Background Decoration set
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
 
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.signupBgImg,
-                fit: BoxFit.cover,
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
 
-            // App Bar
-            Positioned(
-                top: 40.h,
-                left: 15.w,
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 20.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: '${AppLocalizations.of(context)?.multimediaLibrary}',
+                  )),
+
+              // Main Content with BLoC
+              Positioned(
+                top: 70.h,
+                left: 20.w,
                 right: 20.w,
-                child: CustomAppBar(
-                  isBack: true,
-                  title: '${AppLocalizations.of(context)?.multimediaLibrary}',
-                )),
+                bottom: 0,
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: courses.length,
+                  padding: EdgeInsets.only(bottom: 20.h),
+                  itemBuilder: (context, index) {
+                    var item = courses[index];
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 16.h),
+                      child: ProfileOptionWidget(
+                        title: item['name'],
+                        itemClick: (){
 
-            // Main Content with BLoC
-            Positioned(
-              top: 110.h,
-              left: 20.w,
-              right: 20.w,
-              bottom: 0,
-              child: ListView.builder(
-                physics: BouncingScrollPhysics(),
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount: courses.length,
-                padding: EdgeInsets.only(bottom: 20.h),
-                itemBuilder: (context, index) {
-                  var item = courses[index];
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 16.h),
-                    child: ProfileOptionWidget(
-                      title: item['name'],
-                      itemClick: (){
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MentorsListScreen(
-                            mentorName: item['name'],
-                          )),
-                        );
-                      },
-                    ),
-                  );
-                },
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MentorsListScreen(
+                              mentorName: item['name'],
+                            )),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

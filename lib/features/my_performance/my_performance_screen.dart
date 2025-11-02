@@ -41,158 +41,160 @@ class _MyPerformanceScreenState extends State<MyPerformanceScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
-          children: [
-            // Background Decoration set
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
 
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.signupBgImg,
-                fit: BoxFit.cover,
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
 
-            // App Bar
-            Positioned(
-                top: 40.h,
-                left: 15.w,
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 20.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: '${AppLocalizations.of(context)?.myPerformance}',
+                  )),
+
+
+              // Main Content with BLoC
+              Positioned(
+                top: 75.h,
+                left: 20.w,
                 right: 20.w,
-                child: CustomAppBar(
-                  isBack: true,
-                  title: '${AppLocalizations.of(context)?.myPerformance}',
-                )),
+                bottom: 0,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Chart card
+                      SignupFieldBox(
 
-
-            // Main Content with BLoC
-            Positioned(
-              top: 120.h,
-              left: 20.w,
-              right: 20.w,
-              bottom: 0,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Chart card
-                    SignupFieldBox(
-
-                      padding: EdgeInsets.all(15.0),
-                      child: Column(
-                        children: [
-                          const Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Performance",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                        padding: EdgeInsets.all(15.0),
+                        child: Column(
+                          children: [
+                            const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Performance",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
+                            const SizedBox(height: 14),
+                            SizedBox(
+                              height: 200,
+                              child: SfCartesianChart(
+                                primaryXAxis: CategoryAxis(
+                                  labelStyle: const TextStyle(color: Colors.white70),
+                                  axisLine: const AxisLine(color: Colors.transparent),
+                                  majorGridLines: MajorGridLines(width: 0),
+                                ),
+                                primaryYAxis: NumericAxis(
+                                  minimum: 0,
+                                  maximum: 220,
+                                  interval: 40,
+                                  labelStyle: const TextStyle(color: Colors.white70),
+                                  axisLine: const AxisLine(color: Colors.transparent),
+                                  majorGridLines: const MajorGridLines(color: Colors.white24),
+                                ),
+                                series: <ColumnSeries<_ChartData, String>>[
+                                  ColumnSeries<_ChartData, String>(
+                                    dataSource: chartData,
+                                    xValueMapper: (_ChartData data, _) => data.subject,
+                                    yValueMapper: (_ChartData data, _) => data.value,
+                                    pointColorMapper: (_ChartData data, _) {
+                                      switch (data.subject) {
+                                        case 'Physics':
+                                          return Colors.orangeAccent;
+                                        case 'Chemistry':
+                                          return Colors.pinkAccent;
+                                        case 'Biology':
+                                          return Colors.greenAccent;
+                                        default:
+                                          return Colors.blue;
+                                      }
+                                    },
+                                    dataLabelSettings: const DataLabelSettings(
+                                      isVisible: true,
+                                      textStyle: TextStyle(color: Colors.white),
+                                    ),
+                                  )
+                                ],
+                                plotAreaBorderWidth: 0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Stats cards
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _statsCard(
+                              title: "Physics",
+                              correct: 25,
+                              incorrect: 14,
+                              color: Colors.green,
+                            ),
                           ),
-                          const SizedBox(height: 14),
-                          SizedBox(
-                            height: 200,
-                            child: SfCartesianChart(
-                              primaryXAxis: CategoryAxis(
-                                labelStyle: const TextStyle(color: Colors.white70),
-                                axisLine: const AxisLine(color: Colors.transparent),
-                                majorGridLines: MajorGridLines(width: 0),
-                              ),
-                              primaryYAxis: NumericAxis(
-                                minimum: 0,
-                                maximum: 220,
-                                interval: 40,
-                                labelStyle: const TextStyle(color: Colors.white70),
-                                axisLine: const AxisLine(color: Colors.transparent),
-                                majorGridLines: const MajorGridLines(color: Colors.white24),
-                              ),
-                              series: <ColumnSeries<_ChartData, String>>[
-                                ColumnSeries<_ChartData, String>(
-                                  dataSource: chartData,
-                                  xValueMapper: (_ChartData data, _) => data.subject,
-                                  yValueMapper: (_ChartData data, _) => data.value,
-                                  pointColorMapper: (_ChartData data, _) {
-                                    switch (data.subject) {
-                                      case 'Physics':
-                                        return Colors.orangeAccent;
-                                      case 'Chemistry':
-                                        return Colors.pinkAccent;
-                                      case 'Biology':
-                                        return Colors.greenAccent;
-                                      default:
-                                        return Colors.blue;
-                                    }
-                                  },
-                                  dataLabelSettings: const DataLabelSettings(
-                                    isVisible: true,
-                                    textStyle: TextStyle(color: Colors.white),
-                                  ),
-                                )
-                              ],
-                              plotAreaBorderWidth: 0,
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _statsCard(
+                              title: "Chemistry",
+                              correct: 28,
+                              incorrect: 10,
+                              color: Colors.green,
                             ),
                           ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 12),
+                      _statsCard(
+                        title: "Biology",
+                        correct: 25,
+                        incorrect: 12,
+                        color: Colors.green,
+                      ),
 
-                    const SizedBox(height: 20),
+                      const SizedBox(height: 24),
 
-                    // Stats cards
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _statsCard(
-                            title: "Physics",
-                            correct: 25,
-                            incorrect: 14,
-                            color: Colors.green,
+                      // Buttons row
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _normalButton("Download Report"),
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _statsCard(
-                            title: "Chemistry",
-                            correct: 28,
-                            incorrect: 10,
-                            color: Colors.green,
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: CustomGradientButton(
+                                text: "Go to Solutions",
+                              height: 48.0,
+
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    _statsCard(
-                      title: "Biology",
-                      correct: 25,
-                      incorrect: 12,
-                      color: Colors.green,
-                    ),
 
-                    const SizedBox(height: 24),
-
-                    // Buttons row
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _normalButton("Download Report"),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: CustomGradientButton(
-                              text: "Go to Solutions",
-                            height: 48.0,
-
-                          ),
-                        ),
-
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                  ],
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -77,196 +77,198 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
-          children: [
-            // Background Decoration set
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
 
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.signupBgImg,
-                fit: BoxFit.cover,
-              ),
-            ),
-
-            // App Bar
-            Positioned(
-                top: 40.h,
-                left: 15.w,
-                right: 20.w,
-                child: CustomAppBar(
-                  isBack: true,
-                  title: '${AppLocalizations.of(context)?.studentInfo}',
-                )),
-
-            // Main Content with BLoC
-            Positioned(
-              top: 120.h,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: BlocConsumer<SignupBloc, SignupState>(
-                  listener: (context, state) {
-                    // TODO: implement listener
-                  },
-                  builder: (context, state) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 15.h,
-                      children: [
-                        SignupFieldBox(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              labelWidget(
-                                  '${AppLocalizations.of(context)?.studentName.toUpperCase()}'),
-                              CustomTextField(
-                                hint:
-                                    '${AppLocalizations.of(context)?.fullName}',
-                                editingController: _fullNameController,
-                                type: 'text',
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {
-                                  context
-                                      .read<SignupBloc>()
-                                      .add(UpdateFullName(value));
-                                },
-                              ),
-                              SizedBox(
-                                height: 7.h,
-                              ),
-                              labelWidget(
-                                  '${AppLocalizations.of(context)?.phoneNumber}'),
-                              CustomTextField(
-                                hint:
-                                    '${AppLocalizations.of(context)?.mobileNumber.toUpperCase()}',
-                                type: "phone",
-                                maxLength: 10,
-                                editingController: _mobileController,
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {
-                                  context
-                                      .read<SignupBloc>()
-                                      .add(UpdateMobileNumber(value));
-                                },
-                              ),
-                              SizedBox(
-                                height: 7.h,
-                              ),
-                              labelWidget(
-                                  '${AppLocalizations.of(context)?.email.toUpperCase()}'),
-                              CustomTextField(
-                                hint:
-                                    '${AppLocalizations.of(context)?.email}',
-                                type: "email",
-                                editingController: _emailController,
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {},
-                              ),
-                              SizedBox(
-                                height: 7.h,
-                              ),
-                              labelWidget(
-                                  '${AppLocalizations.of(context)?.selectStandard.toUpperCase()}'),
-                              _buildStandardDropdown(state),
-                              SizedBox(
-                                height: 7.h,
-                              ),
-                              labelWidget(
-                                  '${AppLocalizations.of(context)?.city.toUpperCase()}'),
-                              CustomTextField(
-                                hint:
-                                '${AppLocalizations.of(context)?.city}',
-                                editingController: _cityController,
-                                type: 'text',
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {
-                                  context
-                                      .read<SignupBloc>()
-                                      .add(UpdateFullName(value));
-                                },
-                              ),
-
-                              SizedBox(
-                                height: 7.h,
-                              ),
-                              labelWidget(
-                                  '${AppLocalizations.of(context)?.pincode.toUpperCase()}'),
-                              CustomTextField(
-                                hint:
-                                '${AppLocalizations.of(context)?.pincode}',
-                                editingController: _cityController,
-                                type: 'phone',
-                                maxLength: 10,
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {
-                                  context
-                                      .read<SignupBloc>()
-                                      .add(UpdateFullName(value));
-                                },
-                              ),
-                              SizedBox(height: 7.h,),
-                              labelWidget(
-                                  '${AppLocalizations.of(context)?.address.toUpperCase()}'),
-                              CustomTextField(
-                                hint:
-                                '${AppLocalizations.of(context)?.address}',
-                                editingController: _addressPassController,
-                                type: 'text',
-                                textFieldBgColor: Colors.black.withOpacity(0.1),
-                                changedValue: (value) {
-                                  context
-                                      .read<SignupBloc>()
-                                      .add(UpdateFullName(value));
-                                },
-                              ),
-                              SizedBox(height: 7.h),
-                              _buildGenderSelection(state),
-                              SizedBox(height: 7.h),
-                              _buildCourseSelection(state),
-
-                              SizedBox(height: 25.h,),
-                              CustomGradientButton(
-                                text: '${AppLocalizations.of(context)?.updateProfile}',
-                                onPressed: () {
-                                  // TODO: Implement login logic
-                                  // if (_phoneController.text.isEmpty || _passwordController.text.isEmpty) {
-                                  //   ScaffoldMessenger.of(context).showSnackBar(
-                                  //     const SnackBar(
-                                  //       content: Text('Please fill all fields'),
-                                  //       backgroundColor: Colors.red,
-                                  //     ),
-                                  //   );
-                                  //   return;
-                                  // }
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('${AppLocalizations.of(context)?.signupSuccessful}'),
-                                      backgroundColor: Colors.green,
-                                    ),
-                                  );
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                                  );
-                                },
-                              )
-
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  },
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-          ],
+
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 20.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: '${AppLocalizations.of(context)?.studentInfo}',
+                  )),
+
+              // Main Content with BLoC
+              Positioned(
+                top: 70.h,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: BlocConsumer<SignupBloc, SignupState>(
+                    listener: (context, state) {
+                      // TODO: implement listener
+                    },
+                    builder: (context, state) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 15.h,
+                        children: [
+                          SignupFieldBox(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                labelWidget(
+                                    '${AppLocalizations.of(context)?.studentName.toUpperCase()}'),
+                                CustomTextField(
+                                  hint:
+                                      '${AppLocalizations.of(context)?.fullName}',
+                                  editingController: _fullNameController,
+                                  type: 'text',
+                                  textFieldBgColor: Colors.black.withOpacity(0.1),
+                                  changedValue: (value) {
+                                    context
+                                        .read<SignupBloc>()
+                                        .add(UpdateFullName(value));
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 7.h,
+                                ),
+                                labelWidget(
+                                    '${AppLocalizations.of(context)?.phoneNumber}'),
+                                CustomTextField(
+                                  hint:
+                                      '${AppLocalizations.of(context)?.mobileNumber.toUpperCase()}',
+                                  type: "phone",
+                                  maxLength: 10,
+                                  editingController: _mobileController,
+                                  textFieldBgColor: Colors.black.withOpacity(0.1),
+                                  changedValue: (value) {
+                                    context
+                                        .read<SignupBloc>()
+                                        .add(UpdateMobileNumber(value));
+                                  },
+                                ),
+                                SizedBox(
+                                  height: 7.h,
+                                ),
+                                labelWidget(
+                                    '${AppLocalizations.of(context)?.email.toUpperCase()}'),
+                                CustomTextField(
+                                  hint:
+                                      '${AppLocalizations.of(context)?.email}',
+                                  type: "email",
+                                  editingController: _emailController,
+                                  textFieldBgColor: Colors.black.withOpacity(0.1),
+                                  changedValue: (value) {},
+                                ),
+                                SizedBox(
+                                  height: 7.h,
+                                ),
+                                labelWidget(
+                                    '${AppLocalizations.of(context)?.selectStandard.toUpperCase()}'),
+                                _buildStandardDropdown(state),
+                                SizedBox(
+                                  height: 7.h,
+                                ),
+                                labelWidget(
+                                    '${AppLocalizations.of(context)?.city.toUpperCase()}'),
+                                CustomTextField(
+                                  hint:
+                                  '${AppLocalizations.of(context)?.city}',
+                                  editingController: _cityController,
+                                  type: 'text',
+                                  textFieldBgColor: Colors.black.withOpacity(0.1),
+                                  changedValue: (value) {
+                                    context
+                                        .read<SignupBloc>()
+                                        .add(UpdateFullName(value));
+                                  },
+                                ),
+
+                                SizedBox(
+                                  height: 7.h,
+                                ),
+                                labelWidget(
+                                    '${AppLocalizations.of(context)?.pincode.toUpperCase()}'),
+                                CustomTextField(
+                                  hint:
+                                  '${AppLocalizations.of(context)?.pincode}',
+                                  editingController: _cityController,
+                                  type: 'phone',
+                                  maxLength: 10,
+                                  textFieldBgColor: Colors.black.withOpacity(0.1),
+                                  changedValue: (value) {
+                                    context
+                                        .read<SignupBloc>()
+                                        .add(UpdateFullName(value));
+                                  },
+                                ),
+                                SizedBox(height: 7.h,),
+                                labelWidget(
+                                    '${AppLocalizations.of(context)?.address.toUpperCase()}'),
+                                CustomTextField(
+                                  hint:
+                                  '${AppLocalizations.of(context)?.address}',
+                                  editingController: _addressPassController,
+                                  type: 'text',
+                                  textFieldBgColor: Colors.black.withOpacity(0.1),
+                                  changedValue: (value) {
+                                    context
+                                        .read<SignupBloc>()
+                                        .add(UpdateFullName(value));
+                                  },
+                                ),
+                                SizedBox(height: 7.h),
+                                _buildGenderSelection(state),
+                                SizedBox(height: 7.h),
+                                _buildCourseSelection(state),
+
+                                SizedBox(height: 25.h,),
+                                CustomGradientButton(
+                                  text: '${AppLocalizations.of(context)?.updateProfile}',
+                                  onPressed: () {
+                                    // TODO: Implement login logic
+                                    // if (_phoneController.text.isEmpty || _passwordController.text.isEmpty) {
+                                    //   ScaffoldMessenger.of(context).showSnackBar(
+                                    //     const SnackBar(
+                                    //       content: Text('Please fill all fields'),
+                                    //       backgroundColor: Colors.red,
+                                    //     ),
+                                    //   );
+                                    //   return;
+                                    // }
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('${AppLocalizations.of(context)?.signupSuccessful}'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                    );
+                                  },
+                                )
+
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,0 +1,139 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:zifour_sourcecode/core/theme/app_typography.dart';
+import 'package:zifour_sourcecode/features/practics_mcq/select_chapter_screen.dart';
+
+import '../../core/constants/app_colors.dart';
+import '../../core/constants/assets_path.dart';
+import '../../core/widgets/bookmark_item.dart';
+import '../../core/widgets/custom_app_bar.dart';
+
+class PracticeSubjectScreen extends StatefulWidget {
+  const PracticeSubjectScreen({super.key});
+
+  @override
+  State<PracticeSubjectScreen> createState() => _PracticeSubjectScreenState();
+}
+
+class _PracticeSubjectScreenState extends State<PracticeSubjectScreen> {
+
+  @override
+  void dispose() {
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: AppColors.darkBlue,
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
+
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 5.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: 'Practice MCQ',
+                  )),
+              // Main Content with BLoC
+              Positioned(
+                top: 100.h,
+                left: 20.w,
+                right: 20.w,
+                bottom: 0,
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 20.h,
+                    children: [
+                      subjectContainer(AssetsPath.icPhysics, 'Physics', (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SelectChapterScreen()),
+                        );
+                      }),
+                      subjectContainer(AssetsPath.icChemistry, 'Chemistry', (){}),
+                      subjectContainer(AssetsPath.icBiology, 'Biology', (){}),
+                      subjectContainer(AssetsPath.icMaths, 'Maths', (){}),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget subjectContainer(String iconPath, String title, Function() onTap) {
+    return GestureDetector(
+      onTap: (){
+        onTap();
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+        decoration: BoxDecoration(
+          color: Color(0xffEEF1FB).withOpacity(0.1),
+          borderRadius: BorderRadius.all(Radius.circular(12.r)),
+          border: BoxBorder.all(
+            color: AppColors.white.withOpacity(0.1),
+            width: 1.0
+          )
+        ),
+
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 12.w,
+              children: [
+                Image.asset(
+                    iconPath,
+                  width: 50.h,
+                  height: 50.h,
+                ),
+
+                Text(
+                  title,
+                  style: AppTypography.inter20Medium,
+                )
+              ],
+            ),
+
+            Icon(
+              Icons.arrow_forward_ios_sharp,
+              size: 25.0,
+              color: AppColors.white.withOpacity(0.5),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+}

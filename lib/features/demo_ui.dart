@@ -1,174 +1,187 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-class ChallengerZoneScreen extends StatelessWidget {
-  const ChallengerZoneScreen({super.key});
+class TestSeriesScreen extends StatelessWidget {
+  const TestSeriesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: InkWell(
-          onTap: () => Navigator.pop(context),
-          child: Icon(Icons.arrow_back, color: Colors.white, size: 22.sp),
-        ),
-        title: Text(
-          "Challenger Zone",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
+      backgroundColor: const Color(0xff0B0D35),
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xff0B0D35), Color(0xff1A1F54)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-      ),
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF4A148C), // purple shade like screenshot top
-              Color(0xFF0D1B3E), // deep navy
-              Color(0xFF000000), // dark gradient bottom
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Choose how you want to challenge\nyourself today.",
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header
+              Row(
+                children: [
+                  const Icon(Icons.arrow_back, color: Colors.white),
+                  const SizedBox(width: 10),
+                  const Text(
+                    "All India Test Series",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              Expanded(
+                child: ListView(
+                  children: [
+                    testCard(
+                      title: "Full Syllabus Neet Test 01",
+                      status: "Available on 15th September",
+                      statusColor: Colors.purpleAccent,
+                      icon: Icons.check_circle,
+                      iconColor: Colors.purpleAccent,
+                      date: "15th September",
+                      duration: "3 Hours",
+                    ),
+                    testCard(
+                      title: "Full Syllabus Neet Test 01",
+                      status: "Attempt Now",
+                      statusColor: Colors.orange,
+                      icon: Icons.error,
+                      iconColor: Colors.orange,
+                      date: "21st September",
+                      duration: "4 Hours",
+                    ),
+                    testCard(
+                      title: "Full Syllabus Neet Test 03",
+                      status: "Completed on 24th September",
+                      statusColor: Colors.greenAccent,
+                      icon: Icons.verified,
+                      iconColor: Colors.greenAccent,
+                      date: "21st September",
+                      duration: "4 Hours",
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // Bottom Button
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xffFF00C6), Color(0xff7C4DFF)],
+                  ),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Text(
+                  "View Past Test Result",
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.85),
-                    fontSize: 14.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
                   ),
                 ),
-                SizedBox(height: 25.h),
-
-                /// Create Own Challenge Card
-                _challengeCard(
-                  icon: Icons.all_inclusive,
-                  title: "Create your own challenge",
-                  subtitle:
-                  "Select your subjects, Chapters, Topics and take\ncontrol of your practice.",
-                  buttonText: "Create Own Challenge",
-                  onTap: () {},
-                ),
-                SizedBox(height: 20.h),
-
-                /// Expert Challenge Card
-                _challengeCard(
-                  icon: Icons.person_outline,
-                  title: "Expert’s Challenge",
-                  subtitle:
-                  "Complete in faculty-designed challenges held\ntwice a month with fixed syllabus.",
-                  buttonText: "Expert Challenge",
-                  onTap: () {},
-                ),
-
-                SizedBox(height: 30.h),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _challengeCard({
-    required IconData icon,
+  Widget testCard({
     required String title,
-    required String subtitle,
-    required String buttonText,
-    required VoidCallback onTap,
+    required String status,
+    required Color statusColor,
+    required IconData icon,
+    required Color iconColor,
+    required String date,
+    required String duration,
   }) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(18.h),
+      margin: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-        color: Colors.white.withOpacity(0.09),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.15),
-        ),
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withOpacity(0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 6),
+
+          // Status Row
           Row(
             children: [
-              Container(
-                height: 36.h,
-                width: 36.h,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.4),
-                  ),
-                ),
-                child: Icon(icon, color: Colors.white, size: 20.sp),
-              ),
-              SizedBox(width: 10.w),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+              Icon(icon, color: iconColor, size: 16),
+              const SizedBox(width: 6),
+              Text(
+                status,
+                style: TextStyle(
+                  color: statusColor,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10.h),
-          Text(
-            subtitle,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: 12.sp,
-              height: 1.4,
-            ),
-          ),
-          SizedBox(height: 15.h),
 
-          /// Button
-          GestureDetector(
-            onTap: onTap,
-            child: Container(
-              height: 42.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50.r),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFFFE3C80),
-                    Color(0xFF8F00FF),
-                  ],
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    buttonText,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
+          const SizedBox(height: 15),
+
+          // Date + Time Box
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.22),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  date,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
                   ),
-                  SizedBox(width: 8.w),
-                  Icon(Icons.arrow_forward, color: Colors.white, size: 18.sp),
-                ],
-              ),
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  "•",
+                  style: TextStyle(color: Colors.white54),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  duration,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
             ),
           )
         ],

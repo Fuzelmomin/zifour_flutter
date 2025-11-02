@@ -9,11 +9,13 @@ import 'package:zifour_sourcecode/core/utils/dialogs_utils.dart';
 import 'package:zifour_sourcecode/core/widgets/my_notes_item.dart';
 import 'package:zifour_sourcecode/features/bookmarked/bookmarked_list_screen.dart';
 import 'package:zifour_sourcecode/features/courses/change_courses_screen.dart';
+import 'package:zifour_sourcecode/features/dashboard/profile_screen.dart';
 import 'package:zifour_sourcecode/features/doubts/ask_doubts_screen.dart';
 import 'package:zifour_sourcecode/features/give_feedback/give_feedback_screen.dart';
 import 'package:zifour_sourcecode/features/help_support/help_support_screen.dart';
 import 'package:zifour_sourcecode/features/multimedia_library/multimedia_library_screen.dart';
 import 'package:zifour_sourcecode/features/my_performance/my_performance_screen.dart';
+import 'package:zifour_sourcecode/features/reset_password/reset_password_screen.dart';
 import 'package:zifour_sourcecode/features/zifour_calender/zifour_calender_screen.dart';
 
 import '../../features/demo_ui.dart';
@@ -101,6 +103,10 @@ class CustomDrawer extends StatelessWidget {
                   children: [
                     _drawerItem(AssetsPath.svgUser, "My Profile", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgEdit, "Change Course", (){
                       Navigator.pop(context);
@@ -160,6 +166,10 @@ class CustomDrawer extends StatelessWidget {
                     }),
                     _drawerItem(AssetsPath.svgRefresh, "Reset Password", (){
                       Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
+                      );
                     }),
                     _drawerItem(AssetsPath.svgPlayCircle, "Multimedia Library", (){
                       Navigator.pop(context);

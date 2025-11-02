@@ -117,6 +117,13 @@ class AppTypography {
     color: AppColors.white,
   );
 
+  static TextStyle get inter20Medium => GoogleFonts.inter(
+    fontSize: 20.sp,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0,
+    color: AppColors.white,
+  );
+
   static TextStyle get inter22Bold => GoogleFonts.inter(
     fontSize: 22.sp,
     fontWeight: FontWeight.w700,

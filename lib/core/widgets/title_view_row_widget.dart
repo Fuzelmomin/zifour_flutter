@@ -29,9 +29,14 @@ class TitleViewRowWidget extends StatelessWidget {
             style: AppTypography.inter18SemiBold,
           ),
 
-          Text(
-            subTitle ?? '',
-            style: AppTypography.inter14Bold.copyWith(color: AppColors.pinkColor),
+          GestureDetector(
+            onTap: (){
+              itemClick!();
+            },
+            child: Text(
+              subTitle ?? '',
+              style: AppTypography.inter14Bold.copyWith(color: AppColors.pinkColor),
+            ),
           )
         ],
       ),

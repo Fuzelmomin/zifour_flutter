@@ -29,6 +29,23 @@ class AssetsPath {
   static const String svgExpertChallenger = "assets/icons/ic_expert_challenger.svg";
   static const String svgBook = "assets/icons/ic_book.svg";
   static const String svgBook2 = "assets/icons/ic_book_2.svg";
+  static const String svgRemindNoti = "assets/icons/ic_remind_noti.svg";
+  static const String svgFileText = "assets/icons/ic_file_text.svg";
+  static const String svgSuccess = "assets/icons/ic_success.svg";
+  static const String svgFailed = "assets/icons/ic_failed.svg";
+  static const String svgPhysics = "assets/icons/ic_physics.svg";
+  static const String svgChemistry = "assets/icons/ic_chemistry.svg";
+  static const String svgBiology = "assets/icons/ic_biology.svg";
+  static const String svgMaths = "assets/icons/ic_maths.svg";
+  static const String svgMenuBox = "assets/icons/ic_menu_box.svg";
+
+  static const String icPhysics = "assets/icons/ic_physics.png";
+  static const String icChemistry = "assets/icons/ic_chemistry.png";
+  static const String icBiology = "assets/icons/ic_biology.png";
+  static const String icMaths = "assets/icons/ic_maths.png";
+  static const String icMenuBox = "assets/icons/ic_menu_box.png";
+
+
 
   // Drawer Icons
   static const String svgUser = "assets/icons/ic_user.svg";

@@ -49,115 +49,117 @@ class _AskDoubtsScreenState extends State<AskDoubtsScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
-          children: [
-            // Background Decoration set
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
 
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.signupBgImg,
-                fit: BoxFit.cover,
-              ),
-            ),
-
-            // App Bar
-            Positioned(
-                top: 40.h,
-                left: 15.w,
-                right: 5.w,
-                child: CustomAppBar(
-                  isBack: true,
-                  title: '${AppLocalizations.of(context)?.askYourDoubts}',
-                  isActionWidget: true,
-                  actionWidget: Text(
-                      '${AppLocalizations.of(context)?.pastDoubts}',
-                    style: AppTypography.inter14Bold.copyWith(
-                      color: AppColors.pinkColor,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppColors.pinkColor
-                    ),
-                  ),
-                  actionClick: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MyDoubtsListScreen()),
-                    );
-                  },
-                )),
-
-      Positioned(
-        left: 20.w,
-        right: 20.w,
-        bottom: 0,
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: SvgPicture.asset(
-            AssetsPath.svgFour
-          ),
-        ),
-      ),
-
-            // Main Content with BLoC
-            Positioned(
-              top: 110.h,
-              left: 20.w,
-              right: 20.w,
-              bottom: 0,
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                '${AppLocalizations.of(context)?.getExpertAnswer}',
-                      style: AppTypography.inter16Regular.copyWith(
-                        color: AppColors.white.withOpacity(0.6)
-                      ),
-                    ),
-
-                    SizedBox(height: 25.h),
-
-                    _standerAndSubject(_standardCtrl, standardList, _subjectCtrl, subjectList),
-
-                    SizedBox(height: 15.h),
-
-                    // Topic dropdown
-                    _buildDropdown(_topicCtrl, topicList),
-
-                    SizedBox(height: 15.h),
-
-                    // Doubt text input
-                    CustomTextField(
-                      editingController: _doubtController,
-                      hint: '${AppLocalizations.of(context)?.typeYourDoubt}',
-                      type: 'text',
-                      isMessageTextField: true,
-                      textFieldHeight: 200.h,
-                    ),
-
-                    SizedBox(height: 15.h),
-
-                    // Upload box
-                    UploadDocBoxWidget(
-                      title: '${AppLocalizations.of(context)?.uploadYourImage}',
-                      itemClick: (){
-
-                      },
-                    ),
-
-                    SizedBox(height: 50.h,),
-                    CustomGradientArrowButton(
-                      text: "${AppLocalizations.of(context)!.submitDoubt}",
-                      onPressed: () {
-
-                      },
-                    )
-                  ],
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
                 ),
               ),
+
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 5.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: '${AppLocalizations.of(context)?.askYourDoubts}',
+                    isActionWidget: true,
+                    actionWidget: Text(
+                        '${AppLocalizations.of(context)?.pastDoubts}',
+                      style: AppTypography.inter14Bold.copyWith(
+                        color: AppColors.pinkColor,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.pinkColor
+                      ),
+                    ),
+                    actionClick: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyDoubtsListScreen()),
+                      );
+                    },
+                  )),
+
+                Positioned(
+          left: 20.w,
+          right: 20.w,
+          bottom: 0,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SvgPicture.asset(
+              AssetsPath.svgFour
             ),
-          ],
+          ),
+                ),
+
+              // Main Content with BLoC
+              Positioned(
+                top: 70.h,
+                left: 20.w,
+                right: 20.w,
+                bottom: 0,
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                  '${AppLocalizations.of(context)?.getExpertAnswer}',
+                        style: AppTypography.inter16Regular.copyWith(
+                          color: AppColors.white.withOpacity(0.6)
+                        ),
+                      ),
+
+                      SizedBox(height: 25.h),
+
+                      _standerAndSubject(_standardCtrl, standardList, _subjectCtrl, subjectList),
+
+                      SizedBox(height: 15.h),
+
+                      // Topic dropdown
+                      _buildDropdown(_topicCtrl, topicList),
+
+                      SizedBox(height: 15.h),
+
+                      // Doubt text input
+                      CustomTextField(
+                        editingController: _doubtController,
+                        hint: '${AppLocalizations.of(context)?.typeYourDoubt}',
+                        type: 'text',
+                        isMessageTextField: true,
+                        textFieldHeight: 200.h,
+                      ),
+
+                      SizedBox(height: 15.h),
+
+                      // Upload box
+                      UploadDocBoxWidget(
+                        title: '${AppLocalizations.of(context)?.uploadYourImage}',
+                        itemClick: (){
+
+                        },
+                      ),
+
+                      SizedBox(height: 50.h,),
+                      CustomGradientArrowButton(
+                        text: "${AppLocalizations.of(context)!.submitDoubt}",
+                        onPressed: () {
+
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

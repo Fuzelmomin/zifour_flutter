@@ -56,59 +56,61 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
-          children: [
-            // Background Decoration set
-
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.signupBgImg,
-                fit: BoxFit.cover,
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
+          
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-
-            // App Bar
-            Positioned(
-                top: 40.h,
-                left: 15.w,
-                right: 20.w,
-                child: CustomAppBar(
-                  isBack: true,
-                  title: widget.mentorName ?? '${AppLocalizations.of(context)?.mentors}',
-                )),
-
-
-            widget.mentorName == null ? Positioned(
-                top: 110.h,
+          
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 20.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: widget.mentorName ?? '${AppLocalizations.of(context)?.mentors}',
+                  )),
+          
+          
+              widget.mentorName == null ? Positioned(
+                  top: 70.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: Text(
+                    '${AppLocalizations.of(context)?.zMentors}',
+                    style: AppTypography.inter18SemiBold,
+                  )) : Container(),
+          
+              // Main Content with BLoC
+              Positioned(
+                top: 100.h,
                 left: 20.w,
                 right: 20.w,
-                child: Text(
-                  '${AppLocalizations.of(context)?.zMentors}',
-                  style: AppTypography.inter18SemiBold,
-                )) : Container(),
-
-            // Main Content with BLoC
-            Positioned(
-              top: 140.h,
-              left: 20.w,
-              right: 20.w,
-              bottom: 0,
-              child: ListView.builder(
-                physics: BouncingScrollPhysics(),
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount: mentors.length,
-                padding: EdgeInsets.only(bottom: 20.h),
-                itemBuilder: (context, index) {
-                  var item = mentors[index];
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 16.h),
-                    child: AllMentorsItem(item: item,),
-                  );
-                },
+                bottom: 0,
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: mentors.length,
+                  padding: EdgeInsets.only(bottom: 20.h),
+                  itemBuilder: (context, index) {
+                    var item = mentors[index];
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 16.h),
+                      child: AllMentorsItem(item: item,),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

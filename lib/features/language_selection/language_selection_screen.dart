@@ -73,100 +73,102 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
           width: double.infinity,
           height: double.infinity,
           color: AppColors.darkBlue,
-          child: Stack(
-            children: [
-
-              // Background Widget
-              Container(
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 6,
-                      child: Image.asset(
-                        AssetsPath.screensBgImg,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: CustomGradientWidget(
-                        child: Container(
+          child: SafeArea(
+            child: Stack(
+              children: [
+            
+                // Background Widget
+                Container(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: Image.asset(
+                          AssetsPath.screensBgImg,
+                          fit: BoxFit.cover,
                           width: double.infinity,
                           height: double.infinity,
-                          padding: EdgeInsets.all(24.w),
                         ),
                       ),
-                    )
-                  ],
+                      Expanded(
+                        flex: 4,
+                        child: CustomGradientWidget(
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            padding: EdgeInsets.all(24.w),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-               Positioned(
-                 top: 200.h,
-                 left: 15.w,
-                 right: 15.w,
-                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.chooseLanguage,
-                        style: AppTypography.inter22Bold.copyWith(fontSize: 34.sp),
-                      ),
-                      SizedBox(height: 16.h),
-                      Text(
-                        AppLocalizations.of(context)!.selectLanguage,
-                        style: AppTypography.inter14Regular.copyWith(
-                          fontSize: 16.sp,
-                          color: Colors.white.withOpacity(0.9),
-                          height: 1.5,
+                 Positioned(
+                   top: 200.h,
+                   left: 15.w,
+                   right: 15.w,
+                   child: Column(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.chooseLanguage,
+                          style: AppTypography.inter22Bold.copyWith(fontSize: 34.sp),
                         ),
-                      ),
-                     SizedBox(height: 40.h),
-                     
-                     // Language selection boxes
-                     Column(
-                       children: [
-                         _buildLanguageOption(
-                           language: AppLanguage.gujarati,
-                           isSelected: _currentLanguage == AppLanguage.gujarati,
-                           onTap: () {
-                             context.read<LanguageBloc>().add(ChangeLanguage(AppLanguage.gujarati));
-                           },
-                         ),
-                         
-                         SizedBox(height: 16.h),
-                         
-                         _buildLanguageOption(
-                           language: AppLanguage.english,
-                           isSelected: _currentLanguage == AppLanguage.english,
-                           onTap: () {
-                             context.read<LanguageBloc>().add(ChangeLanguage(AppLanguage.english));
-                           },
-                         ),
-                       ],
-                     ),
- 
-                   ],
+                        SizedBox(height: 16.h),
+                        Text(
+                          AppLocalizations.of(context)!.selectLanguage,
+                          style: AppTypography.inter14Regular.copyWith(
+                            fontSize: 16.sp,
+                            color: Colors.white.withOpacity(0.9),
+                            height: 1.5,
+                          ),
+                        ),
+                       SizedBox(height: 40.h),
+                       
+                       // Language selection boxes
+                       Column(
+                         children: [
+                           _buildLanguageOption(
+                             language: AppLanguage.gujarati,
+                             isSelected: _currentLanguage == AppLanguage.gujarati,
+                             onTap: () {
+                               context.read<LanguageBloc>().add(ChangeLanguage(AppLanguage.gujarati));
+                             },
+                           ),
+                           
+                           SizedBox(height: 16.h),
+                           
+                           _buildLanguageOption(
+                             language: AppLanguage.english,
+                             isSelected: _currentLanguage == AppLanguage.english,
+                             onTap: () {
+                               context.read<LanguageBloc>().add(ChangeLanguage(AppLanguage.english));
+                             },
+                           ),
+                         ],
+                       ),
+             
+                     ],
+                   ),
                  ),
-               ),
-
-              Positioned(
-                left: 15.w,
-                right: 15.w,
-                bottom: 15.h,
-                child: CustomGradientArrowButton(
-                  text: "${AppLocalizations.of(context)!.continueWith} ${_currentLanguage.displayName}",
-                  onPressed: () {
-                    // Navigate to welcome screen
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-                    );
-                  },
-                ),
-              )
-            ],
+            
+                Positioned(
+                  left: 15.w,
+                  right: 15.w,
+                  bottom: 15.h,
+                  child: CustomGradientArrowButton(
+                    text: "${AppLocalizations.of(context)!.continueWith} ${_currentLanguage.displayName}",
+                    onPressed: () {
+                      // Navigate to welcome screen
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -58,47 +58,49 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
-          children: [
-            // Background Decoration set
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
 
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.signupBgImg,
-                fit: BoxFit.cover,
-              ),
-            ),
-
-            // App Bar
-            Positioned(
-                top: 40.h,
-                left: 15.w,
-                right: 20.w,
-                child: CustomAppBar(
-                  isBack: true,
-                  title: '${AppLocalizations.of(context)?.helpSupport}',
-                )),
-
-            // Main Content with BLoC
-            Positioned(
-              top: 110.h,
-              left: 20.w,
-              right: 20.w,
-              bottom: 0,
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildContactUsSection(),
-                    const SizedBox(height: 20),
-                    _buildFAQSection(),
-                  ],
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-          ],
+
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 20.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: '${AppLocalizations.of(context)?.helpSupport}',
+                  )),
+
+              // Main Content with BLoC
+              Positioned(
+                top: 70.h,
+                left: 20.w,
+                right: 20.w,
+                bottom: 0,
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildContactUsSection(),
+                      const SizedBox(height: 20),
+                      _buildFAQSection(),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

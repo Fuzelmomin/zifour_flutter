@@ -7,6 +7,7 @@ import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/widgets/challenge_option_box.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/challenger_zone/create_own_challenger_screen.dart';
+import 'package:zifour_sourcecode/features/challenger_zone/expert_challenge_screen.dart';
 import 'package:zifour_sourcecode/features/doubts/my_doubts_list_screen.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -98,7 +99,10 @@ class _ChallengerZoneScreenState extends State<ChallengerZoneScreen> {
                       iconPath: AssetsPath.svgExpertChallenger,
                       buttonText: '${AppLocalizations.of(context)?.expertChallenge}',
                       onTap: (){
-
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ExpertChallengeScreen()),
+                        );
                       },
                     ),
                   ],

@@ -42,97 +42,99 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
-          children: [
-            // Background Decoration set
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
 
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.signupBgImg,
-                fit: BoxFit.cover,
-              ),
-            ),
-
-            // App Bar
-            Positioned(
-                top: 40.h,
-                left: 15.w,
-                right: 5.w,
-                child: CustomAppBar(
-                  isBack: true,
-                  title: '${AppLocalizations.of(context)?.myDoubts}',
-                  isActionWidget: true,
-                  actionWidget: PopupMenuButton<String>(
-                    onSelected: (value) => setState(() => selectedFilter = value),
-                    itemBuilder: (context) {
-                      return filters
-                          .map((e) => PopupMenuItem(value: e, child: Text(e)))
-                          .toList();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
-                        gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [Color(0xFFCF078A), // Pink
-                            Color(0xFF5E00D8)],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFFCF078A).withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            selectedFilter,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(width: 6),
-                          const Icon(Icons.keyboard_arrow_down, color: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ),
-                  actionClick: (){
-
-                  },
-                )),
-
-            // Main Content with BLoC
-            Positioned(
-              top: 110.h,
-              left: 20.w,
-              right: 20.w,
-              bottom: 10.h,
-              child: SignupFieldBox(
-                padding: EdgeInsets.all(15.0),
-                child: ListView.separated(
-                  itemCount: 5,
-                  physics: BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(bottom: 20),
-                  itemBuilder: (context, index) => Container(
-                    child: MyDoubtsItem(
-                      title: 'Why does tension act upward in pulley system?',
-                      isReplied: index == 2 ? false : true,
-                    ),
-                  ), separatorBuilder: (BuildContext context, int index) {
-                  return Container(
-                    width: double.infinity,
-                    height: 0.80,
-                    margin: EdgeInsets.symmetric(vertical: 10.h),
-                    color: AppColors.white.withOpacity(0.2),
-                  );
-                },
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-          ],
+
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 5.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: '${AppLocalizations.of(context)?.myDoubts}',
+                    isActionWidget: true,
+                    actionWidget: PopupMenuButton<String>(
+                      onSelected: (value) => setState(() => selectedFilter = value),
+                      itemBuilder: (context) {
+                        return filters
+                            .map((e) => PopupMenuItem(value: e, child: Text(e)))
+                            .toList();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.r),
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [Color(0xFFCF078A), // Pink
+                              Color(0xFF5E00D8)],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFFCF078A).withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              selectedFilter,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(width: 6),
+                            const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                          ],
+                        ),
+                      ),
+                    ),
+                    actionClick: (){
+
+                    },
+                  )),
+
+              // Main Content with BLoC
+              Positioned(
+                top: 70.h,
+                left: 20.w,
+                right: 20.w,
+                bottom: 10.h,
+                child: SignupFieldBox(
+                  padding: EdgeInsets.all(15.0),
+                  child: ListView.separated(
+                    itemCount: 5,
+                    physics: BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 20),
+                    itemBuilder: (context, index) => Container(
+                      child: MyDoubtsItem(
+                        title: 'Why does tension act upward in pulley system?',
+                        isReplied: index == 2 ? false : true,
+                      ),
+                    ), separatorBuilder: (BuildContext context, int index) {
+                    return Container(
+                      width: double.infinity,
+                      height: 0.80,
+                      margin: EdgeInsets.symmetric(vertical: 10.h),
+                      color: AppColors.white.withOpacity(0.2),
+                    );
+                  },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

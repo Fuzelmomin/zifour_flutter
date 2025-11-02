@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // App Bar
             Positioned(
-                top: 40.h,
+                top: 0.h,
                 left: 15.w,
                 right: 20.w,
                 child: CustomAppBar(
@@ -54,7 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Main Content with BLoC
             Positioned(
-              top: 120.h,
+              top: 75.h,
               left: 0,
               right: 0,
               bottom: 0,

@@ -4,6 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zifour_sourcecode/core/widgets/mentors_item_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/title_view_row_widget.dart';
+import 'package:zifour_sourcecode/features/courses/all_course_list_screen.dart';
+import 'package:zifour_sourcecode/features/india_test_series/all_india_test_series_screen.dart';
+import 'package:zifour_sourcecode/features/live_class/live_class_screen.dart';
+import 'package:zifour_sourcecode/features/mentor/mentors_list_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/be_ziddi_item_widget.dart';
@@ -14,6 +18,8 @@ import '../../core/widgets/home_option_widget.dart';
 import '../../core/widgets/home_options_item.dart';
 import '../../l10n/app_localizations.dart';
 import '../challenger_zone/challenger_zone_screen.dart';
+import '../doubts/ask_doubts_screen.dart';
+import '../practics_mcq/practice_subject_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -172,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w)
-                            .copyWith(top: 40.h),
+                            .copyWith(top: 20.h),
                     child: HomeAppBar(
                       profileImg: 'https://i.pravatar.cc/150?img=3',
                       profileClick: () {
@@ -180,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 10.h),
                   _buildBannerSection(),
                   SizedBox(height: 15.h),
                   _buildTrendingCoursesSection(),
@@ -312,6 +318,12 @@ class _HomeScreenState extends State<HomeScreen> {
           TitleViewRowWidget(
             title: '${AppLocalizations.of(context)?.trendingCourse}',
             subTitle: '${AppLocalizations.of(context)?.viewAll}',
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AllCoursesScreen()),
+              );
+            },
           ),
           SizedBox(height: 10.h),
           if (_trendingCourses.isEmpty)
@@ -365,16 +377,34 @@ class _HomeScreenState extends State<HomeScreen> {
             title: 'Live Classes',
             subTitle: 'Learn Live With Experts',
             imagePath: AssetsPath.svgLiveClass,
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LiveClassScreen()),
+              );
+            },
           ),
           HomeOptionsItem(
             title: 'My Courses',
             subTitle: 'Live Classes Learn Live with mentors',
             imagePath: AssetsPath.svgMyCourse,
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AllCoursesScreen()),
+              );
+            },
           ),
           HomeOptionsItem(
             title: 'Practice MCQS',
             subTitle: 'Master Every Concept',
             imagePath: AssetsPath.svgPractice,
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PracticeSubjectScreen()),
+              );
+            },
           ),
           HomeOptionsItem(
             title: 'All india Challenger Zone',
@@ -391,6 +421,12 @@ class _HomeScreenState extends State<HomeScreen> {
             title: 'Test Series',
             subTitle: 'Full Syllabus Mock Test',
             imagePath: AssetsPath.svgTestSeries,
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AllIndiaTestSeriesScreen()),
+              );
+            },
           ),
           HomeOptionsItem(
             title: 'AI Based Performance Analysis',
@@ -401,6 +437,12 @@ class _HomeScreenState extends State<HomeScreen> {
             title: 'Ask Your Doubts',
             subTitle: 'Get Expert Solutions',
             imagePath: AssetsPath.svgAskDoubts,
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AskDoubtsScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -416,6 +458,12 @@ class _HomeScreenState extends State<HomeScreen> {
           TitleViewRowWidget(
             title: 'Z Mentors',
             subTitle: '${AppLocalizations.of(context)?.viewAll}',
+            itemClick: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MentorsListScreen()),
+              );
+            },
           ),
           SizedBox(height: 10.h),
           if (_mentors.isEmpty)

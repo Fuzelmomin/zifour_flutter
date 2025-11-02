@@ -38,6 +38,7 @@ class CustomAppBar extends StatelessWidget {
             children: [
               isBack == true ? GestureDetector(
                 onTap: (){
+                  Navigator.pop(context);
                   onBack!();
                 },
                 child: SvgPicture.asset(
@@ -48,7 +49,7 @@ class CustomAppBar extends StatelessWidget {
               ) : Container(),
               SizedBox(width: 10.w,),
               SizedBox(
-                width: MediaQuery.widthOf(context) * 0.7,
+                width: MediaQuery.widthOf(context) * 0.4,
                 child: Text(
                   title ?? '',
                   style: AppTypography.inter16SemiBold,

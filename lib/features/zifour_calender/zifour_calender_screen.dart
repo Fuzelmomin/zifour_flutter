@@ -174,63 +174,65 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
-          children: [
-            // Background Decoration set
+        child: SafeArea(
+          child: Stack(
+            children: [
+              // Background Decoration set
 
-            Positioned.fill(
-              child: Image.asset(
-                AssetsPath.signupBgImg,
-                fit: BoxFit.cover,
+              Positioned.fill(
+                child: Image.asset(
+                  AssetsPath.signupBgImg,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
 
-            // App Bar
-            Positioned(
-                top: 40.h,
-                left: 15.w,
-                right: 5.w,
-                child: CustomAppBar(
-                  isBack: true,
-                  title: '${AppLocalizations.of(context)?.zifour_calender}',
-                  isActionWidget: true,
-                  actionWidget: SvgPicture.asset(
-                    AssetsPath.svgAdd,
-                    width: 55.w,
-                    height: 55.h,
-                  ),
-                  actionClick: (){
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      elevation: 1.0,
-                      barrierColor: Colors.transparent,
-                      builder: (context) {
-                        return _buildAddEventBottomSheet();
-                      },
-                    );
-                  },
-                )),
+              // App Bar
+              Positioned(
+                  top: 0.h,
+                  left: 15.w,
+                  right: 5.w,
+                  child: CustomAppBar(
+                    isBack: true,
+                    title: '${AppLocalizations.of(context)?.zifour_calender}',
+                    isActionWidget: true,
+                    actionWidget: SvgPicture.asset(
+                      AssetsPath.svgAdd,
+                      width: 55.w,
+                      height: 55.h,
+                    ),
+                    actionClick: (){
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        elevation: 1.0,
+                        barrierColor: Colors.transparent,
+                        builder: (context) {
+                          return _buildAddEventBottomSheet();
+                        },
+                      );
+                    },
+                  )),
 
-            // Main Content with BLoC
-            Positioned(
-              top: 110.h,
-              left: 20.w,
-              right: 20.w,
-              bottom: 0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(),
-                  _buildCalendar(),
-                  const SizedBox(height: 10),
+              // Main Content with BLoC
+              Positioned(
+                top: 70.h,
+                left: 20.w,
+                right: 20.w,
+                bottom: 0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    _buildCalendar(),
+                    const SizedBox(height: 10),
 
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
