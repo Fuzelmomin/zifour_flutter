@@ -6,6 +6,8 @@ import 'package:zifour_sourcecode/features/faq/faq_screen.dart';
 import 'features/chatbot/chatbot_screen.dart';
 import 'features/demo_ui.dart';
 import 'features/leaderboard/leaderboard_screen.dart';
+import 'features/learning_course/learning_course_list_screen.dart';
+import 'features/learning_course/learning_course_screen.dart';
 import 'features/live_class/live_class_details_screen.dart';
 import 'features/live_class/live_class_screen.dart';
 import 'features/splash/splash_screen.dart';
@@ -65,7 +67,7 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                home: SplashScreen(), // Start with splash screen
+                home: LearningCourseListScreen(), // Start with splash screen
               );
             },
           );
