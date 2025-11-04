@@ -88,4 +88,5 @@ class AssetsPath {
   static const String BannerImg = "assets/images/bennar_img.png";
   static const String trendingCourseImg = "assets/images/trending_course_img.png";
   static const String homeImgBg = "assets/images/home_img_bg.png";
+  static const String icCup = "assets/images/ic_cup.png";
 }

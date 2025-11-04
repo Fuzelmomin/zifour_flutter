@@ -20,6 +20,7 @@ import '../../core/widgets/home_options_item.dart';
 import '../../l10n/app_localizations.dart';
 import '../challenger_zone/challenger_zone_screen.dart';
 import '../doubts/ask_doubts_screen.dart';
+import '../learning_course/learning_course_screen.dart';
 import '../practics_mcq/practice_subject_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -392,8 +393,12 @@ class _HomeScreenState extends State<HomeScreen> {
             itemClick: (){
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AllCoursesScreen()),
+                MaterialPageRoute(builder: (context) => LearningCourseScreen()),
               );
+              /*Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AllCoursesScreen()),
+              );*/
             },
           ),
           HomeOptionsItem(

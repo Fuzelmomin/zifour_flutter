@@ -10,6 +10,8 @@ import 'features/learning_course/learning_course_list_screen.dart';
 import 'features/learning_course/learning_course_screen.dart';
 import 'features/live_class/live_class_details_screen.dart';
 import 'features/live_class/live_class_screen.dart';
+import 'features/mentor/mentors_list_screen.dart';
+import 'features/practics_mcq/select_chapter_screen.dart';
 import 'features/splash/splash_screen.dart';
 import 'core/bloc/language_bloc.dart';
 import 'core/bloc/welcome_bloc.dart';
@@ -67,7 +69,7 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                home: LearningCourseListScreen(), // Start with splash screen
+                home: SplashScreen(), // Start with splash screen
               );
             },
           );

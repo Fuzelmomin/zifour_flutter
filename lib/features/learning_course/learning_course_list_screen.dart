@@ -9,6 +9,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_app_bar.dart';
+import '../practics_mcq/select_chapter_screen.dart';
 
 class LearningCourseListScreen extends StatefulWidget {
   const LearningCourseListScreen({super.key});
@@ -96,6 +97,13 @@ class _LearningCourseListScreenState extends State<LearningCourseListScreen> {
                       chapters: course["chapters"],
                       lectures: course["lectures"],
                       iconUrl: course["icon"],
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SelectChapterScreen(from: "course",)),
+                        );
+                      },
+
                     );
                   },
                 ),
@@ -114,6 +122,7 @@ class _CourseCard extends StatelessWidget {
   final int chapters;
   final int lectures;
   final String iconUrl;
+  final Function() onTap;
 
   const _CourseCard({
     required this.title,
@@ -121,6 +130,7 @@ class _CourseCard extends StatelessWidget {
     required this.chapters,
     required this.lectures,
     required this.iconUrl,
+    required this.onTap,
   });
 
   @override
@@ -237,7 +247,9 @@ class _CourseCard extends StatelessWidget {
           /// Button
           CustomGradientArrowButton(
             text: 'Continue Learning',
-            onPressed: (){},
+            onPressed: (){
+              onTap();
+            },
           )
 
         ],

@@ -7,7 +7,8 @@ import '../theme/app_typography.dart';
 class InfoRow extends StatelessWidget {
   String title;
   String value;
-  InfoRow({super.key, required this.title, required this.value});
+  TextStyle? subTitleStyle;
+  InfoRow({super.key, required this.title, required this.value, this.subTitleStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class InfoRow extends StatelessWidget {
               )
           ),
           Text(value,
-              style: AppTypography.inter16SemiBold
+              style: subTitleStyle ?? AppTypography.inter16SemiBold
           ),
         ],
       ),

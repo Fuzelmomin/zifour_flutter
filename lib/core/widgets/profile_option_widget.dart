@@ -17,6 +17,7 @@ class ProfileOptionWidget extends StatelessWidget {
         itemClick!();
       },
       child: SignupFieldBox(
+        margin: EdgeInsets.only(bottom: 20.h),
         child: Container(
           height: 45.h,
           padding: EdgeInsets.symmetric(horizontal: 5.0),

@@ -6,6 +6,7 @@ import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/auth/edit_profile_screen.dart';
 import 'package:zifour_sourcecode/features/courses/my_courses_screen.dart';
 import 'package:zifour_sourcecode/features/demo_ui.dart';
+import 'package:zifour_sourcecode/features/learning_course/learning_chapter_videos_screen.dart';
 import 'package:zifour_sourcecode/features/mentor/mentors_list_screen.dart';
 import 'package:zifour_sourcecode/features/practics_mcq/select_topic_screen.dart';
 import 'package:zifour_sourcecode/features/reset_password/reset_password_screen.dart';
@@ -18,13 +19,38 @@ import '../../core/widgets/profile_option_widget.dart';
 import '../../l10n/app_localizations.dart';
 
 class SelectChapterScreen extends StatefulWidget {
-  const SelectChapterScreen({super.key});
+  final String? from;
+  SelectChapterScreen({super.key, this.from});
 
   @override
   State<SelectChapterScreen> createState() => _SelectChapterScreenState();
 }
 
 class _SelectChapterScreenState extends State<SelectChapterScreen> {
+
+  List<String> chapterOptions = [
+    "Motion",
+    "Laws of Motions",
+    "Gravitation",
+    "Work, Energy & Power",
+  ];
+
+
+  @override
+  void initState() {
+    if(widget.from == "course"){
+      chapterOptions = [
+        "Units and Measurements",
+        "Motion in a Straight Line",
+        "Motion in a plane",
+        "Motion in a Straight Liner",
+        "Motion in a plane",
+        "Units and Measurements"
+      ];
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,30 +165,28 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                         ),
                       ),
                       SizedBox(height: 20.h),
-                      ProfileOptionWidget(
-                        title: 'Motion',
-                        itemClick: (){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SelectTopicScreen()),
+                      Column(
+                        children: chapterOptions.map((title) {
+                          return ProfileOptionWidget(
+                            title: title,
+                            itemClick: () {
+                              if(widget.from == "course"){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => LearningChapterVideosScreen()),
+                                );
+                              }else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => SelectTopicScreen()),
+                                );
+                              }
+
+                            },
                           );
-                        },
-                      ),
-                      ProfileOptionWidget(
-                        title: 'Laws of Motions',
-                        itemClick: (){
+                        }).toList(),
+                      )
 
-                        },
-                      ),
-                      ProfileOptionWidget(
-                        title: 'Gravitation',
-                        itemClick: (){
-
-                        },
-                      ),
-                      ProfileOptionWidget(
-                        title: 'Work, Energy & Power',
-                      ),
                     ],
                   ),
                 ),

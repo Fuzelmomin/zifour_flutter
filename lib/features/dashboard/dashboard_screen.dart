@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
+import '../courses/all_course_list_screen.dart';
 import '../mentor/mentors_list_screen.dart';
 import 'home_screen.dart';
 import 'mentors_screen.dart';
@@ -23,7 +24,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     MentorsListScreen(),
-    const ModulesScreen(),
+    const AllCoursesScreen(),
     const ProfileScreen(),
   ];
 

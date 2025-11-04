@@ -14,7 +14,8 @@ import '../../core/widgets/info_row.dart';
 import '../../l10n/app_localizations.dart';
 
 class ChallengeResultScreen extends StatefulWidget {
-  const ChallengeResultScreen({super.key});
+  String? title;
+  ChallengeResultScreen({super.key, this.title});
 
   @override
   State<ChallengeResultScreen> createState() => _ChallengeResultScreenState();
@@ -73,7 +74,7 @@ class _ChallengeResultScreenState extends State<ChallengeResultScreen> {
                   right: 5.w,
                   child: CustomAppBar(
                     isBack: true,
-                    title: 'Challenge Result 🏆',
+                    title: widget.title ?? 'Challenge Result 🏆',
                   )),
               // Main Content with BLoC
               Positioned(

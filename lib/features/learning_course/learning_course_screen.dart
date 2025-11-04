@@ -8,6 +8,9 @@ import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
+import 'challenger_zone_solution_screen.dart';
+import 'learning_course_list_screen.dart';
+import 'learning_test_series_screen.dart';
 
 class LearningCourseScreen extends StatefulWidget {
   const LearningCourseScreen({super.key});
@@ -89,7 +92,27 @@ class _LearningCourseScreenState extends State<LearningCourseScreen> {
                   //padding: const EdgeInsets.all(16),
                   itemCount: cardList.length,
                   itemBuilder: (context, index) {
-                    return _LearningItem(card: cardList[index]);
+                    return _LearningItem(
+                        card: cardList[index],
+                      onTap: (){
+                          if(index == 0){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => LearningCourseListScreen()),
+                            );
+                          }else if(index == 1){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ChallengerZoneSolutionScreen()),
+                            );
+                          }else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => LearningTestSeriesScreen()),
+                            );
+                          }
+                      },
+                    );
                   },
                 ),
               ),
@@ -121,55 +144,59 @@ class _LearningCard {
 
 class _LearningItem extends StatelessWidget {
   final _LearningCard card;
-  const _LearningItem({required this.card});
+  final Function() onTap;
+  const _LearningItem({required this.card, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return SignupFieldBox(
-      margin: const EdgeInsets.only(bottom: 18.0),
-      padding: const EdgeInsets.all(15.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// Icon Circle
-          SvgPicture.asset(
-            card.iconPath,
-            height: 55.h,
-            width: 55.h,
-          ),
-
-          const SizedBox(width: 16),
-
-          /// Texts
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  card.title,
-                  style: AppTypography.inter20Medium,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  card.subtitle,
-                  style: AppTypography.inter12Medium.copyWith(
-                    color: AppColors.white.withOpacity(0.6)
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Text(
-                  card.buttonText,
-                  style: AppTypography.inter12Medium.copyWith(
-                    fontSize: 13.sp,
-                    color: AppColors.pinkColor,
-                    decorationColor: AppColors.pinkColor,
-                    decoration: TextDecoration.underline
-                  ),
-                ),
-              ],
+    return GestureDetector(
+      onTap: onTap,
+      child: SignupFieldBox(
+        margin: const EdgeInsets.only(bottom: 18.0),
+        padding: const EdgeInsets.all(15.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Icon Circle
+            SvgPicture.asset(
+              card.iconPath,
+              height: 55.h,
+              width: 55.h,
             ),
-          )
-        ],
+
+            const SizedBox(width: 16),
+
+            /// Texts
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    card.title,
+                    style: AppTypography.inter20Medium,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    card.subtitle,
+                    style: AppTypography.inter12Medium.copyWith(
+                      color: AppColors.white.withOpacity(0.6)
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Text(
+                    card.buttonText,
+                    style: AppTypography.inter12Medium.copyWith(
+                      fontSize: 13.sp,
+                      color: AppColors.pinkColor,
+                      decorationColor: AppColors.pinkColor,
+                      decoration: TextDecoration.underline
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

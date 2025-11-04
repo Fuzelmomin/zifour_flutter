@@ -67,7 +67,7 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 15.h,
+
                     children: [
                       Container(
                         width: double.infinity,
