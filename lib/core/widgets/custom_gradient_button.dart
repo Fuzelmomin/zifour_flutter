@@ -90,7 +90,7 @@ class CustomGradientArrowButton extends StatelessWidget {
                   text,
                   style: textStyle ?? AppTypography.inter14Bold,
                 ),
-                Image.asset(
+                icon ?? Image.asset(
                   assetPath ?? AssetsPath.icRightArrowCircle,
                   width: 28.h,
                   height: 28.h,

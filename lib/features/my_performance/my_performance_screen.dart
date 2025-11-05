@@ -7,7 +7,7 @@ import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
-import '../../core/widgets/all_mentors_item.dart';
+import '../../core/widgets/mentors_videos_item.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/my_course_item.dart';

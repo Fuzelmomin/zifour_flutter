@@ -9,7 +9,8 @@ import '../../l10n/app_localizations.dart';
 
 class ChallengesItemWidget extends StatelessWidget {
   String? btnName;
-  ChallengesItemWidget({super.key, this.btnName});
+  Function() onTap;
+  ChallengesItemWidget({super.key, this.btnName, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +60,7 @@ class ChallengesItemWidget extends StatelessWidget {
           CustomGradientArrowButton(
             text: btnName ?? '',
             onPressed: () {
-
+              onTap();
             },
           ),
         ],

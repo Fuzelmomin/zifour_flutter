@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -11,7 +12,8 @@ import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 
 class QuestionMcqScreen extends StatefulWidget {
-  const QuestionMcqScreen({super.key});
+  String type;
+  QuestionMcqScreen({super.key, required this.type});
 
   @override
   State<QuestionMcqScreen> createState() => _QuestionMcqScreenState();
@@ -20,6 +22,14 @@ class QuestionMcqScreen extends StatefulWidget {
 class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
 
   final BehaviorSubject<String?> selectedOption = BehaviorSubject<String?>.seeded(null);
+
+
+  String selectedFilter = "";
+  final options = [
+    "Add Note",
+    "Mark as Bookmark",
+    "Feedback"
+  ];
 
   @override
   void dispose() {
@@ -59,14 +69,23 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                     isBack: true,
                     title: 'Law of Motion',
                     isActionWidget: true,
-                    actionWidget: Image.asset(
-                      AssetsPath.icMenuBox,
-                      width: 40.w,
-                      height: 40.h,
+                    actionWidget: PopupMenuButton<String>(
+                      onSelected: (value) => setState(() => selectedFilter = value),
+                      itemBuilder: (context) {
+                        return options
+                            .map((e) => PopupMenuItem(value: e, child: Text(e)))
+                            .toList();
+                      },
+                      child: Image.asset(
+                        AssetsPath.icMenuBox,
+                        width: 30.w,
+                        height: 30.h,
+                      ),
                     ),
                     actionClick: (){
 
                     },
+
                   )),
 
               // Main Content with BLoC
@@ -164,14 +183,17 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                             child: CustomGradientButton(
                               text: 'Video Solution',
                               onPressed: () {},
-                              customDecoration: BoxDecoration(
+                              customDecoration: widget.type == "Start Exam" ? BoxDecoration(
                                   borderRadius:
                                   BorderRadius.circular(12.r),
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.2),
+                                    color: Colors.black.withOpacity(0.2),
                                   ),
-                                  color: Color(0xFF464375)
-                              ),
+                                  color: Colors.grey.withOpacity(0.3)
+                              ) : null,
+                              textStyle: widget.type == "Start Exam" ? AppTypography.inter14Bold.copyWith(
+                                  color: Colors.white.withOpacity(0.2)
+                              ) : null,
                             ),
                           ),
 
@@ -179,14 +201,17 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                             child: CustomGradientButton(
                               text: 'Text Solution',
                               onPressed: () {},
-                              customDecoration: BoxDecoration(
+                              customDecoration: widget.type == "Start Exam" ? BoxDecoration(
                                   borderRadius:
                                   BorderRadius.circular(12.r),
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.2),
+                                    color: Colors.black.withOpacity(0.2),
                                   ),
-                                  color: Color(0xFF464375)
-                              ),
+                                  color: Colors.grey.withOpacity(0.3)
+                              ) : null,
+                              textStyle: widget.type == "Start Exam" ? AppTypography.inter14Bold.copyWith(
+                                color: Colors.white.withOpacity(0.2)
+                              ) : null,
                             ),
                           ),
                         ],
@@ -290,50 +315,6 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _smallBtn(String title) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          title,
-          style: const TextStyle(color: Colors.white, fontSize: 13),
-        ),
-      ),
-    );
-  }
-
-  Widget _secondaryBtn(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Text(text, style: const TextStyle(color: Colors.white)),
-    );
-  }
-
-  Widget _primaryBtn(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xffFF00C6), Color(0xff7C4DFF)],
-        ),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Text(text,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
     );
   }
 

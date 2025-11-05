@@ -56,7 +56,7 @@ class _ChallengerZoneSolutionScreenState extends State<ChallengerZoneSolutionScr
 
               // Main Content with BLoC
               Positioned(
-                top: 70.h,
+                top: 60.h,
                 left: 20.w,
                 right: 20.w,
                 bottom: 50.h,
@@ -79,10 +79,10 @@ class _ChallengerZoneSolutionScreenState extends State<ChallengerZoneSolutionScr
                 ),
               ),
               Positioned(
-                top: 10.h,
+                top: 110.h,
                 left: 20.w,
                 right: 20.w,
-                bottom: 50.h,
+                bottom: 0.h,
                 child: ListView.separated(
                   itemCount: 5,
                   physics: BouncingScrollPhysics(),

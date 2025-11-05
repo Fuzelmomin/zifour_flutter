@@ -7,7 +7,7 @@ import 'package:zifour_sourcecode/features/auth/edit_profile_screen.dart';
 import 'package:zifour_sourcecode/features/courses/my_courses_screen.dart';
 import 'package:zifour_sourcecode/features/demo_ui.dart';
 import 'package:zifour_sourcecode/features/learning_course/learning_chapter_videos_screen.dart';
-import 'package:zifour_sourcecode/features/mentor/mentors_list_screen.dart';
+import 'package:zifour_sourcecode/features/mentor/mentors_videos_list_screen.dart';
 import 'package:zifour_sourcecode/features/practics_mcq/select_topic_screen.dart';
 import 'package:zifour_sourcecode/features/reset_password/reset_password_screen.dart';
 import '../../core/constants/app_colors.dart';

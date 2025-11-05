@@ -125,6 +125,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               children: [
                                 labelWidget(
                                     '${AppLocalizations.of(context)?.studentName.toUpperCase()}'),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
                                 CustomTextField(
                                   hint:
                                       '${AppLocalizations.of(context)?.fullName}',
@@ -141,7 +144,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   height: 7.h,
                                 ),
                                 labelWidget(
-                                    '${AppLocalizations.of(context)?.phoneNumber}'),
+                                    '${AppLocalizations.of(context)?.phoneNumber.toUpperCase()}'),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
                                 CustomTextField(
                                   hint:
                                       '${AppLocalizations.of(context)?.mobileNumber.toUpperCase()}',
@@ -160,6 +166,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ),
                                 labelWidget(
                                     '${AppLocalizations.of(context)?.email.toUpperCase()}'),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
                                 CustomTextField(
                                   hint:
                                       '${AppLocalizations.of(context)?.email}',
@@ -173,12 +182,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ),
                                 labelWidget(
                                     '${AppLocalizations.of(context)?.selectStandard.toUpperCase()}'),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
                                 _buildStandardDropdown(state),
                                 SizedBox(
                                   height: 7.h,
                                 ),
                                 labelWidget(
                                     '${AppLocalizations.of(context)?.city.toUpperCase()}'),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
                                 CustomTextField(
                                   hint:
                                   '${AppLocalizations.of(context)?.city}',
@@ -197,6 +212,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ),
                                 labelWidget(
                                     '${AppLocalizations.of(context)?.pincode.toUpperCase()}'),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
                                 CustomTextField(
                                   hint:
                                   '${AppLocalizations.of(context)?.pincode}',
@@ -213,6 +231,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 SizedBox(height: 7.h,),
                                 labelWidget(
                                     '${AppLocalizations.of(context)?.address.toUpperCase()}'),
+                                SizedBox(
+                                  height: 3.h,
+                                ),
                                 CustomTextField(
                                   hint:
                                   '${AppLocalizations.of(context)?.address}',

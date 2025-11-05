@@ -9,6 +9,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
+import '../challenger_zone/challenge_result_screen.dart';
 
 class LearningTestSeriesScreen extends StatefulWidget {
   const LearningTestSeriesScreen({super.key});
@@ -68,7 +69,16 @@ class _LearningTestSeriesScreenState extends State<LearningTestSeriesScreen> {
                   itemCount: 5,
                   physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return testCard();
+                    return testCard(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ChallengeResultScreen(
+                            title: "Test Series Results 🏆",
+                          )),
+                        );
+                      }
+                    );
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return SizedBox(
@@ -84,7 +94,7 @@ class _LearningTestSeriesScreenState extends State<LearningTestSeriesScreen> {
     );
   }
 
-  Widget testCard() {
+  Widget testCard({required Function() onTap}) {
     return SignupFieldBox(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
@@ -162,7 +172,8 @@ class _LearningTestSeriesScreenState extends State<LearningTestSeriesScreen> {
               Expanded(
                 child: CustomGradientButton(
                   text: 'My Performance',
-                  onPressed: () {},
+                  onPressed: onTap,
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
                   customDecoration: BoxDecoration(
                       borderRadius:
                       BorderRadius.circular(12.r),

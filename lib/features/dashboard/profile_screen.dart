@@ -5,7 +5,7 @@ import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/auth/edit_profile_screen.dart';
 import 'package:zifour_sourcecode/features/courses/my_courses_screen.dart';
 import 'package:zifour_sourcecode/features/demo_ui.dart';
-import 'package:zifour_sourcecode/features/mentor/mentors_list_screen.dart';
+import 'package:zifour_sourcecode/features/mentor/mentors_videos_list_screen.dart';
 import 'package:zifour_sourcecode/features/reset_password/reset_password_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -14,6 +14,7 @@ import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/profile_option_widget.dart';
 import '../../l10n/app_localizations.dart';
+import '../mentor/mentor_list_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -64,19 +65,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 15.h,
+
                   children: [
                     Container(
                       width: double.infinity,
-                      height: 160.h,
+                      height: 190.h,
                       child: Stack(
                         children: [
                           Positioned(
-                            top: 40.h,
+                            top: 50.h,
                             left: 0.0,
                             right: 0.0,
                             child: Container(
-                              height: 110.h,
+                              height: 140.h,
                               width: double.infinity,
                               child: SignupFieldBox(
                                 boxBgColor: AppColors.pinkColor3.withOpacity(0.1),
@@ -111,54 +112,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  width: 70.w,
-                                  height: 70.w,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.pinkColor3.withOpacity(0.2)
-                                  ),
-                                  child: Center(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(30.r),
-                                      child: CachedNetworkImage(
-                                        imageUrl: 'https://i.pravatar.cc/150?img=3',
-                                        width: 60.w,
-                                        height: 60.h,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) => Container(
-                                          width: 60.w,
-                                          height: 60.h,
+                                SizedBox(
+                                  width: 90.w,
+                                  height: 90.w,
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Positioned.fill(
+                                        child: Container(
+                                          width: 90.w,
+                                          height: 90.w,
                                           decoration: BoxDecoration(
-                                            color: AppColors.pinkColor.withOpacity(0.3),
-                                            borderRadius: BorderRadius.circular(30.r),
+                                            shape: BoxShape.circle,
+                                            color: AppColors.pinkColor3.withOpacity(0.2)
                                           ),
-                                          child: Icon(
-                                            Icons.person,
-                                            color: AppColors.pinkColor,
-                                            size: 30.sp,
-                                          ),
-                                        ),
-                                        errorWidget: (context, url, error) => Container(
-                                          width: 60.w,
-                                          height: 60.h,
-                                          decoration: BoxDecoration(
-                                            color: AppColors.pinkColor.withOpacity(0.3),
-                                            borderRadius: BorderRadius.circular(30.r),
-                                          ),
-                                          child: Icon(
-                                            Icons.person,
-                                            color: AppColors.pinkColor,
-                                            size: 30.sp,
+                                          child: Center(
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(40.r),
+                                              child: CachedNetworkImage(
+                                                imageUrl: 'https://i.pravatar.cc/150?img=3',
+                                                width: 80.w,
+                                                height: 80.h,
+                                                fit: BoxFit.cover,
+                                                placeholder: (context, url) => Container(
+                                                  width: 80.w,
+                                                  height: 80.h,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.pinkColor.withOpacity(0.3),
+                                                    borderRadius: BorderRadius.circular(30.r),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.person,
+                                                    color: AppColors.pinkColor,
+                                                    size: 30.sp,
+                                                  ),
+                                                ),
+                                                errorWidget: (context, url, error) => Container(
+                                                  width: 80.w,
+                                                  height: 80.h,
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.pinkColor.withOpacity(0.3),
+                                                    borderRadius: BorderRadius.circular(30.r),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.person,
+                                                    color: AppColors.pinkColor,
+                                                    size: 30.sp,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
+                                      Positioned(
+                                        right: -5.0,
+                                        bottom: 10.0,
+                                        child: Container(
+                                          width: 30.0,
+                                          height: 30.0,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: AppColors.pinkColor
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.edit,
+                                              color: AppColors.darkBlue,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 )
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

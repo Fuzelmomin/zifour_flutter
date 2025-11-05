@@ -5,7 +5,8 @@ import 'package:rxdart/rxdart.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../courses/all_course_list_screen.dart';
-import '../mentor/mentors_list_screen.dart';
+import '../mentor/mentor_list_screen.dart';
+import '../mentor/mentors_videos_list_screen.dart';
 import 'home_screen.dart';
 import 'mentors_screen.dart';
 import 'modules_screen.dart';
@@ -94,7 +95,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     currentIndex: currentIndex,
                     icon: AssetsPath.svgSelMentor,
                     unselectedIcon: AssetsPath.svgUnSelMentor,
-                    label: 'Mentor Forum',
+                    label: 'Mentors',
                     onTap: () => _onItemTapped(1),
                   ),
                   _buildNavItem(
@@ -102,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     currentIndex: currentIndex,
                     icon: AssetsPath.svgSelModules,
                     unselectedIcon: AssetsPath.svgUnSelModules,
-                    label: 'Modules',
+                    label: 'Course',
                     onTap: () => _onItemTapped(2),
                   ),
                   _buildNavItem(
@@ -131,7 +132,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required VoidCallback onTap,
   }) {
     final bool isSelected = currentIndex == index;
-
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -140,8 +140,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             SvgPicture.asset(
               isSelected ? icon : unselectedIcon,
-              width: 24.w,
-              height: 24.h,
+              width: index == 0 && isSelected == false ? 20.h : 24.h,
+              height: index == 0 && isSelected == false ? 20.h : 24.h,
             ),
             SizedBox(height: 4.h),
             Text(

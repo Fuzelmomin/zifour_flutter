@@ -368,7 +368,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Text(
                   displayText,
-                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
+                  style:
+                  AppTypography.inter14Medium.copyWith(color: Colors.white),
                 ),
               );
             }).toList();
@@ -389,7 +390,8 @@ class _SignupScreenState extends State<SignupScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Text(
                   displayText,
-                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
+                  style:
+                  AppTypography.inter14Medium.copyWith(color: Colors.white),
                 ),
               ),
             );

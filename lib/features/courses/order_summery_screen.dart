@@ -123,8 +123,8 @@ class _OrderSummeryScreenState extends State<OrderSummeryScreen> {
 
                             /// Total Amount Box
                             Container(
-                              height: 50,
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              height: 45.h,
+                              padding: const EdgeInsets.only(left: 12),
                               decoration: BoxDecoration(
                                 color: const Color(0xFF2C2C5A),
                                 borderRadius: BorderRadius.circular(12),
@@ -137,16 +137,19 @@ class _OrderSummeryScreenState extends State<OrderSummeryScreen> {
                                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    height: 45.h,
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
                                         colors: [Color(0xffFF2E63), Color(0xff9B00FF)],
                                       ),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: const Text(
-                                      "₹ 1,999",
-                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+                                    child: Center(
+                                      child: const Text(
+                                        "₹ 1,999",
+                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -155,6 +158,8 @@ class _OrderSummeryScreenState extends State<OrderSummeryScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 15.0,),
+                      _paytmWidget(),
 
                       const SizedBox(height: 22),
                       CustomGradientButton(
@@ -221,6 +226,56 @@ class _OrderSummeryScreenState extends State<OrderSummeryScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _paytmWidget() {
+    return SignupFieldBox(
+      padding: const EdgeInsets.all(15.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Paytm Logo
+          Image.asset(
+            AssetsPath.icPaytm,
+            height: 34,
+            width: 34,
+          ),
+
+          const SizedBox(width: 12),
+
+          // Text Column
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Pay with Paytm",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  "Fast & secure UPI / Wallet payment",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.6),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Radio Button
+          Icon(
+            Icons.check_circle,
+            color: AppColors.pinkColor,
+            size: 30.0,
+          )
+        ],
       ),
     );
   }

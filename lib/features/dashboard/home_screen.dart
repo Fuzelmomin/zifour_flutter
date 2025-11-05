@@ -8,7 +8,7 @@ import 'package:zifour_sourcecode/features/al_based_performance/al_based_perform
 import 'package:zifour_sourcecode/features/courses/all_course_list_screen.dart';
 import 'package:zifour_sourcecode/features/india_test_series/all_india_test_series_screen.dart';
 import 'package:zifour_sourcecode/features/live_class/live_class_screen.dart';
-import 'package:zifour_sourcecode/features/mentor/mentors_list_screen.dart';
+import 'package:zifour_sourcecode/features/mentor/mentors_videos_list_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/be_ziddi_item_widget.dart';
@@ -21,6 +21,7 @@ import '../../l10n/app_localizations.dart';
 import '../challenger_zone/challenger_zone_screen.dart';
 import '../doubts/ask_doubts_screen.dart';
 import '../learning_course/learning_course_screen.dart';
+import '../mentor/mentor_list_screen.dart';
 import '../practics_mcq/practice_subject_screen.dart';
 
 class HomeScreen extends StatefulWidget {

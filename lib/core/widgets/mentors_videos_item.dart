@@ -7,9 +7,9 @@ import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import '../constants/app_colors.dart';
 import '../constants/assets_path.dart';
 
-class AllMentorsItem extends StatelessWidget {
+class MentorVideosItem extends StatelessWidget {
   Map<String, String> item;
-  AllMentorsItem({super.key, required this.item});
+  MentorVideosItem({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {

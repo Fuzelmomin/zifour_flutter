@@ -2,20 +2,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
+import 'package:zifour_sourcecode/features/mentor/mentors_videos_list_screen.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
-import '../../core/widgets/all_mentors_item.dart';
+import '../../core/widgets/mentor_item.dart';
+import '../../core/widgets/mentors_videos_item.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/my_course_item.dart';
 import '../../l10n/app_localizations.dart';
 
 class MentorsListScreen extends StatefulWidget {
-  String? mentorName;
 
   MentorsListScreen({
     super.key,
-    this.mentorName
   });
 
   @override
@@ -60,14 +60,14 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
           child: Stack(
             children: [
               // Background Decoration set
-          
+
               Positioned.fill(
                 child: Image.asset(
                   AssetsPath.signupBgImg,
                   fit: BoxFit.cover,
                 ),
               ),
-          
+
               // App Bar
               Positioned(
                   top: 0.h,
@@ -75,22 +75,12 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
                   right: 20.w,
                   child: CustomAppBar(
                     isBack: true,
-                    title: widget.mentorName ?? '${AppLocalizations.of(context)?.mentors}',
+                    title: '${AppLocalizations.of(context)?.mentors}',
                   )),
-          
-          
-              widget.mentorName == null ? Positioned(
-                  top: 70.h,
-                  left: 20.w,
-                  right: 20.w,
-                  child: Text(
-                    '${AppLocalizations.of(context)?.zMentors}',
-                    style: AppTypography.inter18SemiBold,
-                  )) : Container(),
-          
+
               // Main Content with BLoC
               Positioned(
-                top: 100.h,
+                top: 70.h,
                 left: 20.w,
                 right: 20.w,
                 bottom: 0,
@@ -104,7 +94,15 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
                     var item = mentors[index];
                     return Padding(
                       padding: EdgeInsets.only(bottom: 16.h),
-                      child: AllMentorsItem(item: item,),
+                      child: MentorItem(
+                        item: item,
+                        onTap: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => MentorsVideosListScreen(mentorName: item['name'],)),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),

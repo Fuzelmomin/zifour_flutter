@@ -8,6 +8,7 @@ import 'package:zifour_sourcecode/core/widgets/challenge_option_box.dart';
 import 'package:zifour_sourcecode/core/widgets/challenge_ready_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/chapter_selection_box.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
+import 'package:zifour_sourcecode/features/practics_mcq/question_mcq_screen.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -73,6 +74,14 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
                   return Container(
                     child: ChallengesItemWidget(
                       btnName: index == 1 || index == 5 ? 'View Results' : 'Start Exam',
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => QuestionMcqScreen(
+                            type: index == 1 || index == 5 ? 'View Results' : 'Start Exam',
+                          )),
+                        );
+                      },
                     ),
                   );
                 },

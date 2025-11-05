@@ -41,14 +41,16 @@ class ChallengerScoreItem extends StatelessWidget {
                 ),
                 Image.asset(
                   AssetsPath.icCup,
-                  width: 55.h,
-                  height: 55.h,
+                  width: 60.h,
+                  height: 60.h,
+                  fit: BoxFit.fill,
                 )
               ],
             ),
             SizedBox(height: 16),
             Row(
               spacing: 5.w,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: InfoRow(title: "Physics", value: "Motion, Laws of Motion", subTitleStyle: AppTypography.inter12SemiBold,),
@@ -61,7 +63,7 @@ class ChallengerScoreItem extends StatelessWidget {
             SizedBox(
               height: 5.h,
             ),
-            InfoRow(title: "Chemistry", value: "Chemical Bonding, Periodic Table", subTitleStyle: AppTypography.inter12SemiBold),
+            SizedBox(width: double.infinity, child: InfoRow(title: "Chemistry", value: "Chemical Bonding, Periodic Table", subTitleStyle: AppTypography.inter12SemiBold)),
             SizedBox(
               height: 8.h,
             ),
@@ -71,7 +73,8 @@ class ChallengerScoreItem extends StatelessWidget {
                 Expanded(
                   child: CustomGradientButton(
                     text: 'My Performance',
-                    onPressed: () {},
+                    onPressed: onTap,
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
                     customDecoration: BoxDecoration(
                         borderRadius:
                         BorderRadius.circular(12.r),
