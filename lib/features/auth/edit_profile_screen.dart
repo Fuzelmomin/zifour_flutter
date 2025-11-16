@@ -404,13 +404,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 displayText = '${AppLocalizations.of(context)?.dropper}';
               }
               return Container(
-                width: double.infinity,
-                alignment: Alignment.centerLeft,
+                height: 56.h,
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text(
-                  displayText,
-                  style:
-                      AppTypography.inter14Medium.copyWith(color: Colors.white),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      displayText,
+                      style:
+                          AppTypography.inter14Medium.copyWith(color: Colors.white),
+                    ),
+                  ],
                 ),
               );
             }).toList();

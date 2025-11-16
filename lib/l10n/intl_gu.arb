@@ -129,6 +129,11 @@
   "challengesList": "Challenges List",
   "subject": "Subject",
   "chapter": "Chapter",
-  "topic": "Topic"
+  "topic": "Topic",
+  "selectCourse": "Select Course",
+  "pleaseEnterPassword": "Please enter password",
+  "pleaseEnterConfirmPassword": "Please enter confirm password",
+  "passwordMustBe6Characters": "Password must be at least 6 characters long",
+  "passwordNotMatch": "Passwords do not match"
 }
 

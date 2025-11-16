@@ -7,6 +7,9 @@ import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/custom_gradient_button.dart';
+import '../../core/widgets/custom_loading_widget.dart';
+import '../../core/api_models/medium_model.dart';
+import '../../core/presentation/pages/no_internet_screen.dart';
 import '../welcome/welcome_screen.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -21,7 +24,8 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
-  AppLanguage _currentLanguage = AppLanguage.english;
+  AppLanguage? _currentLanguage;
+  List<MediumModel> _availableMediums = [];
 
   @override
   void initState() {
@@ -37,8 +41,8 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
       curve: Curves.easeInOut,
     );
     
-    // Load current language
-    context.read<LanguageBloc>().add(LoadLanguage());
+    // Fetch languages from API
+    context.read<LanguageBloc>().add(FetchLanguages());
   }
 
   @override
@@ -49,17 +53,50 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<LanguageBloc, LanguageState>(
+      builder: (context, state) {
+        // Show NoInternetScreen if there's no internet
+        if (state is NoInternetState) {
+          return NoInternetScreen(
+            onRetry: () {
+              context.read<LanguageBloc>().add(FetchLanguages());
+            },
+            message: 'Please check your internet connection to load available languages.',
+          );
+        }
+        
+        // Show the normal language selection screen
+        return _buildLanguageSelectionScreen(context);
+      },
+    );
+  }
+
+  Widget _buildLanguageSelectionScreen(BuildContext context) {
     return Scaffold(
       body: BlocListener<LanguageBloc, LanguageState>(
         listener: (context, state) {
-          if (state is LanguageLoaded) {
+          if (state is LanguagesFetched) {
+            setState(() {
+              _availableMediums = state.mediums;
+              _currentLanguage = state.currentLanguage ?? AppLanguage.english;
+              // currentMedium is now available in state.currentMedium if needed
+            });
+            _animationController.forward();
+          } else if (state is LanguageLoaded) {
             setState(() {
               _currentLanguage = state.currentLanguage;
+              if (state.mediums != null) {
+                _availableMediums = state.mediums!;
+              }
             });
             _animationController.forward();
           } else if (state is LanguageChanged) {
             setState(() {
               _currentLanguage = state.newLanguage;
+              if (state.mediums != null) {
+                _availableMediums = state.mediums!;
+              }
+              // state.newMedium contains the selected MediumModel with med_id
             });
             _animationController.reset();
             _animationController.forward();
@@ -67,6 +104,13 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
             // Navigate to next screen or show success message
             // TODO: Navigate to main screen
             // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainScreen()));
+          } else if (state is LanguageError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         },
         child: Container(
@@ -123,29 +167,56 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                             height: 1.5,
                           ),
                         ),
-                       SizedBox(height: 40.h),
+                        SizedBox(height: 40.h),
                        
-                       // Language selection boxes
-                       Column(
-                         children: [
-                           _buildLanguageOption(
-                             language: AppLanguage.gujarati,
-                             isSelected: _currentLanguage == AppLanguage.gujarati,
-                             onTap: () {
-                               context.read<LanguageBloc>().add(ChangeLanguage(AppLanguage.gujarati));
-                             },
-                           ),
+                       // Language selection boxes - Dynamic from API
+                       BlocBuilder<LanguageBloc, LanguageState>(
+                         builder: (context, state) {
+                           if (state is LanguageLoading) {
+                             return CustomLoadingWidget.inline(
+                               type: LoadingType.circle,
+                               color: AppColors.pinkColor,
+                               size: 50.0.sp,
+                               message: 'Loading languages...',
+                             );
+                           }
                            
-                           SizedBox(height: 16.h),
+                           if (_availableMediums.isEmpty) {
+                             return Center(
+                               child: Padding(
+                                 padding: EdgeInsets.all(20.h),
+                                 child: Text(
+                                   'No languages available',
+                                   style: AppTypography.inter14Regular.copyWith(
+                                     color: Colors.white.withOpacity(0.7),
+                                   ),
+                                 ),
+                               ),
+                             );
+                           }
                            
-                           _buildLanguageOption(
-                             language: AppLanguage.english,
-                             isSelected: _currentLanguage == AppLanguage.english,
-                             onTap: () {
-                               context.read<LanguageBloc>().add(ChangeLanguage(AppLanguage.english));
-                             },
-                           ),
-                         ],
+                           return Column(
+                             children: _availableMediums.map((medium) {
+                               final appLanguage = AppLanguage.fromMediumModel(medium);
+                               final isSelected = appLanguage != null && 
+                                   _currentLanguage != null && 
+                                   _currentLanguage == appLanguage;
+                               
+                               return Padding(
+                                 padding: EdgeInsets.only(bottom: 16.h),
+                                 child: _buildMediumOption(
+                                   medium: medium,
+                                   isSelected: isSelected,
+                                   onTap: () {
+                                     context.read<LanguageBloc>().add(
+                                       SelectLanguageFromMedium(medium),
+                                     );
+                                   },
+                                 ),
+                               );
+                             }).toList(),
+                           );
+                         },
                        ),
              
                      ],
@@ -157,8 +228,8 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                   right: 15.w,
                   bottom: 15.h,
                   child: CustomGradientArrowButton(
-                    text: "${AppLocalizations.of(context)!.continueWith} ${_currentLanguage.displayName}",
-                    onPressed: () {
+                    text: "${AppLocalizations.of(context)!.continueWith} ${_currentLanguage?.displayName ?? 'English'}",
+                    onPressed: _currentLanguage == null ? null : () {
                       // Navigate to welcome screen
                       Navigator.pushReplacement(
                         context,
@@ -175,8 +246,8 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
     );
   }
 
-  Widget _buildLanguageOption({
-    required AppLanguage language,
+  Widget _buildMediumOption({
+    required MediumModel medium,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
@@ -232,7 +303,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                     ? const Color(0xFFF5F5F5) // Dark white for selected
                     : const Color(0xFF747688), // Grey for unselected
               ),
-              child: Text(language.displayName),
+              child: Text(medium.name),
             ),
           ],
         ),

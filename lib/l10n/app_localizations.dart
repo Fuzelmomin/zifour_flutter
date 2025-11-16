@@ -871,6 +871,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Topic'**
   String get topic;
+
+  /// No description provided for @selectCourse.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Course'**
+  String get selectCourse;
+
+  /// No description provided for @pleaseEnterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter password'**
+  String get pleaseEnterPassword;
+
+  /// No description provided for @pleaseEnterConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter confirm password'**
+  String get pleaseEnterConfirmPassword;
+
+  /// No description provided for @passwordMustBe6Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters long'**
+  String get passwordMustBe6Characters;
+
+  /// No description provided for @passwordNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordNotMatch;
 }
 
 class _AppLocalizationsDelegate

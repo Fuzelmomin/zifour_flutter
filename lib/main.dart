@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                home: DashboardScreen(), // Start with splash screen
+                home: SplashScreen(), // Start with splash screen
               );
             },
           );

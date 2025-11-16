@@ -119,6 +119,7 @@ class CustomGradientButton extends StatelessWidget {
   final Color? loadingColor;
   final String? assetPath;
   final BoxDecoration? customDecoration;
+  final bool isEnabled;
 
   const CustomGradientButton({
     super.key,
@@ -135,7 +136,8 @@ class CustomGradientButton extends StatelessWidget {
     this.isLoading = false,
     this.loadingColor,
     this.assetPath,
-    this.customDecoration
+    this.customDecoration,
+    this.isEnabled = true,
   });
 
   // Default gradient colors (pink to purple)
@@ -146,6 +148,11 @@ class CustomGradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDisabled = !isEnabled || isLoading;
+    final effectiveColors = isDisabled 
+        ? [Colors.grey.withOpacity(0.5), Colors.grey.withOpacity(0.3)]
+        : (gradientColors ?? defaultGradientColors);
+    
     return Container(
       width: width ?? double.infinity,
       height: height ?? 50.h,
@@ -155,9 +162,9 @@ class CustomGradientButton extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: gradientColors ?? defaultGradientColors,
+          colors: effectiveColors,
         ),
-        boxShadow: [
+        boxShadow: isDisabled ? [] : [
           BoxShadow(
             color: (gradientColors?.first ?? defaultGradientColors.first).withOpacity(0.3),
             blurRadius: 8,
@@ -168,7 +175,7 @@ class CustomGradientButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: isLoading ? null : onPressed,
+          onTap: isDisabled ? null : onPressed,
           borderRadius: borderRadius ?? BorderRadius.circular(12.r),
           child: Container(
             padding: padding ?? EdgeInsets.symmetric(horizontal: 15.w),
@@ -191,7 +198,11 @@ class CustomGradientButton extends StatelessWidget {
                 ],
                 Text(
                   text,
-                  style: textStyle ?? AppTypography.inter14Bold,
+                  style: (textStyle ?? AppTypography.inter14Bold).copyWith(
+                    color: isDisabled 
+                        ? Colors.white.withOpacity(0.5) 
+                        : (textStyle?.color ?? Colors.white),
+                  ),
                 ),
               ],
             ),

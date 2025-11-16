@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/gestures.dart';
@@ -6,15 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/gradient_text.dart';
 import 'package:zifour_sourcecode/core/widgets/be_ziddi_item_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/upload_box_widget.dart';
+import 'package:zifour_sourcecode/core/widgets/custom_loading_widget.dart';
 import 'package:zifour_sourcecode/features/auth/login_screen.dart';
 
 import '../../core/bloc/signup_bloc.dart';
+import '../../core/api_models/standard_model.dart';
+import '../../core/api_models/exam_model.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
@@ -36,13 +41,16 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPassController = TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
-  final List<TextEditingController> _otpControllers = List.generate(4, (index) => TextEditingController());
+  final List<TextEditingController> _otpControllers = List.generate(6, (index) => TextEditingController());
+  final List<FocusNode> _otpFocusNodes = List.generate(6, (index) => FocusNode());
 
   BehaviorSubject<int> _mobileVerify = BehaviorSubject<int>.seeded(0);
   // 0 = Not Any Action, 1 = Send OTP, 2 = Verified Mobile, 3 = Failed OTP Verification
 
   BehaviorSubject<int> _otpResendTimer = BehaviorSubject<int>.seeded(20);
   Timer? _timer;
+  final ImagePicker _imagePicker = ImagePicker();
+  bool _showOtpField = false; // Local state to track OTP field visibility
 
   @override
   void initState() {
@@ -60,6 +68,9 @@ class _SignupScreenState extends State<SignupScreen> {
     for (var controller in _otpControllers) {
       controller.dispose();
     }
+    for (var focusNode in _otpFocusNodes) {
+      focusNode.dispose();
+    }
     super.dispose();
   }
 
@@ -74,6 +85,65 @@ class _SignupScreenState extends State<SignupScreen> {
         timer.cancel();
       }
     });
+  }
+
+  void _showImageSourceDialog(BuildContext context, SignupState state) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.darkBlue,
+          title: Text(
+            'Select Image Source',
+            style: AppTypography.inter16Medium.copyWith(color: Colors.white),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt, color: AppColors.pinkColor),
+                title: Text(
+                  'Use Camera',
+                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library, color: AppColors.pinkColor),
+                title: Text(
+                  'Use Gallery',
+                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _imagePicker.pickImage(source: source);
+      if (pickedFile != null) {
+        final imageFile = File(pickedFile.path);
+        context.read<SignupBloc>().add(UpdateImage(imageFile));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error picking image: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -120,6 +190,18 @@ class _SignupScreenState extends State<SignupScreen> {
                       ),
                     );
                   }
+                },
+                buildWhen: (previous, current) {
+                  // Don't rebuild on timer updates (OtpSent with same data except timer)
+                  if (previous is OtpSent && current is OtpSent) {
+                    // Only rebuild if something other than timer changed
+                    return previous.mobileNumber != current.mobileNumber ||
+                           previous.stdId != current.stdId ||
+                           previous.exmId != current.exmId ||
+                           previous.name != current.name;
+                  }
+                  // Rebuild for all other state changes
+                  return true;
                 },
                 builder: (context, state) {
                   return SafeArea(
@@ -175,10 +257,25 @@ class _SignupScreenState extends State<SignupScreen> {
 
                                   SizedBox(
                                     width: double.infinity,
-                                    child: UploadDocBoxWidget(
-                                      title: '${AppLocalizations.of(context)?.uploadMarksheet}',
-                                      itemClick: (){
-
+                                    child: BlocBuilder<SignupBloc, SignupState>(
+                                      builder: (context, state) {
+                                        File? imageFile;
+                                        if (state is SignupLoaded) {
+                                          imageFile = state.data.imageFile;
+                                        } else if (state is OtpSent) {
+                                          imageFile = state.imageFile;
+                                        } else if (state is SignupMobileVerified) {
+                                          imageFile = state.imageFile;
+                                        }
+                                        
+                                        return UploadDocBoxWidget(
+                                          title: '${AppLocalizations.of(context)?.uploadMarksheet}',
+                                          itemClick: () {
+                                            _showImageSourceDialog(context, state);
+                                          },
+                                          // Show image preview if selected
+                                          imageFile: imageFile,
+                                        );
                                       },
                                     ),
                                   )
@@ -201,7 +298,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     isSuffixIcon: true,
                                     textFieldBgColor: Colors.black.withOpacity(0.1),
                                     changedValue: (value) {
-                                      context.read<SignupBloc>().add(UpdateFullName(value));
+                                      context.read<SignupBloc>().add(UpdatePassword(value));
                                     },
                                   ),
                                   CustomTextField(
@@ -211,7 +308,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     isSuffixIcon: true,
                                     textFieldBgColor: Colors.black.withOpacity(0.1),
                                     changedValue: (value) {
-                                      context.read<SignupBloc>().add(UpdateFullName(value));
+                                      context.read<SignupBloc>().add(UpdateConfirmPassword(value));
                                     },
                                   ),
                                 ],
@@ -225,6 +322,85 @@ class _SignupScreenState extends State<SignupScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   _buildMobileSection(state),
+                                  SizedBox(height: 20.h),
+                                  // OTP Input Fields - outside BlocBuilder to prevent rebuilds on timer updates
+                                  _showOtpField
+                                      ? _buildOTPInputFields()
+                                      : Container(),
+                                  SizedBox(height: 15.h),
+                                  // Timer Display - separate BlocBuilder that only rebuilds on timer changes
+                                  _showOtpField
+                                      ? BlocBuilder<SignupBloc, SignupState>(
+                                          buildWhen: (previous, current) {
+                                            // Only rebuild timer display when timer value changes
+                                            if (previous is OtpSent && current is OtpSent) {
+                                              return previous.otpResendTimer != current.otpResendTimer;
+                                            }
+                                            return previous is OtpSent != current is OtpSent;
+                                          },
+                                          builder: (context, state) {
+                                            if (state is OtpSent) {
+                                              final canResend = state.otpResendTimer == 0;
+                                              return Row(
+                                                children: [
+                                                  Text(
+                                                    canResend
+                                                        ? '${AppLocalizations.of(context)?.reSendCode}'
+                                                        : '${AppLocalizations.of(context)?.reSendCodeIn}',
+                                                    style: AppTypography.inter12Regular),
+                                                  GestureDetector(
+                                                    onTap: canResend
+                                                        ? () {
+                                                            context.read<SignupBloc>().add(ResendOTP());
+                                                          }
+                                                        : null,
+                                                    child: Text(
+                                                      canResend
+                                                          ? '${AppLocalizations.of(context)?.resend}'
+                                                          : '0:${state.otpResendTimer.toString().padLeft(2, '0')}',
+                                                      style: AppTypography.inter12Bold.copyWith(
+                                                        color: canResend ? AppColors.pinkColor : AppColors.hintTextColor,
+                                                        decoration: canResend ? TextDecoration.underline : TextDecoration.none,
+                                                        decorationColor: AppColors.pinkColor,
+                                                        decorationThickness: 1.5,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              );
+                                            }
+                                            return Container();
+                                          },
+                                        )
+                                      : Container(),
+                                  // Verification status
+                                  BlocBuilder<SignupBloc, SignupState>(
+                                    buildWhen: (previous, current) {
+                                      return previous is SignupMobileVerified != current is SignupMobileVerified;
+                                    },
+                                    builder: (context, state) {
+                                      final bool isVerified = state is SignupMobileVerified;
+                                      return isVerified
+                                          ? Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  Icons.check_circle,
+                                                  color: AppColors.success,
+                                                  size: 16.sp,
+                                                ),
+                                                SizedBox(width: 8.w),
+                                                Text(
+                                                  '${AppLocalizations.of(context)?.mobileVerifiedSuccessfully}',
+                                                  style: AppTypography.inter12Medium.copyWith(
+                                                    color: AppColors.success,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Container();
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -305,21 +481,52 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildStandardDropdown(SignupState state) {
-    String selectedStandard = '';
+    String? selectedStdId;
+    List<StandardModel> standards = [];
+    
     if (state is SignupLoaded) {
-      selectedStandard = state.data.standard;
+      selectedStdId = state.data.stdId;
+      standards = state.standards ?? [];
+    } else if (state is ImageUploading) {
+      selectedStdId = state.data.stdId;
+      standards = state.standards ?? [];
+    } else if (state is OtpSending) {
+      selectedStdId = state.data.stdId;
+      standards = state.standards ?? [];
+    } else if (state is OtpSent) {
+      selectedStdId = state.stdId;
+      standards = state.standards ?? [];
+    } else if (state is SignupMobileVerified) {
+      selectedStdId = state.stdId;
+      standards = state.standards ?? [];
     }
 
-    // Get the displayed value based on current language
-    String? displayValue;
-    if (selectedStandard.isNotEmpty) {
-      if (selectedStandard == 'Class 11') {
-        displayValue = '${AppLocalizations.of(context)?.class11}';
-      } else if (selectedStandard == 'Class 12') {
-        displayValue = '${AppLocalizations.of(context)?.class12}';
-      } else if (selectedStandard == 'Dropper') {
-        displayValue = '${AppLocalizations.of(context)?.dropper}';
-      }
+    // Don't show loader during initial fetch - just show empty dropdown
+    if (standards.isEmpty) {
+      return Container(
+        height: 56.h,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              '${AppLocalizations.of(context)?.selectStandard}',
+              style: AppTypography.inter14Regular.copyWith(
+                color: AppColors.hintTextColor,
+              ),
+            ),
+          ),
+        ),
+      );
     }
 
     return Container(
@@ -335,7 +542,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: selectedStandard.isEmpty ? null : selectedStandard,
+          value: selectedStdId,
           hint: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Text(
@@ -352,53 +559,23 @@ class _SignupScreenState extends State<SignupScreen> {
               color: Colors.white.withOpacity(0.7),
             ),
           ),
-          selectedItemBuilder: (context) {
-            return ['Class 11', 'Class 12', 'Dropper'].map((value) {
-              String displayText;
-              if (value == 'Class 11') {
-                displayText = '${AppLocalizations.of(context)?.class11}';
-              } else if (value == 'Class 12') {
-                displayText = '${AppLocalizations.of(context)?.class12}';
-              } else {
-                displayText = '${AppLocalizations.of(context)?.dropper}';
-              }
-              return Container(
-                width: double.infinity,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Text(
-                  displayText,
-                  style:
-                  AppTypography.inter14Medium.copyWith(color: Colors.white),
-                ),
-              );
-            }).toList();
-          },
-          items: ['Class 11', 'Class 12', 'Dropper'].map((String value) {
-            String displayText;
-            if (value == 'Class 11') {
-              displayText = '${AppLocalizations.of(context)?.class11}';
-            } else if (value == 'Class 12') {
-              displayText = '${AppLocalizations.of(context)?.class12}';
-            } else {
-              displayText = '${AppLocalizations.of(context)?.dropper}';
-            }
-
+          dropdownColor: AppColors.darkBlue4,
+          items: standards.map((StandardModel standard) {
             return DropdownMenuItem<String>(
-              value: value,
+              value: standard.stdId,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Text(
-                  displayText,
-                  style:
-                  AppTypography.inter14Medium.copyWith(color: Colors.white),
+                  standard.name,
+                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
                 ),
               ),
             );
           }).toList(),
-          onChanged: (String? newValue) {
-            if (newValue != null) {
-              context.read<SignupBloc>().add(UpdateStandard(newValue));
+          onChanged: (String? newStdId) {
+            if (newStdId != null) {
+              final selectedStandard = standards.firstWhere((s) => s.stdId == newStdId);
+              context.read<SignupBloc>().add(UpdateStandard(selectedStandard.name, stdId: newStdId));
             }
           },
         ),
@@ -407,28 +584,68 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildCourseSelection(SignupState state) {
-    String selectedCourse = 'NEET';
+    String? selectedExmId;
+    List<ExamModel> exams = [];
+    
     if (state is SignupLoaded) {
-      selectedCourse = state.data.course;
+      selectedExmId = state.data.exmId;
+      exams = state.exams ?? [];
+    } else if (state is ImageUploading) {
+      selectedExmId = state.data.exmId;
+      exams = state.exams ?? [];
+    } else if (state is OtpSending) {
+      selectedExmId = state.data.exmId;
+      exams = state.exams ?? [];
+    } else if (state is OtpSent) {
+      selectedExmId = state.exmId;
+      exams = state.exams ?? [];
+    } else if (state is SignupMobileVerified) {
+      selectedExmId = state.exmId;
+      exams = state.exams ?? [];
+    }
+
+    // Don't show loader during initial fetch - just show empty container
+    if (exams.isEmpty) {
+      return Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 48.h,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Center(
+                child: Text(
+                  '${AppLocalizations.of(context)?.selectCourse ?? "Select Course"}',
+                  style: AppTypography.inter14Regular.copyWith(
+                    color: AppColors.hintTextColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
     }
 
     return Row(
-      children: [
-        Expanded(
-          child: _buildCourseOption('NEET', selectedCourse == 'NEET'),
-        ),
-        SizedBox(width: 15.w),
-        Expanded(
-          child: _buildCourseOption('JEE', selectedCourse == 'JEE'),
-        ),
-      ],
+      children: exams.map((ExamModel exam) {
+        final isSelected = selectedExmId == exam.exmId;
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: exam != exams.last ? 15.w : 0),
+            child: _buildCourseOption(exam, isSelected),
+          ),
+        );
+      }).toList(),
     );
   }
 
-  Widget _buildCourseOption(String course, bool isSelected) {
+  Widget _buildCourseOption(ExamModel exam, bool isSelected) {
     return GestureDetector(
       onTap: () {
-        context.read<SignupBloc>().add(UpdateCourse(course));
+        context.read<SignupBloc>().add(UpdateCourse(exam.name, exmId: exam.exmId));
       },
       child: Container(
         height: 48.h,
@@ -445,7 +662,7 @@ class _SignupScreenState extends State<SignupScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              course == 'NEET' ? '${AppLocalizations.of(context)?.neet}' : '${AppLocalizations.of(context)?.jee}',
+              exam.name,
               style: AppTypography.inter14Medium.copyWith(
                 color: Colors.white,
               ),
@@ -580,10 +797,109 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
+  Widget _buildOTPInputFields() {
+    // This widget doesn't rebuild when timer updates, only when OTP field visibility changes
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: List.generate(6, (index) {
+        return Container(
+          key: ValueKey('otp_field_$index'), // Preserve identity during rebuilds
+          width: 50.w,
+          height: 50.h,
+          decoration: BoxDecoration(
+            color: AppColors.darkBlue2.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(12.r),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.2),
+              width: 1,
+              style: BorderStyle.solid,
+            ),
+          ),
+          child: TextField(
+            key: ValueKey('otp_textfield_$index'), // Preserve identity
+            controller: _otpControllers[index],
+            focusNode: _otpFocusNodes[index],
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            maxLength: 1,
+            style: AppTypography.inter16Medium.copyWith(color: Colors.white),
+            decoration: InputDecoration(
+              counterText: '',
+              border: InputBorder.none,
+              hintText: '-',
+              hintStyle: AppTypography.inter16Medium.copyWith(color: AppColors.white),
+            ),
+            onChanged: (value) {
+              if (value.isNotEmpty && index < 5) {
+                _otpFocusNodes[index + 1].requestFocus();
+              } else if (value.isEmpty && index > 0) {
+                _otpFocusNodes[index - 1].requestFocus();
+              }
+
+              // Update OTP in BLoC and verify when complete
+              List<String> otpDigits = _otpControllers.map((controller) => controller.text).toList();
+              context.read<SignupBloc>().add(UpdateOTP(otpDigits));
+            },
+          ),
+        );
+      }),
+    );
+  }
+
   Widget _buildMobileSection(SignupState state) {
-    return StreamBuilder<int>(
-        stream: _mobileVerify,
-        builder: (context, mobileVerifySnapshot) {
+    return BlocListener<SignupBloc, SignupState>(
+      listener: (context, state) {
+        if (state is OtpSent) {
+          // OTP sent successfully - show OTP field
+          if (!_showOtpField) {
+            setState(() {
+              _showOtpField = true;
+            });
+          }
+          _mobileVerify.add(1);
+          // Sync timer with BLoC state
+          _otpResendTimer.add(state.otpResendTimer);
+          startTimer();
+          // Focus on first OTP field
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (_otpControllers.isNotEmpty && mounted) {
+              FocusScope.of(context).requestFocus(FocusNode());
+            }
+          });
+        } else if (state is SignupMobileVerified) {
+          // OTP verified successfully
+          _mobileVerify.add(2);
+          _timer?.cancel();
+        } else if (state is SignupError) {
+          // Error is already shown by the main BlocConsumer listener
+          // If error during OTP verification, show failed state
+          if (state.message.contains('OTP') || state.message.contains('Invalid')) {
+            _mobileVerify.add(3);
+          }
+        } else if (state is ImageUploading || state is OtpSending || state is OtpVerifying) {
+          // Show loading
+        }
+      },
+      child: BlocBuilder<SignupBloc, SignupState>(
+        buildWhen: (previous, current) {
+          // Only rebuild when OTP field visibility changes, not on timer updates
+          final wasOtpSent = previous is OtpSent;
+          final isOtpSent = current is OtpSent;
+          final wasVerified = previous is SignupMobileVerified;
+          final isVerified = current is SignupMobileVerified;
+          final wasLoading = previous is ImageUploading || previous is OtpSending || previous is OtpVerifying;
+          final isLoading = current is ImageUploading || current is OtpSending || current is OtpVerifying;
+          
+          // Rebuild only if visibility or loading state changes, not on timer updates
+          return wasOtpSent != isOtpSent || 
+                 wasVerified != isVerified || 
+                 wasLoading != isLoading;
+        },
+        builder: (context, state) {
+          final bool isVerified = state is SignupMobileVerified;
+          final bool showSendButton = !_showOtpField && !isVerified;
+          final bool isLoading = state is ImageUploading || state is OtpSending || state is OtpVerifying;
+          
           return Column(
             children: [
               Row(
@@ -602,19 +918,18 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ),
                   SizedBox(width: 15.w),
-                  mobileVerifySnapshot.data == 0 || mobileVerifySnapshot.data == 3
+                  showSendButton
                       ? Expanded(
                           flex: 1,
                           child: GestureDetector(
-                            onTap: () {
-                              startTimer();
-                              _mobileVerify.add(1);
-                              //context.read<SignupBloc>().add(SendOTP(mobileNumber));
+                            onTap: isLoading ? null : () {
+                              final mobileNumber = _mobileController.text;
+                              context.read<SignupBloc>().add(SendOTP(mobileNumber));
                             },
                             child: Container(
                               height: 45.h,
                               decoration: BoxDecoration(
-                                color: AppColors.white,
+                                color: isLoading ? Colors.grey : AppColors.white,
                                 borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
                                   color: Colors.white.withOpacity(0.3),
@@ -622,7 +937,16 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               child: Center(
-                                child: Text(
+                                child: isLoading
+                                    ? SizedBox(
+                                        width: 20.w,
+                                        height: 20.h,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.darkBlue),
+                                        ),
+                                      )
+                                    : Text(
                                   '${AppLocalizations.of(context)?.sendOtp}',
                                   style: AppTypography.inter14Bold.copyWith(
                                     color: AppColors.darkBlue,
@@ -635,184 +959,42 @@ class _SignupScreenState extends State<SignupScreen> {
                       : Container(),
                 ],
               ),
-              SizedBox(height: 20.h),
-              mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: List.generate(4, (index) {
-                        return Container(
-                          width: 50.w,
-                          height: 50.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.darkBlue2.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(12.r),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.2),
-                              width: 1,
-                              style: BorderStyle.solid,
-                            ),
-                          ),
-                          child: TextField(
-                            controller: _otpControllers[index],
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.number,
-                            maxLength: 1,
-                            style: AppTypography.inter16Medium.copyWith(color: Colors.white),
-                            decoration: InputDecoration(
-                              counterText: '',
-                              border: InputBorder.none,
-                              hintText: '-',
-                              hintStyle: AppTypography.inter16Medium.copyWith(color: AppColors.white),
-                            ),
-                            onChanged: (value) {
-                              if (value.isNotEmpty && index < 3) {
-                                FocusScope.of(context).nextFocus();
-                              } else if (value.isEmpty && index > 0) {
-                                FocusScope.of(context).previousFocus();
-                              }
-
-                              // Update OTP in BLoC
-                              List<String> otpDigits = _otpControllers.map((controller) => controller.text).toList();
-                              String otp = otpDigits.join();
-                              if (otp.length == 4) {
-                                _mobileVerify.add(2);
-                              }
-                              print('OTP Value ${otpDigits}');
-                              //context.read<SignupBloc>().add(UpdateOTP(otpDigits));
-                            },
-                          ),
-                        );
-                      }),
-                    )
-                  : Container(),
-              SizedBox(height: 15.h),
-              mobileVerifySnapshot.data == 1 || mobileVerifySnapshot.data == 3
-                  ? StreamBuilder<int>(
-                      stream: _otpResendTimer,
-                      builder: (context, asyncSnapshot) {
-                        return Row(
-                          children: [
-                            Text(
-                                asyncSnapshot.data == 0
-                                    ? '${AppLocalizations.of(context)?.reSendCode}'
-                                    : '${AppLocalizations.of(context)?.reSendCodeIn}',
-                                style: AppTypography.inter12Regular),
-                            GestureDetector(
-                              onTap: asyncSnapshot.data == 0
-                                  ? () {
-                                      startTimer();
-                                    }
-                                  : null,
-                              child: Text(
-                                asyncSnapshot.data == 0
-                                    ? '${AppLocalizations.of(context)?.resend}'
-                                    : '0:${asyncSnapshot.data.toString().padLeft(2, '0')}',
-                                style: AppTypography.inter12Bold.copyWith(
-                                  color: AppColors.pinkColor,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: AppColors.pinkColor, // ensure underline color visible
-                                  decorationThickness: 1.5,
-                                ),
-                              ),
-                            )
-                          ],
-                        );
-                      })
-                  : Container(),
-              mobileVerifySnapshot.data == 3 || mobileVerifySnapshot.data == 2
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          mobileVerifySnapshot.data == 3 ? Icons.close : Icons.check_circle,
-                          color: mobileVerifySnapshot.data == 3 ? AppColors.error : AppColors.success,
-                          size: 16.sp,
-                        ),
-                        SizedBox(width: 8.w),
-                        Text(
-                          mobileVerifySnapshot.data == 3
-                              ? '${AppLocalizations.of(context)?.mobileVerificationFailed}'
-                              : '${AppLocalizations.of(context)?.mobileVerifiedSuccessfully}',
-                          style: AppTypography.inter12Medium.copyWith(
-                            color: mobileVerifySnapshot.data == 3 ? AppColors.error : AppColors.success,
-                          ),
-                        ),
-                      ],
-                    )
-                  : Container(),
             ],
           );
-        });
+        },
+      ),
+    );
   }
 
   Widget _buildSignUpButton(SignupState state) {
-    bool isLoading = state is SignupLoading;
+    // Button is enabled only when mobile is verified
+    final bool isMobileVerified = state is SignupMobileVerified;
+    final bool isLoading = state is OtpVerifying;
 
-    // return Container(
-    //   width: double.infinity,
-    //   height: 56.h,
-    //   decoration: BoxDecoration(
-    //     gradient: const LinearGradient(
-    //       colors: [AppColors.pinkColor, AppColors.pinkColor1],
-    //       begin: Alignment.centerLeft,
-    //       end: Alignment.centerRight,
-    //     ),
-    //     borderRadius: BorderRadius.circular(12.r),
-    //   ),
-    //   child: Material(
-    //     color: Colors.transparent,
-    //     child: InkWell(
-    //       borderRadius: BorderRadius.circular(12.r),
-    //       onTap: isLoading ? null : () {
-    //         context.read<SignupBloc>().add(SignupSubmitted());
-    //       },
-    //       child: Center(
-    //         child: isLoading
-    //             ? SizedBox(
-    //                 width: 20.w,
-    //                 height: 20.h,
-    //                 child: CircularProgressIndicator(
-    //                   strokeWidth: 2,
-    //                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-    //                 ),
-    //               )
-    //             : Text(
-    //                 "Sign Up Now!",
-    //                 style: AppTypography.inter16Medium.copyWith(
-    //                   color: Colors.white,
-    //                   fontWeight: FontWeight.w600,
-    //                 ),
-    //               ),
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-    return CustomGradientButton(
-      text: '${AppLocalizations.of(context)?.signUpButton}',
-      onPressed: () {
-        // TODO: Implement login logic
-        // if (_phoneController.text.isEmpty || _passwordController.text.isEmpty) {
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     const SnackBar(
-        //       content: Text('Please fill all fields'),
-        //       backgroundColor: Colors.red,
-        //     ),
-        //   );
-        //   return;
-        // }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${AppLocalizations.of(context)?.signupSuccessful}'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-        );
+    return BlocListener<SignupBloc, SignupState>(
+      listener: (context, state) {
+        if (state is SignupMobileVerified) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${AppLocalizations.of(context)?.signupSuccessful}'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
       },
+      child: CustomGradientButton(
+        text: '${AppLocalizations.of(context)?.signUpButton}',
+        isLoading: isLoading,
+        isEnabled: isMobileVerified, // Disabled by default, enabled only after OTP verification
+        onPressed: isMobileVerified ? () {
+          // Navigate to login screen when button is clicked after verification
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
+        } : null,
+      ),
     );
   }
 

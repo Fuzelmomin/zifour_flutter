@@ -404,4 +404,20 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get topic => 'Topic';
+
+  @override
+  String get selectCourse => 'Select Course';
+
+  @override
+  String get pleaseEnterPassword => 'Please enter password';
+
+  @override
+  String get pleaseEnterConfirmPassword => 'Please enter confirm password';
+
+  @override
+  String get passwordMustBe6Characters =>
+      'Password must be at least 6 characters long';
+
+  @override
+  String get passwordNotMatch => 'Passwords do not match';
 }
