@@ -13,6 +13,7 @@ import 'package:zifour_sourcecode/core/utils/gradient_text.dart';
 import 'package:zifour_sourcecode/core/widgets/be_ziddi_item_widget.dart';
 import 'package:zifour_sourcecode/features/auth/login_screen.dart';
 
+import '../../core/api_models/profile_model.dart';
 import '../../core/bloc/signup_bloc.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
@@ -21,6 +22,12 @@ import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/signup_field_box.dart';
 import '../../core/widgets/text_field_container.dart';
 import '../../l10n/app_localizations.dart';
+import 'bloc/profile_bloc.dart';
+import '../../core/api_models/standard_model.dart';
+import '../../core/api_models/exam_model.dart';
+import '../../core/api_models/medium_model.dart';
+import '../../core/utils/connectivity_helper.dart';
+import '../../core/widgets/custom_loading_widget.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -50,8 +57,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize BLoC
-    context.read<SignupBloc>().add(SignupInitialized());
   }
 
   @override
@@ -72,8 +77,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return BlocProvider(
+      create: (context) => ProfileBloc(),
+      child: Scaffold(
+        body: Container(
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
@@ -99,25 +106,118 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     title: '${AppLocalizations.of(context)?.studentInfo}',
                   )),
 
+              // Loading Overlay
+              BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, state) {
+                  if (state is ProfileLoading ||
+                      state is ProfileInitial ||
+                      state is ProfileUpdating) {
+                    return Positioned.fill(
+                      child: CustomLoadingWidget.fullScreen(),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+
               // Main Content with BLoC
               Positioned(
                 top: 70.h,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: BlocConsumer<SignupBloc, SignupState>(
-                    listener: (context, state) {
-                      // TODO: implement listener
-                    },
-                    builder: (context, state) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 15.h,
-                        children: [
+                child: BlocConsumer<ProfileBloc, ProfileState>(
+                  listener: (context, state) {
+                    if (state is ProfileLoaded) {
+                      // Populate text fields when profile is loaded
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _fullNameController.text = state.profileData.stuName;
+                        _mobileController.text = state.profileData.stuMobile;
+                        _emailController.text = state.profileData.stuEmail ?? '';
+                        _cityController.text = state.profileData.stuCity ?? '';
+                        _pincodePassController.text = state.profileData.stuPincode ?? '';
+                        _addressPassController.text = state.profileData.stuAddress ?? '';
+                      });
+                    } else if (state is ProfileUpdateSuccess) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.message),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      Navigator.pop(context);
+                    } else if (state is ProfileError) {
+                      // Check if it's a connectivity error and show no internet screen
+                      if (state.message.contains('No internet connection') || 
+                          state.message.contains('network')) {
+                        ConnectivityHelper.checkAndShowNoInternetScreen(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.message),
+                            backgroundColor: AppColors.error,
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  builder: (context, state) {
+                    // Initialize profile fetch on first build
+                    if (state is ProfileInitial) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        context.read<ProfileBloc>().add(ProfileInitialized());
+                      });
+                      return const SizedBox.shrink();
+                    }
+
+                    if (state is ProfileLoading) {
+                      return const SizedBox.shrink();
+                    }
+
+                    if (state is ProfileError) {
+                      return SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(40.h),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  state.message,
+                                  style: AppTypography.inter14Regular.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 20.h),
+                                CustomGradientButton(
+                                  text: 'Retry',
+                                  onPressed: () {
+                                    context.read<ProfileBloc>().add(ProfileInitialized());
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (state is! ProfileLoaded) {
+                      return const SizedBox.shrink();
+                    }
+                    
+                    final profileState = state as ProfileLoaded;
+                    return SingleChildScrollView(
+                      physics: BouncingScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 15.h,
+                          children: [
                           SignupFieldBox(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -136,8 +236,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   textFieldBgColor: Colors.black.withOpacity(0.1),
                                   changedValue: (value) {
                                     context
-                                        .read<SignupBloc>()
-                                        .add(UpdateFullName(value));
+                                        .read<ProfileBloc>()
+                                        .add(UpdateProfileName(value));
                                   },
                                 ),
                                 SizedBox(
@@ -155,11 +255,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   maxLength: 10,
                                   editingController: _mobileController,
                                   textFieldBgColor: Colors.black.withOpacity(0.1),
-                                  changedValue: (value) {
-                                    context
-                                        .read<SignupBloc>()
-                                        .add(UpdateMobileNumber(value));
-                                  },
+                                  enabled: false,
+                                  changedValue: (value) {},
                                 ),
                                 SizedBox(
                                   height: 7.h,
@@ -175,7 +272,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   type: "email",
                                   editingController: _emailController,
                                   textFieldBgColor: Colors.black.withOpacity(0.1),
-                                  changedValue: (value) {},
+                                  changedValue: (value) {
+                                    context
+                                        .read<ProfileBloc>()
+                                        .add(UpdateProfileEmail(value));
+                                  },
                                 ),
                                 SizedBox(
                                   height: 7.h,
@@ -185,7 +286,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 SizedBox(
                                   height: 3.h,
                                 ),
-                                _buildStandardDropdown(state),
+                                _buildStandardDropdown(context, profileState),
                                 SizedBox(
                                   height: 7.h,
                                 ),
@@ -202,8 +303,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   textFieldBgColor: Colors.black.withOpacity(0.1),
                                   changedValue: (value) {
                                     context
-                                        .read<SignupBloc>()
-                                        .add(UpdateFullName(value));
+                                        .read<ProfileBloc>()
+                                        .add(UpdateProfileCity(value));
                                   },
                                 ),
 
@@ -218,14 +319,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 CustomTextField(
                                   hint:
                                   '${AppLocalizations.of(context)?.pincode}',
-                                  editingController: _cityController,
+                                  editingController: _pincodePassController,
                                   type: 'phone',
                                   maxLength: 10,
                                   textFieldBgColor: Colors.black.withOpacity(0.1),
                                   changedValue: (value) {
                                     context
-                                        .read<SignupBloc>()
-                                        .add(UpdateFullName(value));
+                                        .read<ProfileBloc>()
+                                        .add(UpdateProfilePincode(value));
                                   },
                                 ),
                                 SizedBox(height: 7.h,),
@@ -242,39 +343,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   textFieldBgColor: Colors.black.withOpacity(0.1),
                                   changedValue: (value) {
                                     context
-                                        .read<SignupBloc>()
-                                        .add(UpdateFullName(value));
+                                        .read<ProfileBloc>()
+                                        .add(UpdateProfileAddress(value));
                                   },
                                 ),
                                 SizedBox(height: 7.h),
-                                _buildGenderSelection(state),
+                                _buildGenderSelection(context, profileState),
                                 SizedBox(height: 7.h),
-                                _buildCourseSelection(state),
+                                _buildCourseSelection(context, profileState),
+                                SizedBox(height: 7.h),
+                                _buildMediumSelection(context, profileState),
 
                                 SizedBox(height: 25.h,),
-                                CustomGradientButton(
-                                  text: '${AppLocalizations.of(context)?.updateProfile}',
-                                  onPressed: () {
-                                    // TODO: Implement login logic
-                                    // if (_phoneController.text.isEmpty || _passwordController.text.isEmpty) {
-                                    //   ScaffoldMessenger.of(context).showSnackBar(
-                                    //     const SnackBar(
-                                    //       content: Text('Please fill all fields'),
-                                    //       backgroundColor: Colors.red,
-                                    //     ),
-                                    //   );
-                                    //   return;
-                                    // }
+                                BlocBuilder<ProfileBloc, ProfileState>(
+                                  builder: (context, state) {
+                                    final bool isUpdating = state is ProfileUpdating;
+                                    return CustomGradientButton(
+                                      text: '${AppLocalizations.of(context)?.updateProfile}',
+                                      isLoading: isUpdating,
+                                      onPressed: isUpdating ? null : () async {
+                                        // Check internet connectivity before updating
+                                        final isConnected = await ConnectivityHelper.checkAndShowNoInternetScreen(context);
+                                        if (!isConnected) {
+                                          return; // No internet screen is already shown
+                                        }
 
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('${AppLocalizations.of(context)?.signupSuccessful}'),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                        context.read<ProfileBloc>().add(ProfileUpdateSubmitted());
+                                      },
                                     );
                                   },
                                 )
@@ -283,14 +378,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ),
                           )
                         ],
+                      ),
                       );
                     },
                   ),
                 ),
-              ),
             ],
           ),
         ),
+      ),
       ),
     );
   }
@@ -345,22 +441,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildStandardDropdown(SignupState state) {
-    String selectedStandard = '';
-    if (state is SignupLoaded) {
-      selectedStandard = state.data.standard;
-    }
-
-    // Get the displayed value based on current language
-    String? displayValue;
-    if (selectedStandard.isNotEmpty) {
-      if (selectedStandard == 'Class 11') {
-        displayValue = '${AppLocalizations.of(context)?.class11}';
-      } else if (selectedStandard == 'Class 12') {
-        displayValue = '${AppLocalizations.of(context)?.class12}';
-      } else if (selectedStandard == 'Dropper') {
-        displayValue = '${AppLocalizations.of(context)?.dropper}';
-      }
+  Widget _buildStandardDropdown(BuildContext blocContext, ProfileLoaded state) {
+    final selectedStdId = state.selectedStdId;
+    final standards = state.standardList;
+    
+    StandardModel? selectedStandard;
+    if (selectedStdId.isNotEmpty && standards.isNotEmpty) {
+      selectedStandard = standards.firstWhere(
+        (std) => std.stdId == selectedStdId,
+        orElse: () => standards.first,
+      );
     }
 
     return Container(
@@ -375,12 +465,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: selectedStandard.isEmpty ? null : selectedStandard,
+        child: DropdownButton<StandardModel>(
+          value: selectedStandard,
           hint: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Text(
-              '${AppLocalizations.of(context)?.selectStandard}',
+              '${AppLocalizations.of(blocContext)?.selectStandard}',
               style: AppTypography.inter14Regular.copyWith(
                 color: AppColors.hintTextColor,
               ),
@@ -393,57 +483,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               color: Colors.white.withOpacity(0.7),
             ),
           ),
-          selectedItemBuilder: (context) {
-            return ['Class 11', 'Class 12', 'Dropper'].map((value) {
-              String displayText;
-              if (value == 'Class 11') {
-                displayText = '${AppLocalizations.of(context)?.class11}';
-              } else if (value == 'Class 12') {
-                displayText = '${AppLocalizations.of(context)?.class12}';
-              } else {
-                displayText = '${AppLocalizations.of(context)?.dropper}';
-              }
-              return Container(
-                height: 56.h,
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      displayText,
-                      style:
-                          AppTypography.inter14Medium.copyWith(color: Colors.white),
-                    ),
-                  ],
-                ),
-              );
-            }).toList();
-          },
-          items: ['Class 11', 'Class 12', 'Dropper'].map((String value) {
-            String displayText;
-            if (value == 'Class 11') {
-              displayText = '${AppLocalizations.of(context)?.class11}';
-            } else if (value == 'Class 12') {
-              displayText = '${AppLocalizations.of(context)?.class12}';
-            } else {
-              displayText = '${AppLocalizations.of(context)?.dropper}';
-            }
-
-            return DropdownMenuItem<String>(
-              value: value,
+          items: standards.map((StandardModel standard) {
+            return DropdownMenuItem<StandardModel>(
+              value: standard,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Text(
-                  displayText,
-                  style:
-                      AppTypography.inter14Medium.copyWith(color: Colors.white),
+                  standard.name,
+                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
                 ),
               ),
             );
           }).toList(),
-          onChanged: (String? newValue) {
+          onChanged: (StandardModel? newValue) {
             if (newValue != null) {
-              context.read<SignupBloc>().add(UpdateStandard(newValue));
+              blocContext.read<ProfileBloc>().add(
+                UpdateProfileStandard(
+                  stdId: newValue.stdId,
+                  stdName: newValue.name,
+                ),
+              );
             }
           },
         ),
@@ -451,29 +510,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildCourseSelection(SignupState state) {
-    String selectedCourse = 'NEET';
-    if (state is SignupLoaded) {
-      selectedCourse = state.data.course;
+  Widget _buildCourseSelection(BuildContext blocContext, ProfileLoaded state) {
+    final selectedExmId = state.selectedExmId;
+    final exams = state.examList;
+
+    if (exams.isEmpty) {
+      return SizedBox.shrink();
     }
 
     return Row(
-      children: [
-        Expanded(
-          child: _buildCourseOption('NEET', selectedCourse == 'NEET'),
-        ),
-        SizedBox(width: 15.w),
-        Expanded(
-          child: _buildCourseOption('JEE', selectedCourse == 'JEE'),
-        ),
-      ],
+      children: exams.map((ExamModel exam) {
+        final isSelected = exam.exmId == selectedExmId;
+        return Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(right: exam != exams.last ? 15.w : 0),
+            child: _buildCourseOption(blocContext, exam, isSelected),
+          ),
+        );
+      }).toList(),
     );
   }
 
-  Widget _buildCourseOption(String course, bool isSelected) {
+  Widget _buildCourseOption(BuildContext blocContext, ExamModel exam, bool isSelected) {
     return GestureDetector(
       onTap: () {
-        context.read<SignupBloc>().add(UpdateCourse(course));
+        blocContext.read<ProfileBloc>().add(
+          UpdateProfileExam(
+            exmId: exam.exmId,
+            exmName: exam.name,
+          ),
+        );
       },
       child: Container(
         height: 48.h,
@@ -491,9 +557,92 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              course == 'NEET'
-                  ? '${AppLocalizations.of(context)?.neet}'
-                  : '${AppLocalizations.of(context)?.jee}',
+              exam.name,
+              style: AppTypography.inter14Medium.copyWith(
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(width: 8.w),
+            Container(
+              width: 20.w,
+              height: 20.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected ? Colors.white : Colors.transparent,
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: isSelected
+                  ? Icon(
+                      Icons.check,
+                      color: AppColors.darkBlue,
+                      size: 12.sp,
+                    )
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildMediumSelection(BuildContext blocContext, ProfileLoaded state) {
+    final selectedMedId = state.selectedMedId;
+    final mediums = state.mediumList;
+
+    if (mediums.isEmpty) {
+      return SizedBox.shrink();
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        labelWidget('${AppLocalizations.of(blocContext)?.languagePreference?.toUpperCase() ?? 'LANGUAGE PREFERENCE'}'),
+        SizedBox(height: 7.h),
+        Row(
+          children: mediums.map((NewMediumModel medium) {
+            final isSelected = medium.medId == selectedMedId;
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: medium != mediums.last ? 15.w : 0),
+                child: _buildMediumOption(blocContext, medium, isSelected),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMediumOption(BuildContext blocContext, NewMediumModel medium, bool isSelected) {
+    return GestureDetector(
+      onTap: () {
+        blocContext.read<ProfileBloc>().add(
+          UpdateProfileMedium(
+            medId: medium.medId,
+            medName: medium.medName,
+          ),
+        );
+      },
+      child: Container(
+        height: 48.h,
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        decoration: BoxDecoration(
+          color:
+              isSelected ? AppColors.pinkColor2 : Colors.black.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              medium.medName,
               style: AppTypography.inter14Medium.copyWith(
                 color: Colors.white,
               ),
@@ -524,11 +673,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildGenderSelection(SignupState state) {
-    String selectedGender = 'Male';
-    if (state is SignupLoaded) {
-      selectedGender = state.data.gender;
-    }
+  Widget _buildGenderSelection(BuildContext blocContext, ProfileLoaded state) {
+    final selectedGender = state.selectedGender;
+    // Gender: 1 = Male, 2 = Female, 3 = Other (or similar mapping)
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -536,24 +683,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         Expanded(
           child: Container(
               margin: EdgeInsets.only(left: 5.0),
-              child: _buildGenderOption('Male', selectedGender == 'Male')),
+              child: _buildGenderOption(blocContext, 1, selectedGender == 1)),
         ),
         SizedBox(width: 15.w),
         Expanded(
-          child: _buildGenderOption('Female', selectedGender == 'Female'),
+          child: _buildGenderOption(blocContext, 2, selectedGender == 2),
         ),
         SizedBox(width: 15.w),
         Expanded(
-          child: _buildGenderOption('Other', selectedGender == 'Other'),
+          child: _buildGenderOption(blocContext, 3, selectedGender == 3),
         ),
       ],
     );
   }
 
-  Widget _buildGenderOption(String gender, bool isSelected) {
+  Widget _buildGenderOption(BuildContext blocContext, int gender, bool isSelected) {
+    String genderText;
+    if (gender == 1) {
+      genderText = '${AppLocalizations.of(blocContext)?.male}';
+    } else if (gender == 2) {
+      genderText = '${AppLocalizations.of(blocContext)?.female}';
+    } else {
+      genderText = '${AppLocalizations.of(blocContext)?.other}';
+    }
+
     return GestureDetector(
       onTap: () {
-        context.read<SignupBloc>().add(UpdateGender(gender));
+        blocContext.read<ProfileBloc>().add(UpdateProfileGender(gender));
       },
       child: Container(
         height: 48.h,
@@ -581,11 +737,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             SizedBox(width: 8.w),
             Text(
-              gender == 'Male'
-                  ? '${AppLocalizations.of(context)?.male}'
-                  : gender == 'Female'
-                      ? '${AppLocalizations.of(context)?.female}'
-                      : '${AppLocalizations.of(context)?.other}',
+              genderText,
               style: AppTypography.inter12Medium.copyWith(
                 color: isSelected ? Colors.white : AppColors.hintTextColor,
               ),
