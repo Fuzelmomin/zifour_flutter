@@ -23,10 +23,10 @@ Map<String, dynamic> _$ExamResponseToJson(ExamResponse instance) =>
 
 ExamModel _$ExamModelFromJson(Map<String, dynamic> json) => ExamModel(
       exmId: json['exm_id'] as String,
-      name: json['name'] as String,
+      name: json['exm_name'] as String,
     );
 
 Map<String, dynamic> _$ExamModelToJson(ExamModel instance) => <String, dynamic>{
       'exm_id': instance.exmId,
-      'name': instance.name,
+      'exm_name': instance.name,
     };

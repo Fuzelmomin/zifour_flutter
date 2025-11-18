@@ -19,14 +19,14 @@ class LoginRepository {
       
       if (deviceId == null || deviceId.isEmpty) {
         // Generate a new device ID
-        deviceId = 'device_${DateTime.now().millisecondsSinceEpoch}';
+        deviceId = 'device1_${DateTime.now().millisecondsSinceEpoch}';
         await prefs.setString(_deviceIdKey, deviceId);
       }
       
       return deviceId;
     } catch (e) {
       // Fallback to timestamp-based ID
-      return 'device_${DateTime.now().millisecondsSinceEpoch}';
+      return 'device1_${DateTime.now().millisecondsSinceEpoch}';
     }
   }
 

@@ -123,6 +123,7 @@ class CustomTextField extends StatefulWidget {
 
   final bool? isMessageTextField;
   final double? textFieldHeight;
+  final bool? enabled;
 
   const CustomTextField({
     super.key,
@@ -139,6 +140,7 @@ class CustomTextField extends StatefulWidget {
     this.textFieldBgColor,
     this.isMessageTextField,
     this.textFieldHeight,
+    this.enabled,
   });
 
   @override

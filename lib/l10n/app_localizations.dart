@@ -901,6 +901,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passwords do not match'**
   String get passwordNotMatch;
+
+  /// No description provided for @languagePreference.
+  ///
+  /// In en, this message translates to:
+  /// **'LANGUAGE PREFERENCE'**
+  String get languagePreference;
 }
 
 class _AppLocalizationsDelegate

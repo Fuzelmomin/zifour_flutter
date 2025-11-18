@@ -34,7 +34,8 @@ Map<String, dynamic> _$LoginDataToJson(LoginData instance) => <String, dynamic>{
       'stu_med_id': instance.stuMedId,
     };
 
-LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) => LoginResponse(
+LoginResponse _$LoginResponseFromJson(Map<String, dynamic> json) =>
+    LoginResponse(
       status: json['status'] as bool,
       isActive: json['is_active'] as bool,
       message: json['message'] as String,
@@ -48,6 +49,5 @@ Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) =>
       'status': instance.status,
       'is_active': instance.isActive,
       'message': instance.message,
-      'data': instance.data?.toJson(),
+      'data': instance.data,
     };
-

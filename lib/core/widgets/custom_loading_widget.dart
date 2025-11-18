@@ -90,13 +90,18 @@ class CustomLoadingWidget extends StatelessWidget {
     }
     
     if (fullScreen) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: bgColor,
-        child: Center(
-          child: loadingIndicator,
-        ),
+      return Builder(
+        builder: (context) {
+          final size = MediaQuery.of(context).size;
+          return Container(
+            width: size.width,
+            height: size.height,
+            color: bgColor,
+            child: Center(
+              child: loadingIndicator,
+            ),
+          );
+        },
       );
     }
     

@@ -25,6 +25,7 @@ class StandardResponse {
 class StandardModel {
   @JsonKey(name: 'std_id')
   final String stdId;
+  @JsonKey(name: 'std_name')
   final String name;
 
   StandardModel({

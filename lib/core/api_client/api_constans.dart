@@ -18,5 +18,7 @@ class APIConstants {
   static const forgotPasswordVerification = 'forgot_verification.php';
   static const forgotPasswordReSendOTP = 'forgot_resend.php';
   static const resetPassword = 'reset_password.php';
+  static const getProfile = 'profile.php';
+  static const updateProfile = 'profile_update.php';
 
 }

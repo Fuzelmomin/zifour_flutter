@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../core/constants/assets_path.dart';
-import '../language_selection/language_selection_screen.dart';
+import '../../core/utils/user_preference.dart';
+import '../dashboard/dashboard_screen.dart';
+import '../welcome/welcome_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -64,14 +66,23 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(milliseconds: 300));
     _logoController.forward();
     
-    // Navigate to language selection screen after 3 seconds
+    // Navigate to next screen after splash delay
     await Future.delayed(const Duration(milliseconds: 3000));
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LanguageSelectionScreen()),
-      );
-    }
+    if (!mounted) return;
+    await _navigateToNextScreen();
+  }
+
+  Future<void> _navigateToNextScreen() async {
+    final bool isLoggedIn = await UserPreference.isLoggedIn();
+    if (!mounted) return;
+
+    final Widget destination =
+        isLoggedIn ? const DashboardScreen() : const WelcomeScreen();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => destination),
+    );
   }
 
   @override
