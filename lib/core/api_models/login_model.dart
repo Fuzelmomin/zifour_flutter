@@ -26,6 +26,8 @@ class LoginData {
   final String? stuSubId;
   @JsonKey(name: 'stu_med_id')
   final String stuMedId;
+  @JsonKey(name: 'stu_exm_id')
+  final String? stuExmId;
 
   LoginData({
     required this.stuId,
@@ -39,6 +41,7 @@ class LoginData {
     required this.stuStdId,
     this.stuSubId,
     required this.stuMedId,
+    this.stuExmId,
   });
 
   factory LoginData.fromJson(Map<String, dynamic> json) =>

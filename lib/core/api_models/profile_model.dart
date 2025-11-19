@@ -81,9 +81,9 @@ class ProfileResponse {
   final String message;
   final ProfileData? data;
   @JsonKey(name: 'standard_list')
-  final List<StandardModel>? standardList;
+  final List<NewStandardModel>? standardList;
   @JsonKey(name: 'exam_list')
-  final List<ExamModel>? examList;
+  final List<NewExamModel>? examList;
   @JsonKey(name: 'medium_list')
   final List<NewMediumModel>? mediumList;
 
@@ -104,10 +104,10 @@ class ProfileResponse {
           ? ProfileData.fromJson(json['data'] as Map<String, dynamic>)
           : null,
       standardList: (json['standard_list'] as List<dynamic>?)
-          ?.map((e) => StandardModel.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => NewStandardModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       examList: (json['exam_list'] as List<dynamic>?)
-          ?.map((e) => ExamModel.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => NewExamModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       mediumList: (json['medium_list'] is List)
           ? (json['medium_list'] as List)
@@ -167,6 +167,60 @@ class NewMediumModel {
       <String, dynamic>{
         'med_id': medId,
         'med_name': medName
+      };
+}
+
+@JsonSerializable()
+class NewStandardModel {
+  @JsonKey(name: 'std_id')
+  final String stdId;
+  @JsonKey(name: 'std_name')
+  final String name;
+
+  NewStandardModel({
+    required this.stdId,
+    required this.name,
+  });
+
+  factory NewStandardModel.fromJson(Map<String, dynamic> json) {
+    return NewStandardModel(
+      stdId: json['std_id'],
+      name: json['std_name']?.toString() ?? '',
+    );
+  }
+
+
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{
+        'std_id': stdId,
+        'std_name': name
+      };
+}
+
+@JsonSerializable()
+class NewExamModel {
+  @JsonKey(name: 'exm_id')
+  final String exmId;
+  @JsonKey(name: 'std_name')
+  final String name;
+
+  NewExamModel({
+    required this.exmId,
+    required this.name,
+  });
+
+  factory NewExamModel.fromJson(Map<String, dynamic> json) {
+    return NewExamModel(
+      exmId: json['exm_id'],
+      name: json['std_name']?.toString() ?? '',
+    );
+  }
+
+
+  Map<String, dynamic> toJson() =>
+      <String, dynamic>{
+        'exm_id': exmId,
+        'std_name': name
       };
 }
 

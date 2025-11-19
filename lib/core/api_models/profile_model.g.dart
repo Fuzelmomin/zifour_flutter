@@ -7,13 +7,13 @@ part of 'profile_model.dart';
 // **************************************************************************
 
 ProfileData _$ProfileDataFromJson(Map<String, dynamic> json) => ProfileData(
-      stuId: json['stu_id'] as String,
+      stuId: json['stu_id'] as String? ?? '',
       stuImage: json['stu_image'] as String?,
       stuSince: json['stu_since'] as String?,
-      stuName: json['stu_name'] as String,
-      stuMobile: json['stu_mobile'] as String,
+      stuName: json['stu_name'] as String? ?? '',
+      stuMobile: json['stu_mobile'] as String? ?? '',
       stuEmail: json['stu_email'] as String?,
-      stuGender: (json['stu_gender'] as num).toInt(),
+      stuGender: (json['stu_gender'] as num?)?.toInt() ?? 1,
       stuDocument: json['stu_document'] as String?,
       stuCity: json['stu_city'] as String?,
       stuPincode: json['stu_pincode'] as String?,
@@ -49,10 +49,10 @@ ProfileResponse _$ProfileResponseFromJson(Map<String, dynamic> json) =>
           ? null
           : ProfileData.fromJson(json['data'] as Map<String, dynamic>),
       standardList: (json['standard_list'] as List<dynamic>?)
-          ?.map((e) => StandardModel.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => NewStandardModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       examList: (json['exam_list'] as List<dynamic>?)
-          ?.map((e) => ExamModel.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => NewExamModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       mediumList: (json['medium_list'] as List<dynamic>?)
           ?.map((e) => NewMediumModel.fromJson(e as Map<String, dynamic>))
@@ -81,4 +81,16 @@ Map<String, dynamic> _$UpdateProfileResponseToJson(
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
+    };
+
+NewMediumModel _$NewMediumModelFromJson(Map<String, dynamic> json) =>
+    NewMediumModel(
+      medId: json['med_id'] as String,
+      medName: json['med_name'] as String,
+    );
+
+Map<String, dynamic> _$NewMediumModelToJson(NewMediumModel instance) =>
+    <String, dynamic>{
+      'med_id': instance.medId,
+      'med_name': instance.medName,
     };

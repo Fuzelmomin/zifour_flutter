@@ -1,122 +1,148 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:zifour_sourcecode/core/constants/assets_path.dart';
-import 'package:zifour_sourcecode/core/theme/app_typography.dart';
-import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 
 import '../constants/app_colors.dart';
+import '../constants/assets_path.dart';
+import '../theme/app_typography.dart';
+import 'signup_field_box.dart';
 
 class CoursesItemWidget extends StatelessWidget {
-  String? courseType;
-  String? courseName;
-  String? courseDiscount;
-  CoursesItemWidget({
+  final String title;
+  final String? subtitle;
+  final String? badge;
+  final String? discount;
+  final String? finalPrice;
+  final String? originalPrice;
+  final String? imageUrl;
+  final VoidCallback? onTap;
+
+  const CoursesItemWidget({
     super.key,
-    this.courseType,
-    this.courseName,
-    this.courseDiscount,
+    required this.title,
+    this.subtitle,
+    this.badge,
+    this.discount,
+    this.finalPrice,
+    this.originalPrice,
+    this.imageUrl,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.widthOf(context) - 100.w,
-      margin: EdgeInsets.only(right: 15.w),
-      height: 185.h,
-      child: SignupFieldBox(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              height: 150.h,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.r),
-                      child: CachedNetworkImage(
-                        imageUrl: '',
-                        width: double.infinity,
-                        height: 150.h,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          width: double.infinity,
-                          height: 150.h,
-                          decoration: BoxDecoration(
-                            color: AppColors.pinkColor.withOpacity(0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.person,
-                            color: AppColors.pinkColor,
-                            size: 40.sp,
-                          ),
-                        ),
-                        errorWidget: (context, url, error) => Image.asset(
-                          AssetsPath.trendingCourseImg,
-                          width: double.infinity,
-                          height: 150.h,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16.r),
+      child: Container(
+        width: MediaQuery.widthOf(context) - 100.w,
+        margin: EdgeInsets.only(right: 15.w),
+        child: SignupFieldBox(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 150.h,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.r),
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrl ?? '',
                           fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            color: AppColors.pinkColor.withOpacity(0.15),
+                          ),
+                          errorWidget: (context, url, error) => Image.asset(
+                            AssetsPath.trendingCourseImg,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 10.h,
-                    left: 10.w,
-                    right: 10.h,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 15.w),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(100.r)),
-                            color: Colors.black.withOpacity(0.8)
+                    Positioned(
+                      top: 10.h,
+                      left: 10.w,
+                      right: 10.w,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildBadge(
+                            text: badge ?? 'Best Seller',
+                            //background: Colors.black.withOpacity(0.7),
                           ),
-                          child: Text(
-                            courseType ?? 'Most Popular',
-                            style: AppTypography.inter10SemiBold,
-                          ),
-                        ),
-
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 15.w),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(100.r)),
-                              gradient: LinearGradient(
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                                colors: [
-                                  Color(0xFFCF0786), // Cyan middle
-                                  Color(0xFFCF0786), // Light purple top-right
-                                  Color(0xFF690444), // Light purple top-right
-                                ],
-
-                              )
-                          ),
-                          child: Text(
-                            courseDiscount ?? '20%',
-                            style: AppTypography.inter10SemiBold,
-                          ),
-                        ),
-                      ],
+                          if ((discount ?? '').isNotEmpty)
+                            _buildBadge(
+                              text: discount!,
+                              background: const LinearGradient(
+                                colors: [Color(0xFFCF0786), Color(0xFF690444)],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  )
+                  ],
+                ),
+              ),
+              SizedBox(height: 10.h),
+              Text(
+                title,
+                style: AppTypography.inter14SemiBold,
+              ),
+              if ((subtitle ?? '').isNotEmpty) ...[
+                SizedBox(height: 4.h),
+                Text(
+                  subtitle!,
+                  style: AppTypography.inter12Regular.copyWith(
+                    color: Colors.white.withOpacity(0.7),
+                  ),
+                ),
+              ],
+              SizedBox(height: 8.h),
+              Row(
+                children: [
+                  if ((finalPrice ?? '').isNotEmpty)
+                    Text(
+                      finalPrice!,
+                      style: AppTypography.inter14SemiBold.copyWith(
+                        color: AppColors.white,
+                      ),
+                    ),
+                  if ((originalPrice ?? '').isNotEmpty) ...[
+                    SizedBox(width: 8.w),
+                    Text(
+                      originalPrice!,
+                      style: AppTypography.inter12Regular.copyWith(
+                        color: Colors.white.withOpacity(0.6),
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                  ],
                 ],
               ),
-            ),
-
-            SizedBox(height: 10.h,),
-            Text(
-              courseName ?? '11th & 12th Science - Full Syllabus',
-              style: AppTypography.inter14SemiBold,
-            )
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBadge({
+    required String text,
+    Gradient? background,
+    Color? color,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(100.r),
+        color: background == null ? color : null,
+        gradient: background,
+      ),
+      child: Text(
+        text,
+        style: AppTypography.inter10SemiBold,
       ),
     );
   }

@@ -25,11 +25,11 @@ Map<String, dynamic> _$StandardResponseToJson(StandardResponse instance) =>
 StandardModel _$StandardModelFromJson(Map<String, dynamic> json) =>
     StandardModel(
       stdId: json['std_id'] as String,
-      name: json['std_name'] as String,
+      name: json['name'] as String,
     );
 
 Map<String, dynamic> _$StandardModelToJson(StandardModel instance) =>
     <String, dynamic>{
       'std_id': instance.stdId,
-      'std_name': instance.name,
+      'name': instance.name,
     };

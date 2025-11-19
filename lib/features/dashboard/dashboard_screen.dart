@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rxdart/rxdart.dart';
@@ -7,6 +8,7 @@ import '../../core/constants/assets_path.dart';
 import '../courses/all_course_list_screen.dart';
 import '../mentor/mentor_list_screen.dart';
 import '../mentor/mentors_videos_list_screen.dart';
+import 'bloc/home_bloc.dart';
 import 'home_screen.dart';
 import 'mentors_screen.dart';
 import 'modules_screen.dart';
@@ -21,22 +23,38 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final BehaviorSubject<int> _currentIndex = BehaviorSubject<int>.seeded(0);
+  late final HomeBloc _homeBloc;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    MentorsListScreen(),
-    const AllCoursesScreen(),
-    const ProfileScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _homeBloc = HomeBloc();
+  }
 
   @override
   void dispose() {
+    _homeBloc.close();
     _currentIndex.close();
     super.dispose();
   }
 
+  List<Widget> _buildScreens() {
+    return [
+      BlocProvider.value(
+        value: _homeBloc,
+        child: const HomeScreen(),
+      ),
+      MentorsListScreen(),
+      const AllCoursesScreen(),
+      const ProfileScreen(),
+    ];
+  }
+
   void _onItemTapped(int index) {
     _currentIndex.add(index);
+    if (index == 0) {
+      _homeBloc.add(const HomeRequested());
+    }
   }
 
   @override
@@ -63,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   initialData: 0,
                   builder: (context, snapshot) {
                     final currentIndex = snapshot.data ?? 0;
-                    return _screens[currentIndex];
+                    return _buildScreens()[currentIndex];
                   },
                 ),
               ),

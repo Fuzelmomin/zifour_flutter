@@ -77,8 +77,8 @@ class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
   final ProfileData profileData;
-  final List<StandardModel> standardList;
-  final List<ExamModel> examList;
+  final List<NewStandardModel> standardList;
+  final List<NewExamModel> examList;
   final List<NewMediumModel> mediumList;
   final String selectedStdId;
   final String selectedExmId;
@@ -98,8 +98,8 @@ class ProfileLoaded extends ProfileState {
 
   ProfileLoaded copyWith({
     ProfileData? profileData,
-    List<StandardModel>? standardList,
-    List<ExamModel>? examList,
+    List<NewStandardModel>? standardList,
+    List<NewExamModel>? examList,
     List<NewMediumModel>? mediumList,
     String? selectedStdId,
     String? selectedExmId,

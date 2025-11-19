@@ -25,7 +25,7 @@ class ExamResponse {
 class ExamModel {
   @JsonKey(name: 'exm_id')
   final String exmId;
-  @JsonKey(name: 'exm_name')
+  @JsonKey(name: 'name')
   final String name;
 
   ExamModel({

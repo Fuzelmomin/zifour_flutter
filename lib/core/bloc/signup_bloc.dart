@@ -347,7 +347,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       } else {
         emit(SignupError(response.errorMsg ?? 'Failed to fetch standards'));
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print(stack);
       emit(SignupError('Error fetching standards: ${e.toString()}'));
     }
   }
@@ -372,7 +373,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       } else {
         emit(SignupError(response.errorMsg ?? 'Failed to fetch exams'));
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print(stack);
       emit(SignupError('Error fetching exams: ${e.toString()}'));
     }
   }

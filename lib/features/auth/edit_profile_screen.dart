@@ -445,7 +445,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final selectedStdId = state.selectedStdId;
     final standards = state.standardList;
     
-    StandardModel? selectedStandard;
+    NewStandardModel? selectedStandard;
     if (selectedStdId.isNotEmpty && standards.isNotEmpty) {
       selectedStandard = standards.firstWhere(
         (std) => std.stdId == selectedStdId,
@@ -465,7 +465,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<StandardModel>(
+        child: DropdownButton<NewStandardModel>(
           value: selectedStandard,
           hint: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -483,8 +483,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               color: Colors.white.withOpacity(0.7),
             ),
           ),
-          items: standards.map((StandardModel standard) {
-            return DropdownMenuItem<StandardModel>(
+          items: standards.map((NewStandardModel standard) {
+            return DropdownMenuItem<NewStandardModel>(
               value: standard,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -495,7 +495,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             );
           }).toList(),
-          onChanged: (StandardModel? newValue) {
+          onChanged: (NewStandardModel? newValue) {
             if (newValue != null) {
               blocContext.read<ProfileBloc>().add(
                 UpdateProfileStandard(
@@ -519,7 +519,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
 
     return Row(
-      children: exams.map((ExamModel exam) {
+      children: exams.map((NewExamModel exam) {
         final isSelected = exam.exmId == selectedExmId;
         return Expanded(
           child: Padding(
@@ -531,7 +531,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Widget _buildCourseOption(BuildContext blocContext, ExamModel exam, bool isSelected) {
+  Widget _buildCourseOption(BuildContext blocContext, NewExamModel exam, bool isSelected) {
     return GestureDetector(
       onTap: () {
         blocContext.read<ProfileBloc>().add(

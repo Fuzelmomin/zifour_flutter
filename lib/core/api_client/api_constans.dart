@@ -20,5 +20,6 @@ class APIConstants {
   static const resetPassword = 'reset_password.php';
   static const getProfile = 'profile.php';
   static const updateProfile = 'profile_update.php';
+  static const homeData = 'home_screen.php';
 
 }

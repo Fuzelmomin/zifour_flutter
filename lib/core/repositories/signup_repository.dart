@@ -42,7 +42,8 @@ class SignupRepository {
         error: apiError,
         errorMsg: apiError.getFirstError() ?? 'Network error occurred',
       );
-    } catch (e) {
+    } catch (e, stack) {
+      print(stack);
       return ApiResponse.error(
         errorMsg: 'Unexpected error: ${e.toString()}',
       );
@@ -77,7 +78,8 @@ class SignupRepository {
         error: apiError,
         errorMsg: apiError.getFirstError() ?? 'Network error occurred',
       );
-    } catch (e) {
+    } catch (e, stack) {
+      print(stack);
       return ApiResponse.error(
         errorMsg: 'Unexpected error: ${e.toString()}',
       );
