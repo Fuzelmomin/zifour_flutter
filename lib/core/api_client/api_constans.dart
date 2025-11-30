@@ -21,5 +21,11 @@ class APIConstants {
   static const getProfile = 'profile.php';
   static const updateProfile = 'profile_update.php';
   static const homeData = 'home_screen.php';
+  static const getPackages = 'packages.php';
+  static const getPackageDetails = 'package_detail.php';
+  static const createCalenderEvent = 'calender_event_create.php';
+  static const getCalenderEvents = 'calender_event_list.php';
+  static const getMentors = 'mentors.php';
+  static const getMentorVideos = 'mentor_video.php';
 
 }

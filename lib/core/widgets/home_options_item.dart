@@ -59,3 +59,26 @@ class HomeOptionsItem extends StatelessWidget {
     );
   }
 }
+
+class HomeOptionsNewItem extends StatelessWidget {
+  String? imagePath;
+  String? title;
+  String? subTitle;
+  Color? bgColor;
+  Function()? itemClick;
+  HomeOptionsNewItem({super.key, this.imagePath, this.title, this.subTitle, this.itemClick, this.bgColor});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        itemClick!();
+      },
+      child: Container(
+        width: double.infinity,
+        height: 200.h,
+
+      ),
+    );
+  }
+}

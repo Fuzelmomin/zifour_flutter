@@ -84,12 +84,12 @@ class _MultimediaLibraryScreenState extends State<MultimediaLibraryScreen> {
                         title: item['name'],
                         itemClick: (){
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MentorsVideosListScreen(
-                              mentorName: item['name'],
-                            )),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => MentorsVideosListScreen(
+                          //     mentorName: item['name'],
+                          //   )),
+                          // );
                         },
                       ),
                     );

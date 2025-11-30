@@ -56,12 +56,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       if (response.status == ApiStatus.success && response.data != null) {
         final loginResponse = response.data!;
-        
-        // Check if user is active
-        if (!loginResponse.isActive) {
-          emit(LoginError('Your account is not active. Please contact support.'));
-          return;
-        }
 
         // Save user data to SharedPreferences
         if (loginResponse.data != null) {
