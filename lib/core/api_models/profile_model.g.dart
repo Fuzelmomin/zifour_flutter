@@ -94,3 +94,26 @@ Map<String, dynamic> _$NewMediumModelToJson(NewMediumModel instance) =>
       'med_id': instance.medId,
       'med_name': instance.medName,
     };
+
+NewStandardModel _$NewStandardModelFromJson(Map<String, dynamic> json) =>
+    NewStandardModel(
+      stdId: json['std_id'] as String,
+      name: json['std_name'] as String,
+    );
+
+Map<String, dynamic> _$NewStandardModelToJson(NewStandardModel instance) =>
+    <String, dynamic>{
+      'std_id': instance.stdId,
+      'std_name': instance.name,
+    };
+
+NewExamModel _$NewExamModelFromJson(Map<String, dynamic> json) => NewExamModel(
+      exmId: json['exm_id'] as String,
+      name: json['std_name'] as String,
+    );
+
+Map<String, dynamic> _$NewExamModelToJson(NewExamModel instance) =>
+    <String, dynamic>{
+      'exm_id': instance.exmId,
+      'std_name': instance.name,
+    };

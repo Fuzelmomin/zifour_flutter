@@ -50,6 +50,10 @@ class MentorVideoItem {
     );
   }
 
+  String get thumbnailUrl => 'https://img.youtube.com/vi/$youtubeCode/hqdefault.jpg';
+
+  String get youtubeUrl => 'https://www.youtube.com/watch?v=$youtubeCode';
+
   Map<String, dynamic> toJson() {
     return {
       'mvid_id': mvidId,
@@ -57,8 +61,5 @@ class MentorVideoItem {
       'youtube_code': youtubeCode,
     };
   }
-
-  String get thumbnailUrl =>
-      'https://img.youtube.com/vi/$youtubeCode/hqdefault.jpg';
 }
 

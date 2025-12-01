@@ -137,7 +137,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
                             return SizedBox(
                               height: 200.h,
                               child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
+                                scrollDirection: Axis.vertical,
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: videos.length,
                                 itemBuilder: (context, index) {
@@ -181,7 +181,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
     return SizedBox(
       height: 200.h,
       child: ListView.builder(
-        scrollDirection: Axis.horizontal,
+        scrollDirection: Axis.vertical,
         physics: const BouncingScrollPhysics(),
         itemCount: 3,
         itemBuilder: (context, index) {
