@@ -758,6 +758,12 @@ abstract class AppLocalizations {
   /// **'Select any subjects, Chapters, and Topics to build your custom test.'**
   String get selectAnySubject;
 
+  /// No description provided for @selectSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Subject'**
+  String get selectSubject;
+
   /// No description provided for @selectChapter.
   ///
   /// In en, this message translates to:

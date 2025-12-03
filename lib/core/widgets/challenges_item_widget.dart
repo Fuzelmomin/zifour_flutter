@@ -4,13 +4,21 @@ import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_gradient_button.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
+import 'package:zifour_sourcecode/features/challenger_zone/model/challenges_list_model.dart';
 
 import '../../l10n/app_localizations.dart';
 
 class ChallengesItemWidget extends StatelessWidget {
-  String? btnName;
-  Function() onTap;
-  ChallengesItemWidget({super.key, this.btnName, required this.onTap});
+  final ChallengeListItem? challenge;
+  final String? btnName;
+  final Function() onTap;
+
+  ChallengesItemWidget({
+    super.key,
+    this.challenge,
+    this.btnName,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +29,12 @@ class ChallengesItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'July NEET Mini Challenge',
+            challenge?.challengeName ?? 'Challenge',
             style: AppTypography.inter16Medium,
           ),
           SizedBox(height: 7.h,),
           Text(
-            '20 July 2025',
+            _formatDate(challenge?.createdAt),
             style: AppTypography.inter12SemiBold.copyWith(
               color: AppColors.orange
             ),
@@ -37,25 +45,31 @@ class ChallengesItemWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 12.w,
             children: [
-              Expanded(
-                flex: 3,
-                child: _customContainer(
-                    '${AppLocalizations.of(context)?.subject}', 'Physics'
+              if (challenge?.subjects != null && challenge!.subjects.isNotEmpty)
+                Expanded(
+                  flex: 3,
+                  child: _customContainer(
+                    '${AppLocalizations.of(context)?.subject}',
+                    challenge!.subjects,
+                  ),
                 ),
-              ),
-
-              Expanded(
-                flex: 3,
-                child: _customContainer(
-                    '${AppLocalizations.of(context)?.chapter}', 'Mechanics'
+              if (challenge?.chapters != null && challenge!.chapters.isNotEmpty)
+                Expanded(
+                  flex: 3,
+                  child: _customContainer(
+                    '${AppLocalizations.of(context)?.chapter}',
+                    challenge!.chapters,
+                  ),
                 ),
-              ),
             ],
           ),
-          SizedBox(height: 12.h,),
-          _customContainer(
-              '${AppLocalizations.of(context)?.topic}', 'Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search '
-          ),
+          if (challenge?.topics != null && challenge!.topics.isNotEmpty) ...[
+            SizedBox(height: 12.h,),
+            _customContainer(
+              '${AppLocalizations.of(context)?.topic}',
+              challenge!.topics,
+            ),
+          ],
           SizedBox(height: 12.h,),
           CustomGradientArrowButton(
             text: btnName ?? '',
@@ -66,6 +80,32 @@ class ChallengesItemWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return '';
+    }
+    try {
+      final date = DateTime.parse(dateString);
+      final months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec'
+      ];
+      return '${date.day} ${months[date.month - 1]} ${date.year}';
+    } catch (e) {
+      return dateString;
+    }
   }
 }
 

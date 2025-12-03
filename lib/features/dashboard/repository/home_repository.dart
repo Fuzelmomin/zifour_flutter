@@ -66,7 +66,7 @@ class HomeRepository {
   Map<String, dynamic> _buildQuery(LoginData user) {
     return {
       'stu_id': user.stuId,
-      'med_id': user.stuMedId,
+      'med_id': user.stuMedId == '0' ? '2' : user.stuMedId,
       'exm_id': _resolveExamId(user),
     };
   }

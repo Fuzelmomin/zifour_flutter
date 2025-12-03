@@ -5,6 +5,7 @@ import '../api_models/standard_model.dart';
 import '../api_models/exam_model.dart';
 import '../api_models/api_status.dart';
 import '../repositories/signup_repository.dart';
+import '../utils/language_preference.dart';
 
 // Signup BLoC Events
 abstract class SignupEvent {}
@@ -578,6 +579,9 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       ));
       
       try {
+
+        final medId = await LanguagePreference.getSelectedMediumId();
+
         final imageResponse = await _signupRepository.uploadImage(
           imageFile: data.imageFile!,
         );
@@ -618,6 +622,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
           password: data.password,
           mobile: event.mobileNumber,
           imageUrl: imageUrl,
+          stuMedId: medId ?? '2',
           gender: data.gender,
         );
 

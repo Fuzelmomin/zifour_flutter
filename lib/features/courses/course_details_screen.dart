@@ -37,24 +37,24 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 
   Future<void> _loadPackageDetails() async {
     print('_loadPackageDetails ${widget.package.id}');
-    // final userData = await UserPreference.getUserData();
-    // if (userData != null && mounted) {
-    //
-    //   print('_loadPackageDetails ${widget.package.id}');
-    //   context.read<CoursePackageDetailsBloc>().add(
-    //         FetchPackageDetails(
-    //           packageId: widget.package.id,
-    //           studentId: '6',
-    //         ),
-    //       );
-    // }
+    final userData = await UserPreference.getUserData();
+    if (userData != null && mounted) {
 
-    context.read<CoursePackageDetailsBloc>().add(
-      FetchPackageDetails(
-        packageId: widget.package.id,
-        studentId: '6',
-      ),
-    );
+      print('_loadPackageDetails ${widget.package.id}');
+      context.read<CoursePackageDetailsBloc>().add(
+            FetchPackageDetails(
+              packageId: widget.package.id,
+              studentId: '6',
+            ),
+          );
+    }
+
+    // context.read<CoursePackageDetailsBloc>().add(
+    //   FetchPackageDetails(
+    //     packageId: widget.package.id,
+    //     studentId: '6',
+    //   ),
+    // );
   }
 
   @override

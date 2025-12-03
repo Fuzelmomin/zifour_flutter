@@ -170,6 +170,7 @@ class SignupRepository {
     required String password,
     required String mobile,
     required String imageUrl,
+    required String stuMedId,
     String? gender,
   }) async {
     try {
@@ -183,6 +184,7 @@ class SignupRepository {
           'stu_password': password,
           'stu_mobile': mobile,
           'stu_document': imageUrl,
+          'stu_med_id': stuMedId,
           if (gender != null) 'stu_gender': _convertGenderToNumber(gender),
         },
       );

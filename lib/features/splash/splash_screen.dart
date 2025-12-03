@@ -5,6 +5,7 @@ import 'package:zifour_sourcecode/core/bloc/language_bloc.dart';
 import 'package:zifour_sourcecode/features/language_selection/language_selection_screen.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/utils/user_preference.dart';
+import '../challenger_zone/challenger_zone_screen.dart';
 import '../courses/all_course_list_screen.dart';
 import '../dashboard/dashboard_screen.dart';
 import '../mentor/mentor_list_screen.dart';
@@ -82,8 +83,8 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     final Widget destination =
-        //isLoggedIn ? const DashboardScreen() : LanguageSelectionScreen();
-        isLoggedIn ? const DashboardScreen() : MentorsListScreen();
+        isLoggedIn ? const DashboardScreen() : LanguageSelectionScreen();
+        //isLoggedIn ? const DashboardScreen() : ChallengerZoneScreen();
 
     Navigator.pushReplacement(
       context,

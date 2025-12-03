@@ -29,5 +29,10 @@ class APIConstants {
   static const getMentorVideos = 'mentor_video.php';
   static const getSubject = 'subject.php';
   static const getChapters = 'chapters.php';
+  static const getTopics = 'topic.php';
+  static const createChallenge = 'create_challenge.php';
+  static const getDetailsChallenge = 'create_challenge_details.php';
+  static const getChallengesList = 'create_challenge_list.php';
+  static const getChallengeMcqList = 'create_challenge_mcq_list.php';
 
 }

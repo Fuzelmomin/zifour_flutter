@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:zifour_sourcecode/core/services/subject_service.dart';
 import 'package:zifour_sourcecode/core/utils/user_preference.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/mentor/bloc/get_mentors_bloc.dart';
@@ -46,7 +47,7 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
     if (_eventsLoaded) return;
     _eventsLoaded = true;
 
-    final userData = await UserPreference.getUserData();
+    // final userData = await UserPreference.getUserData();
     // if (userData != null && mounted) {
     //   final subId = userData.stuSubId?.isNotEmpty == true
     //       ? userData.stuSubId!
@@ -57,8 +58,11 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
     //   }
     // }
 
+    final subId = SubjectService().subjects.first.subId;
+    print('Selected SUbject: ${SubjectService().subjects.first.toJson()}');
+
     if (mounted) {
-      _mentorsBloc.add(FetchMentors(subId: "1"));
+      _mentorsBloc.add(FetchMentors(subId: subId ?? "1"));
     }
   }
 

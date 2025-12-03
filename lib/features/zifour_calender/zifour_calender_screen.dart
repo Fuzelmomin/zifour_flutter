@@ -384,18 +384,18 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
       return;
     }
 
-    // final userData = await UserPreference.getUserData();
-    // if (userData == null) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text('User data not found. Please login again.'),
-    //       backgroundColor: AppColors.error,
-    //       behavior: SnackBarBehavior.floating,
-    //       margin: EdgeInsets.all(16),
-    //     ),
-    //   );
-    //   return;
-    // }
+    final userData = await UserPreference.getUserData();
+    if (userData == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('User data not found. Please login again.'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(16),
+        ),
+      );
+      return;
+    }
 
     // Format date as YYYY-MM-DD
     final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate!);
@@ -407,8 +407,8 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
     if (context.mounted) {
       context.read<CalendarEventBloc>().add(
             CreateCalendarEvent(
-              //studentId: userData.stuId,
-              studentId: "6",
+              studentId: userData.stuId,
+              //studentId: "6",
               date: formattedDate,
               time: formattedTime,
               title: nameController.text.trim(),

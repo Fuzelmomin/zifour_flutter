@@ -653,24 +653,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 flex: 1,
-                child: _widgetOption(menuItems[0]),
+                child: _widgetOption(menuItems[0], 0),
               ),
               Expanded(
                 flex: 1,
-                child: _widgetOption(menuItems[1]),
-              ),
-            ],
-          ),
-          Row(
-            spacing: 10.w,
-            children: [
-              Expanded(
-                flex: 1,
-                child: _widgetOption(menuItems[2]),
-              ),
-              Expanded(
-                flex: 1,
-                child: _widgetOption(menuItems[3]),
+                child: _widgetOption(menuItems[1], 1),
               ),
             ],
           ),
@@ -679,11 +666,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 flex: 1,
-                child: _widgetOption(menuItems[4]),
+                child: _widgetOption(menuItems[2], 2),
               ),
               Expanded(
                 flex: 1,
-                child: _widgetOption(menuItems[5]),
+                child: _widgetOption(menuItems[3], 3),
               ),
             ],
           ),
@@ -692,11 +679,24 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Expanded(
                 flex: 1,
-                child: _widgetOption(menuItems[6]),
+                child: _widgetOption(menuItems[4], 4),
               ),
               Expanded(
                 flex: 1,
-                child: _widgetOption(menuItems[7]),
+                child: _widgetOption(menuItems[5], 5),
+              ),
+            ],
+          ),
+          Row(
+            spacing: 10.w,
+            children: [
+              Expanded(
+                flex: 1,
+                child: _widgetOption(menuItems[6], 6),
+              ),
+              Expanded(
+                flex: 1,
+                child: _widgetOption(menuItems[7], 7),
               ),
             ],
           ),
@@ -705,53 +705,77 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _widgetOption(Map item) {
-    return Container(
-      height: 200.h,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            item['color'].withOpacity(0.85),
-            item['color'].withOpacity(0.55),
+  Widget _widgetOption(Map item, int index) {
+    return InkWell(
+      onTap: (){
+        if(index == 0){
+
+        }else if(index == 1){
+
+        }else if(index == 2){
+
+        }else if(index == 3){
+
+        }else if(index == 4){
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChallengerZoneScreen()),
+          );
+        }else if(index == 5){
+
+        }else if(index == 6){
+
+        }else if(index == 7){
+
+        }
+      },
+      child: Container(
+        height: 200.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              item['color'].withOpacity(0.85),
+              item['color'].withOpacity(0.55),
+            ],
+          ),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              backgroundColor: Colors.white.withOpacity(0.2),
+              child: Icon(
+                item['icon'],
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              item['title'],
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            if (item["subtitle"] != "")
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  item["subtitle"],
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.85),
+                    fontSize: 13,
+                  ),
+                ),
+              )
           ],
         ),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.white.withOpacity(0.2),
-            child: Icon(
-              item['icon'],
-              color: Colors.white,
-              size: 26,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            item['title'],
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          if (item["subtitle"] != "")
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                item["subtitle"],
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.85),
-                  fontSize: 13,
-                ),
-              ),
-            )
-        ],
       ),
     );
   }

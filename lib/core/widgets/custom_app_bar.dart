@@ -50,13 +50,14 @@ class CustomAppBar extends StatelessWidget {
                 ),
               ) : Container(),
               SizedBox(width: 10.w,),
-              isLongText == true ? SizedBox(
-                width: MediaQuery.widthOf(context) * 0.4,
-                child: Text(
-                  title ?? '',
-                  style: AppTypography.inter16SemiBold,
-                ),
-              ) : Text(
+              // isLongText == true ? SizedBox(
+              //   width: MediaQuery.widthOf(context) * 0.4,
+              //   child: Text(
+              //     title ?? '',
+              //     style: AppTypography.inter16SemiBold,
+              //   ),
+              // ) :
+            Text(
                 title ?? '',
                 style: AppTypography.inter16SemiBold,
               ),

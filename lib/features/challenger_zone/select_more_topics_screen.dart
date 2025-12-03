@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/widgets/challenge_option_box.dart';
 import 'package:zifour_sourcecode/core/widgets/chapter_selection_box.dart';
@@ -13,32 +15,92 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
+import '../../core/widgets/custom_loading_widget.dart';
 import '../../core/widgets/line_label_row.dart';
 import '../../l10n/app_localizations.dart';
+import 'bloc/create_challenge_bloc.dart';
+import 'bloc/topic_bloc.dart';
 
 class SelectMoreTopicsScreen extends StatefulWidget {
-  const SelectMoreTopicsScreen({super.key});
+  const SelectMoreTopicsScreen({
+    super.key,
+    required this.subId,
+    required this.chapterIds,
+  });
+
+  /// Selected subject id (sub_id) from previous screen
+  final String subId;
+
+  /// Selected chapter ids (chp_id) from previous screen
+  final List<String> chapterIds;
 
   @override
   State<SelectMoreTopicsScreen> createState() => _SelectMoreTopicsScreenState();
 }
 
 class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
+  late final TopicBloc _topicBloc;
+  late final CreateChallengeBloc _createChallengeBloc;
 
+  /// Selected topic ids which will be passed to create-challenge API
+  final BehaviorSubject<List<String>> _selectedTopicIds =
+      BehaviorSubject<List<String>>.seeded([]);
 
-  final BehaviorSubject<List<String>> _selectedTopic =
-  BehaviorSubject<List<String>>.seeded(['Newton’s Laws of Motion']);
-  final List<String> _topics = ['Newton’s Laws of Motion', 'Friction', 'Work, Energy & Power', 'Projectile Motion', 'Dynamics of Motion', 'Laws of Conversation'];
+  @override
+  void initState() {
+    super.initState();
+    _topicBloc = TopicBloc();
+    _createChallengeBloc = CreateChallengeBloc();
+
+    // Fetch topics for selected chapters when screen opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.chapterIds.isNotEmpty) {
+        _topicBloc.add(TopicRequested(chapterIds: widget.chapterIds));
+      }
+    });
+  }
 
   @override
   void dispose() {
-    _selectedTopic.close();
+    _selectedTopicIds.close();
+    _topicBloc.close();
+    _createChallengeBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _topicBloc),
+        BlocProvider.value(value: _createChallengeBloc),
+      ],
+      child: BlocConsumer<CreateChallengeBloc, CreateChallengeState>(
+        listener: (context, state) {
+          if (state.status == CreateChallengeStatus.success &&
+              state.data != null &&
+              state.data!.topicList.isNotEmpty) {
+            final created = state.data!.topicList.first;
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChallengeReadyScreen(
+                  crtChlId: created.crtChlId,
+                ),
+              ),
+            );
+          } else if (state.status == CreateChallengeStatus.failure &&
+              state.errorMessage != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage!)),
+            );
+          }
+        },
+        builder: (context, state) {
+          final isCreating = state.isLoading;
+          return CustomLoadingOverlay(
+            isLoading: isCreating,
+            child: Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -89,35 +151,81 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
                       child: Column(
                         spacing: 15.h,
                         children: [
+                          BlocBuilder<TopicBloc, TopicState>(
+                            builder: (context, state) {
+                              if (state.isLoading) {
+                                return _buildTopicsShimmer();
+                              }
 
-                          StreamBuilder<List<String>>(
-                            stream: _selectedTopic.stream,
-                            builder: (context, snapshot) {
-                              final selectedList = snapshot.data ?? [];
-                              return Column(
-                                children: _topics.map((chapter) {
-                                  final isSelected =
-                                  selectedList.contains(chapter);
-                                  return ChapterSelectionBox(
-                                    onTap: (){
-                                      final newList =
-                                      List<String>.from(
-                                          selectedList);
-                                      if (isSelected) {
-                                        newList.remove(chapter);
-                                      } else {
-                                        newList.add(chapter);
-                                      }
-                                      _selectedTopic.add(newList);
-                                    },
-                                    title: chapter,
-                                    isButton: false,
-                                    isSelected: isSelected,
-                                    padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 7.w),
-                                    bgColor: Color(0xFF1B193D),
-                                    borderColor: AppColors.white.withOpacity(0.1),
+                              if (state.status == TopicStatus.failure) {
+                                return Center(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 20.h),
+                                    child: Text(
+                                      state.errorMessage ??
+                                          'Unable to load topics.',
+                                      style: AppTypography.inter12Regular
+                                          .copyWith(
+                                        color: AppColors.white
+                                            .withOpacity(0.6),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              if (!state.hasData) {
+                                return Center(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 20.h),
+                                    child: Text(
+                                      'No topics found for selected chapters.',
+                                      style: AppTypography.inter12Regular
+                                          .copyWith(
+                                        color: AppColors.white
+                                            .withOpacity(0.6),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              final topics = state.data!.topicList;
+                              return StreamBuilder<List<String>>(
+                                stream: _selectedTopicIds.stream,
+                                builder: (context, snapshot) {
+                                  final selectedList = snapshot.data ?? [];
+                                  return Column(
+                                    children: topics.map((topic) {
+                                      final isSelected =
+                                          selectedList.contains(topic.tpcId);
+                                      return ChapterSelectionBox(
+                                        onTap: () {
+                                          final newList =
+                                              List<String>.from(selectedList);
+                                          if (isSelected) {
+                                            newList.remove(topic.tpcId);
+                                          } else {
+                                            newList.add(topic.tpcId);
+                                          }
+                                          _selectedTopicIds.add(newList);
+                                        },
+                                        title: topic.name,
+                                        isButton: false,
+                                        isSelected: isSelected,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 7.h, horizontal: 7.w),
+                                        bgColor: const Color(0xFF1B193D),
+                                        borderColor: AppColors.white
+                                            .withOpacity(0.1),
+                                      );
+                                    }).toList(),
                                   );
-                                }).toList(),
+                                },
                               );
                             },
                           ),
@@ -147,12 +255,7 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
                         Expanded(
                           child: CustomGradientButton(
                             text: '${AppLocalizations.of(context)?.confirm}',
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ChallengeReadyScreen()),
-                              );
-                            },
+                            onPressed: _onConfirmPressed,
                           ),
                         ),
                       ],
@@ -165,6 +268,10 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
             ),
           ],
         ),
+      ),
+    ),
+          );
+        },
       ),
     );
   }
@@ -211,6 +318,59 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
           style: AppTypography.inter12SemiBold,
         ),
       ),
+    );
+  }
+
+  void _onConfirmPressed() {
+    final selectedTopics = _selectedTopicIds.value;
+
+    if (selectedTopics.isEmpty) {
+      print('Please select at least one topic.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select at least one topic.')),
+      );
+      return;
+    }
+
+    if (widget.chapterIds.isEmpty || widget.subId.isEmpty) {
+      print('Missing chapters or subject.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Missing chapters or subject.')),
+      );
+      return;
+    }
+
+    print('CreateChallengeBloc: \n${widget.chapterIds} \n $selectedTopics \n ${widget.subId} ');
+
+    // Use the bloc instance directly instead of context.read
+    _createChallengeBloc.add(
+      CreateChallengeRequested(
+        chapterIds: widget.chapterIds,
+        topicIds: selectedTopics,
+        subId: widget.subId,
+      ),
+    );
+  }
+
+  Widget _buildTopicsShimmer() {
+    return Column(
+      children: List.generate(3, (index) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: 10.h),
+          child: Shimmer.fromColors(
+            baseColor: Colors.white.withOpacity(0.08),
+            highlightColor: Colors.white.withOpacity(0.2),
+            child: Container(
+              width: double.infinity,
+              height: 50.h,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 

@@ -104,7 +104,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                         spacing: 15.h,
                         children: [
                           stepRowContent(
-                              '${AppLocalizations.of(context)?.selectAnySubject.toUpperCase()}',
+                              '${AppLocalizations.of(context)?.selectSubject.toUpperCase()}',
                               "STEP 1 "),
                           SizedBox(
                             height: 50.h,
@@ -238,7 +238,10 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SelectMoreTopicsScreen()),
+                              builder: (context) => SelectMoreTopicsScreen(
+                                subId: _selectedSubjectId ?? '',
+                                chapterIds: _selectedChapters.value,
+                              )),
                         );
                       },
                     ),

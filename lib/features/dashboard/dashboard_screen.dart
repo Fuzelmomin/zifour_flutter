@@ -35,7 +35,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     
     // Call subject API silently when dashboard loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _subjectBloc.add(const SubjectRequested(silent: true));
+      print('API Call Subject:');
+      _subjectBloc.add(const SubjectRequested(silent: false));
     });
   }
 

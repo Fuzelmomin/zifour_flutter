@@ -345,6 +345,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select any subjects, Chapters, and Topics to build your custom test.';
 
   @override
+  String get selectSubject => 'Select Subject';
+
+  @override
   String get selectChapter => 'Select Chapters';
 
   @override
