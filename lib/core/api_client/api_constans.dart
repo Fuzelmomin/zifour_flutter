@@ -34,5 +34,7 @@ class APIConstants {
   static const getDetailsChallenge = 'create_challenge_details.php';
   static const getChallengesList = 'create_challenge_list.php';
   static const getChallengeMcqList = 'create_challenge_mcq_list.php';
+  static const getMultiMediaLibrary = 'multimedia_library.php';
+  static const getMultiMediaVideos = 'multimedia_video.php';
 
 }

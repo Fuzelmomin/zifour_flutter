@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:zifour_sourcecode/core/utils/user_preference.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -214,10 +215,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                         vertical: 10.h,
                                         horizontal: 15.w,
                                       ).copyWith(top: 20.h),
-                                      child: HomeAppBar(
-                                        profileImg: '',
-                                        profileClick: () {
-                                          _scaffoldKey.currentState?.openDrawer();
+                                      child: ValueListenableBuilder(
+                                        valueListenable: UserPreference.userNotifier,
+                                        builder: (context, userData, child) {
+                                          return HomeAppBar(
+                                            profileImg: userData?.stuImage ?? '',
+                                            profileClick: () {
+                                              _scaffoldKey.currentState?.openDrawer();
+                                            },
+                                          );
                                         },
                                       ),
                                     ),
@@ -246,10 +252,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       vertical: 10.h,
                                       horizontal: 15.w,
                                     ).copyWith(top: 20.h),
-                                    child: HomeAppBar(
-                                      profileImg: '',
-                                      profileClick: () {
-                                        _scaffoldKey.currentState?.openDrawer();
+                                    child: ValueListenableBuilder(
+                                      valueListenable: UserPreference.userNotifier,
+                                      builder: (context, userData, child) {
+                                        return HomeAppBar(
+                                          profileImg: userData?.stuImage ?? '',
+                                          profileClick: () {
+                                            _scaffoldKey.currentState?.openDrawer();
+                                          },
+                                        );
                                       },
                                     ),
                                   ),

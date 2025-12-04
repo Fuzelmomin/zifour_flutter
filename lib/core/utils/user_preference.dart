@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import '../api_models/login_model.dart';
 
 /// Utility class for managing user data and login credentials in SharedPreferences
@@ -10,6 +11,14 @@ class UserPreference {
   static const String _savedPasswordKey = 'saved_password';
   static const String _userDataKey = 'user_data';
   static const String _isLoggedInKey = 'is_logged_in';
+
+  /// ValueNotifier for real-time user data updates
+  static final ValueNotifier<LoginData?> userNotifier = ValueNotifier(null);
+
+  /// Initialize user data from SharedPreferences
+  static Future<void> init() async {
+    userNotifier.value = await getUserData();
+  }
 
   /// Save remember me preference
   static Future<bool> saveRememberMe(bool rememberMe) async {
@@ -85,6 +94,10 @@ class UserPreference {
       final userDataJson = jsonEncode(userData.toJson());
       await prefs.setString(_userDataKey, userDataJson);
       await prefs.setBool(_isLoggedInKey, true);
+      
+      // Update notifier
+      userNotifier.value = userData;
+      
       return true;
     } catch (e) {
       return false;
@@ -98,7 +111,14 @@ class UserPreference {
       final userDataJson = prefs.getString(_userDataKey);
       if (userDataJson != null) {
         final userDataMap = jsonDecode(userDataJson) as Map<String, dynamic>;
-        return LoginData.fromJson(userDataMap);
+        final userData = LoginData.fromJson(userDataMap);
+        
+        // Update notifier if it's null (first load)
+        if (userNotifier.value == null) {
+          userNotifier.value = userData;
+        }
+        
+        return userData;
       }
       return null;
     } catch (e) {
@@ -122,6 +142,10 @@ class UserPreference {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_userDataKey);
       await prefs.setBool(_isLoggedInKey, false);
+      
+      // Clear notifier
+      userNotifier.value = null;
+      
       return true;
     } catch (e) {
       return false;
@@ -137,10 +161,15 @@ class UserPreference {
       await prefs.remove(_rememberMeKey);
       await prefs.remove(_savedMobileKey);
       await prefs.remove(_savedPasswordKey);
+      
+      // Clear notifier
+      userNotifier.value = null;
+      
       return true;
     } catch (e) {
       return false;
     }
   }
 }
+
 

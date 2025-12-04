@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zifour_sourcecode/core/utils/user_preference.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/auth/edit_profile_screen.dart';
 import 'package:zifour_sourcecode/features/courses/my_courses_screen.dart';
@@ -83,23 +84,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 boxBgColor: AppColors.pinkColor3.withOpacity(0.1),
                                 child: Container(
                                   margin: EdgeInsets.only(top: 15.h),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-
-                                      Text(
-                                        'Jhone Deo',
-                                        style: AppTypography.inter24Medium,
-                                      ),
-                                      SizedBox(height: 5.h,),
-                                      Text(
-                                        '1234566789',
-                                        style: AppTypography.inter14Medium.copyWith(
-                                          color: AppColors.white.withOpacity(0.5)
-                                        ),
-                                      ),
-                                    ],
+                                  child: ValueListenableBuilder(
+                                    valueListenable: UserPreference.userNotifier,
+                                    builder: (context, userData, child) {
+                                      return Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            userData?.stuName ?? 'Guest',
+                                            style: AppTypography.inter24Medium,
+                                          ),
+                                          SizedBox(height: 5.h,),
+                                          Text(
+                                            userData?.stuMobile ?? '',
+                                            style: AppTypography.inter14Medium.copyWith(
+                                              color: AppColors.white.withOpacity(0.5)
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ),
                               ),

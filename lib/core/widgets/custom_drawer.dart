@@ -6,6 +6,7 @@ import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/constants/assets_path.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/dialogs_utils.dart';
+import 'package:zifour_sourcecode/core/utils/user_preference.dart';
 import 'package:zifour_sourcecode/core/widgets/my_notes_item.dart';
 import 'package:zifour_sourcecode/features/bookmarked/bookmarked_list_screen.dart';
 import 'package:zifour_sourcecode/features/courses/change_courses_screen.dart';
@@ -42,58 +43,63 @@ class CustomDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Profile Header
-              Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(30.r),
-                    child: CachedNetworkImage(
-                      imageUrl: 'https://i.pravatar.cc/150?img=3',
-                      width: 50.w,
-                      height: 50.h,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        width: 50.w,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          color: AppColors.pinkColor.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(30.r),
-                        ),
-                        child: Icon(
-                          Icons.person,
-                          color: AppColors.pinkColor,
-                          size: 30.sp,
-                        ),
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        width: 50.w,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          color: AppColors.pinkColor.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(30.r),
-                        ),
-                        child: Icon(
-                          Icons.person,
-                          color: AppColors.pinkColor,
-                          size: 30.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              ValueListenableBuilder(
+                valueListenable: UserPreference.userNotifier,
+                builder: (context, userData, child) {
+                  return Row(
                     children: [
-                      Text(
-                        "Jhone Doe",
-                        style: AppTypography.inter18Medium,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(30.r),
+                        child: CachedNetworkImage(
+                          imageUrl: userData?.stuImage ?? '',
+                          width: 50.w,
+                          height: 50.h,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            width: 50.w,
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              color: AppColors.pinkColor.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(30.r),
+                            ),
+                            child: Icon(
+                              Icons.person,
+                              color: AppColors.pinkColor,
+                              size: 30.sp,
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            width: 50.w,
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              color: AppColors.pinkColor.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(30.r),
+                            ),
+                            child: Icon(
+                              Icons.person,
+                              color: AppColors.pinkColor,
+                              size: 30.sp,
+                            ),
+                          ),
+                        ),
                       ),
-                      Text(
-                        "98989852530",
-                        style: AppTypography.inter14Medium,
+                      SizedBox(width: 12.w),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userData?.stuName ?? "Guest",
+                            style: AppTypography.inter18Medium,
+                          ),
+                          Text(
+                            userData?.stuMobile ?? "",
+                            style: AppTypography.inter14Medium,
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
+                  );
+                },
               ),
               SizedBox(height: 30.h),
 

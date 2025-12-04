@@ -92,7 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return false;
     }
-
     return true;
   }
 

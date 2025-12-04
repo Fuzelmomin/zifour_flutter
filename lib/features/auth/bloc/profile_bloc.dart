@@ -482,6 +482,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         );
 
         if (response.status == ApiStatus.success && response.data != null) {
+          // Save updated user data to SharedPreferences
+          if (response.data!.data != null) {
+            await UserPreference.saveUserData(response.data!.data!);
+          }
+          
           emit(ProfileUpdateSuccess(response.data!.message));
         } else {
           emit(ProfileError(response.errorMsg ?? 'Failed to update profile'));

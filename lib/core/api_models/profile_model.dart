@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'standard_model.dart';
 import 'exam_model.dart';
 import 'medium_model.dart';
+import 'login_model.dart';
 
 part 'profile_model.g.dart';
 
@@ -125,20 +126,23 @@ class ProfileResponse {
 class UpdateProfileResponse {
   final bool status;
   final String message;
+  final LoginData? data;
 
   UpdateProfileResponse({
     required this.status,
     required this.message,
+    this.data,
   });
 
   factory UpdateProfileResponse.fromJson(Map<String, dynamic> json) {
     return UpdateProfileResponse(
       status: json['status'] as bool? ?? false,
       message: json['message']?.toString() ?? '',
+      data: json['data'] != null 
+          ? LoginData.fromJson(json['data'] as Map<String, dynamic>)
+          : null,
     );
   }
-
-
 
   Map<String, dynamic> toJson() => _$UpdateProfileResponseToJson(this);
 }
