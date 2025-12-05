@@ -348,7 +348,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   },
                                 ),
                                 SizedBox(height: 7.h),
+                                labelWidget('${AppLocalizations.of(context)?.gender?.toUpperCase() ?? 'GENDER'}'),
+                                // SizedBox(height: 7.h),
                                 _buildGenderSelection(context, profileState),
+                                SizedBox(height: 7.h),
+                                labelWidget('${AppLocalizations.of(context)?.selectCourse?.toUpperCase() ?? 'SELECT COURSE'}'),
                                 SizedBox(height: 7.h),
                                 _buildCourseSelection(context, profileState),
                                 SizedBox(height: 7.h),
@@ -520,6 +524,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     return Row(
       children: exams.map((NewExamModel exam) {
+        print('buildCourseSelection ${exam.exmId} And Selected: $selectedExmId');
         final isSelected = exam.exmId == selectedExmId;
         return Expanded(
           child: Padding(
@@ -532,6 +537,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildCourseOption(BuildContext blocContext, NewExamModel exam, bool isSelected) {
+    print('buildCourseOption ${exam.name}');
+    print('buildCourseOption ${exam.toJson()}');
     return GestureDetector(
       onTap: () {
         blocContext.read<ProfileBloc>().add(
@@ -556,10 +563,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              exam.name,
-              style: AppTypography.inter14Medium.copyWith(
-                color: Colors.white,
+            Expanded(
+              child: Text(
+                exam.name,
+                style: AppTypography.inter14Medium.copyWith(
+                  color: Colors.white.withOpacity(1.0),
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
             SizedBox(width: 8.w),
@@ -641,10 +653,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              medium.medName,
-              style: AppTypography.inter14Medium.copyWith(
-                color: Colors.white,
+            Expanded(
+              child: Text(
+                medium.medName,
+                style: AppTypography.inter14Medium.copyWith(
+                  color: Colors.white.withOpacity(1.0),
+                  fontWeight: FontWeight.w500,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
             SizedBox(width: 8.w),
@@ -713,6 +730,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       },
       child: Container(
         height: 48.h,
+        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.pinkColor2 : Colors.black.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -738,8 +764,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             SizedBox(width: 8.w),
             Text(
               genderText,
-              style: AppTypography.inter12Medium.copyWith(
-                color: isSelected ? Colors.white : AppColors.hintTextColor,
+              style: AppTypography.inter14Medium.copyWith(
+                color: Colors.white,
               ),
             ),
           ],

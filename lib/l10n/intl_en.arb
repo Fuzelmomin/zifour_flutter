@@ -135,7 +135,8 @@
   "pleaseEnterConfirmPassword": "Please enter confirm password",
   "passwordMustBe6Characters": "Password must be at least 6 characters long",
   "passwordNotMatch": "Passwords do not match",
-  "languagePreference": "LANGUAGE PREFERENCE"
+  "languagePreference": "LANGUAGE PREFERENCE",
+  "gender": "Gender"
 
 }
 

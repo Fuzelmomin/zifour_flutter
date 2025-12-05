@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/gradient_text.dart';
+import 'package:zifour_sourcecode/core/utils/image_picker_utils.dart';
 import 'package:zifour_sourcecode/core/widgets/be_ziddi_item_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/upload_box_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_loading_widget.dart';
@@ -49,7 +49,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   BehaviorSubject<int> _otpResendTimer = BehaviorSubject<int>.seeded(20);
   Timer? _timer;
-  final ImagePicker _imagePicker = ImagePicker();
   bool _showOtpField = false; // Local state to track OTP field visibility
 
   @override
@@ -64,6 +63,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _fullNameController.dispose();
     _mobileController.dispose();
     _mobileVerify.close();
+    _otpResendTimer.close();
     _timer?.cancel();
     for (var controller in _otpControllers) {
       controller.dispose();
@@ -88,62 +88,20 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _showImageSourceDialog(BuildContext context, SignupState state) {
-    showDialog(
+    ImagePickerUtils.showImageSourceDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: AppColors.darkBlue,
-          title: Text(
-            'Select Image Source',
-            style: AppTypography.inter16Medium.copyWith(color: Colors.white),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: Icon(Icons.camera_alt, color: AppColors.pinkColor),
-                title: Text(
-                  'Use Camera',
-                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.camera);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.photo_library, color: AppColors.pinkColor),
-                title: Text(
-                  'Use Gallery',
-                  style: AppTypography.inter14Medium.copyWith(color: Colors.white),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
-                },
-              ),
-            ],
+      onImageSelected: (File imageFile) {
+        context.read<SignupBloc>().add(UpdateImage(imageFile));
+      },
+      onError: (String error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+            backgroundColor: Colors.red,
           ),
         );
       },
     );
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    try {
-      final XFile? pickedFile = await _imagePicker.pickImage(source: source);
-      if (pickedFile != null) {
-        final imageFile = File(pickedFile.path);
-        context.read<SignupBloc>().add(UpdateImage(imageFile));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error picking image: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
   }
 
   @override
@@ -328,48 +286,41 @@ class _SignupScreenState extends State<SignupScreen> {
                                       ? _buildOTPInputFields()
                                       : Container(),
                                   SizedBox(height: 15.h),
-                                  // Timer Display - separate BlocBuilder that only rebuilds on timer changes
+                                  // Timer Display - using BehaviorSubject instead of BLoC
                                   _showOtpField
-                                      ? BlocBuilder<SignupBloc, SignupState>(
-                                          buildWhen: (previous, current) {
-                                            // Only rebuild timer display when timer value changes
-                                            if (previous is OtpSent && current is OtpSent) {
-                                              return previous.otpResendTimer != current.otpResendTimer;
-                                            }
-                                            return previous is OtpSent != current is OtpSent;
-                                          },
-                                          builder: (context, state) {
-                                            if (state is OtpSent) {
-                                              final canResend = state.otpResendTimer == 0;
-                                              return Row(
-                                                children: [
-                                                  Text(
+                                      ? StreamBuilder<int>(
+                                          stream: _otpResendTimer.stream,
+                                          initialData: _otpResendTimer.value,
+                                          builder: (context, snapshot) {
+                                            final timerValue = snapshot.data ?? 0;
+                                            final canResend = timerValue == 0;
+                                            return Row(
+                                              children: [
+                                                Text(
+                                                  canResend
+                                                      ? '${AppLocalizations.of(context)?.reSendCode}'
+                                                      : '${AppLocalizations.of(context)?.reSendCodeIn}',
+                                                  style: AppTypography.inter12Regular),
+                                                GestureDetector(
+                                                  onTap: canResend
+                                                      ? () {
+                                                          context.read<SignupBloc>().add(ResendOTP());
+                                                        }
+                                                      : null,
+                                                  child: Text(
                                                     canResend
-                                                        ? '${AppLocalizations.of(context)?.reSendCode}'
-                                                        : '${AppLocalizations.of(context)?.reSendCodeIn}',
-                                                    style: AppTypography.inter12Regular),
-                                                  GestureDetector(
-                                                    onTap: canResend
-                                                        ? () {
-                                                            context.read<SignupBloc>().add(ResendOTP());
-                                                          }
-                                                        : null,
-                                                    child: Text(
-                                                      canResend
-                                                          ? '${AppLocalizations.of(context)?.resend}'
-                                                          : '0:${state.otpResendTimer.toString().padLeft(2, '0')}',
-                                                      style: AppTypography.inter12Bold.copyWith(
-                                                        color: canResend ? AppColors.pinkColor : AppColors.hintTextColor,
-                                                        decoration: canResend ? TextDecoration.underline : TextDecoration.none,
-                                                        decorationColor: AppColors.pinkColor,
-                                                        decorationThickness: 1.5,
-                                                      ),
+                                                        ? '${AppLocalizations.of(context)?.resend}'
+                                                        : '0:${timerValue.toString().padLeft(2, '0')}',
+                                                    style: AppTypography.inter12Bold.copyWith(
+                                                      color: canResend ? AppColors.pinkColor : AppColors.hintTextColor,
+                                                      decoration: canResend ? TextDecoration.underline : TextDecoration.none,
+                                                      decorationColor: AppColors.pinkColor,
+                                                      decorationThickness: 1.5,
                                                     ),
-                                                  )
-                                                ],
-                                              );
-                                            }
-                                            return Container();
+                                                  ),
+                                                )
+                                              ],
+                                            );
                                           },
                                         )
                                       : Container(),
@@ -857,8 +808,7 @@ class _SignupScreenState extends State<SignupScreen> {
             });
           }
           _mobileVerify.add(1);
-          // Sync timer with BLoC state
-          _otpResendTimer.add(state.otpResendTimer);
+          // Start timer using BehaviorSubject
           startTimer();
           // Focus on first OTP field
           Future.delayed(const Duration(milliseconds: 300), () {

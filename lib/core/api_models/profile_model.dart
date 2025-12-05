@@ -205,7 +205,7 @@ class NewStandardModel {
 class NewExamModel {
   @JsonKey(name: 'exm_id')
   final String exmId;
-  @JsonKey(name: 'std_name')
+  @JsonKey(name: 'exm_name')
   final String name;
 
   NewExamModel({
@@ -216,15 +216,14 @@ class NewExamModel {
   factory NewExamModel.fromJson(Map<String, dynamic> json) {
     return NewExamModel(
       exmId: json['exm_id'],
-      name: json['std_name']?.toString() ?? '',
+      name: json['exm_name']?.toString() ?? '',
     );
   }
-
 
   Map<String, dynamic> toJson() =>
       <String, dynamic>{
         'exm_id': exmId,
-        'std_name': name
+        'exm_name': name
       };
 }
 

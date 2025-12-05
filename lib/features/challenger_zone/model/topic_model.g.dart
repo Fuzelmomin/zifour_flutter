@@ -34,5 +34,3 @@ Map<String, dynamic> _$TopicModelToJson(TopicModel instance) =>
       'name': instance.name,
       'chapter': instance.chapter,
     };
-
-

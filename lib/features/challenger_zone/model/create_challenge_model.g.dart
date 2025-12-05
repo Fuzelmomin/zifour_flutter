@@ -27,7 +27,7 @@ Map<String, dynamic> _$CreateChallengeResponseToJson(
 CreatedChallengeItem _$CreatedChallengeItemFromJson(
         Map<String, dynamic> json) =>
     CreatedChallengeItem(
-      crtChlId: json['crt_chl_id'].toString(),
+      crtChlId: (json['crt_chl_id'] as num).toInt(),
       stuId: json['stu_id'] as String,
       name: json['name'] as String,
       chapter: json['chapter'] as String,
@@ -45,5 +45,3 @@ Map<String, dynamic> _$CreatedChallengeItemToJson(
       'topic': instance.topic,
       'subjects': instance.subjects,
     };
-
-

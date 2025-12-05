@@ -11,7 +11,7 @@ ChallengesListResponse _$ChallengesListResponseFromJson(
     ChallengesListResponse(
       status: json['status'] as bool,
       message: json['message'] as String,
-      total: json['total'] as int,
+      total: (json['total'] as num).toInt(),
       data: (json['data'] as List<dynamic>)
           .map((e) => ChallengeListItem.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -49,4 +49,3 @@ Map<String, dynamic> _$ChallengeListItemToJson(ChallengeListItem instance) =>
       'created_at': instance.createdAt,
       'updated_at': instance.updatedAt,
     };
-

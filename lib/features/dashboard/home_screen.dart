@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/utils/user_preference.dart';
@@ -49,49 +50,49 @@ class _HomeScreenState extends State<HomeScreen> {
     {
       "title": "Start Your Free Trial",
       "subtitle": "",
-      "icon": Icons.bolt,
+      "icon": AssetsPath.svgFreeTrial,
       "color": const Color(0xFF6857F9),
     },
     {
       "title": "Live Classes",
       "subtitle": "",
-      "icon": Icons.play_circle_fill,
+      "icon": AssetsPath.svgLiveClass,
       "color": const Color(0xFF7C2C6A),
     },
     {
       "title": "My Courses",
       "subtitle": "Live Classes\nLearn Live\nWith Mentors",
-      "icon": Icons.school,
+      "icon": AssetsPath.svgMyCourse,
       "color": const Color(0xFF2DA63A),
     },
     {
       "title": "Practice MCQS",
       "subtitle": "Master Every\nConcept",
-      "icon": Icons.menu_book,
+      "icon": AssetsPath.svgPractice,
       "color": const Color(0xFFCA7A18),
     },
     {
       "title": "All India\nChallenger Zone",
       "subtitle": "Compete\nAcross India",
-      "icon": Icons.flag_circle_rounded,
+      "icon": AssetsPath.svgChallenger,
       "color": const Color(0xFF1FB2B2),
     },
     {
       "title": "Test Series",
       "subtitle": "Full Syllabus\nMock Test",
-      "icon": Icons.assignment,
+      "icon": AssetsPath.svgTestSeries,
       "color": const Color(0xFFB11818),
     },
     {
       "title": "Ask Your\nDoubts",
       "subtitle": "Get Expert\nSolutions",
-      "icon": Icons.support_agent_rounded,
+      "icon": AssetsPath.svgAskDoubts,
       "color": const Color(0xFF8E8E8E),
     },
     {
       "title": "AI Based\nPerformance",
       "subtitle": "Know Your\nComplete Progress",
-      "icon": Icons.auto_graph,
+      "icon": AssetsPath.svgAIBase,
       "color": const Color(0xFF1F87F3),
     },
   ];
@@ -757,13 +758,18 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundColor: Colors.white.withOpacity(0.2),
-              child: Icon(
-                item['icon'],
-                color: Colors.white,
-                size: 26,
-              ),
+            // CircleAvatar(
+            //   backgroundColor: Colors.white.withOpacity(0.2),
+            //   child: Icon(
+            //     item['icon'],
+            //     color: Colors.white,
+            //     size: 26,
+            //   ),
+            // ),
+            SvgPicture.asset(
+              item['icon'] ?? AssetsPath.svgFreeTrial,
+              width: 55.h,
+              height: 55.h,
             ),
             const SizedBox(height: 16),
             Text(

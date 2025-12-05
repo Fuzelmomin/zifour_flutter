@@ -75,8 +75,6 @@ class VerifyOTP extends SignupEvent {
 
 class ResendOTP extends SignupEvent {}
 
-class StartOTPTimer extends SignupEvent {}
-
 class UpdateOTPTimer extends SignupEvent {}
 
 class SignupSubmitted extends SignupEvent {}
@@ -310,7 +308,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     on<UpdateOTP>(_onUpdateOTP);
     on<VerifyOTP>(_onVerifyOTP);
     on<ResendOTP>(_onResendOTP);
-    on<StartOTPTimer>(_onStartOTPTimer);
     on<UpdateOTPTimer>(_onUpdateOTPTimer);
     on<SignupSubmitted>(_onSignupSubmitted);
   }
@@ -646,9 +643,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
             exams: currentState.exams, // Preserve exams for UI
             imageFile: data.imageFile, // Preserve image file for UI
           ));
-          
-          // Start OTP timer
-          add(StartOTPTimer());
+
         } else {
           emit(SignupError(otpResponse.errorMsg ?? 'Failed to send OTP'));
           // Restore SignupLoaded state with standards/exams preserved
@@ -814,9 +809,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
             exams: currentState.exams,
             imageFile: currentState.imageFile,
           ));
-          
-          // Start OTP timer
-          add(StartOTPTimer());
+
         } else {
           emit(SignupError(otpResponse.errorMsg ?? 'Failed to resend OTP'));
           // Return to previous state with preserved data
@@ -827,13 +820,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         // Return to previous state with preserved data
         emit(currentState);
       }
-    }
-  }
-
-  void _onStartOTPTimer(StartOTPTimer event, Emitter<SignupState> emit) {
-    if (state is OtpSent) {
-      // Start countdown timer
-      _startCountdown();
     }
   }
 

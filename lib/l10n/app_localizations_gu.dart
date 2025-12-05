@@ -426,4 +426,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get languagePreference => 'LANGUAGE PREFERENCE';
+
+  @override
+  String get gender => 'Gender';
 }

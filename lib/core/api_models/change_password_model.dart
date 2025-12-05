@@ -1,0 +1,20 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'change_password_model.g.dart';
+
+@JsonSerializable()
+class ChangePasswordResponse {
+  final bool status;
+  final String message;
+
+  ChangePasswordResponse({
+    required this.status,
+    required this.message,
+  });
+
+  factory ChangePasswordResponse.fromJson(Map<String, dynamic> json) =>
+      _$ChangePasswordResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChangePasswordResponseToJson(this);
+}
+

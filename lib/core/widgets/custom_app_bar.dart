@@ -40,8 +40,21 @@ class CustomAppBar extends StatelessWidget {
             children: [
               isBack == true ? GestureDetector(
                 onTap: (){
-                  Navigator.pop(context);
-                  onBack!();
+                  if (onBack != null) {
+                    onBack!();
+                  } else {
+                    // Check if we can pop, if not navigate to home
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      // Navigate to home by popping until dashboard or using popUntil
+                      Navigator.of(context).popUntil((route) {
+                        // If we're in dashboard bottom nav, we need to handle differently
+                        // Try to find if there's a route we can go back to
+                        return route.isFirst;
+                      });
+                    }
+                  }
                 },
                 child: SvgPicture.asset(
                   AssetsPath.svgBack,

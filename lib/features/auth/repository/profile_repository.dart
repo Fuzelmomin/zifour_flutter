@@ -3,6 +3,7 @@ import '../../../core/api_client/api_constans.dart';
 import '../../../core/api_client/dio_client.dart';
 import '../../../core/api_client/api_utils.dart';
 import '../../../core/api_models/profile_model.dart';
+import '../../../core/api_models/profile_photo_update_model.dart';
 import '../../../core/api_models/api_response.dart';
 import '../../../core/api_models/api_status.dart';
 
@@ -81,17 +82,58 @@ class ProfileRepository {
 
       if (response.statusCode == 200) {
         final data = response.data;
+        final updateResponse = UpdateProfileResponse.fromJson(data);
+        return ApiResponse.success(data: updateResponse);
+      } else {
+        final data = response.data;
+        return ApiResponse.error(
+          errorMsg: data['message'] ?? 'Failed to update profile',
+        );
+
+        // return ApiResponse.error(
+        //   errorMsg: 'Failed to update profile',
+        // );
+      }
+    } on DioException catch (e) {
+      final apiError = ApiUtils.getApiError(e);
+      return ApiResponse.error(
+        error: apiError,
+        errorMsg: apiError.getFirstError() ?? 'Network error occurred',
+      );
+    } catch (e) {
+      return ApiResponse.error(
+        errorMsg: 'Unexpected error: ${e.toString()}',
+      );
+    }
+  }
+
+  /// Update profile photo
+  Future<ApiResponse<ProfilePhotoUpdateResponse>> updateProfilePhoto({
+    required String stuId,
+    required String stuImage,
+  }) async {
+    try {
+      final response = await _dioClient.getDio().post(
+        APIConstants.updateProfileImage,
+        queryParameters: {
+          'stu_id': stuId,
+          'stu_image': stuImage,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
         if (data['status'] == true) {
-          final updateResponse = UpdateProfileResponse.fromJson(data);
+          final updateResponse = ProfilePhotoUpdateResponse.fromJson(data);
           return ApiResponse.success(data: updateResponse);
         } else {
           return ApiResponse.error(
-            errorMsg: data['message'] ?? 'Failed to update profile',
+            errorMsg: data['message'] ?? 'Failed to update profile photo',
           );
         }
       } else {
         return ApiResponse.error(
-          errorMsg: 'Failed to update profile',
+          errorMsg: 'Failed to update profile photo',
         );
       }
     } on DioException catch (e) {

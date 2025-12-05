@@ -5,7 +5,7 @@ abstract class ChallengeDetailsEvent {
 }
 
 class ChallengeDetailsRequested extends ChallengeDetailsEvent {
-  final String crtChlId;
+  final int crtChlId;
 
   const ChallengeDetailsRequested({required this.crtChlId});
 }

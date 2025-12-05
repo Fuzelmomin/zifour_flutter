@@ -235,6 +235,16 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                       text:
                           '${AppLocalizations.of(context)?.generateMyChallenge}',
                       onPressed: () {
+
+                        if(_selectedSubjectId!.isEmpty || _selectedChapters.value.isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Missing chapters or subject.'),
+                              backgroundColor: AppColors.error,
+                            ),
+                          );
+                          return;
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(

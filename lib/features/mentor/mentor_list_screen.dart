@@ -14,6 +14,7 @@ import '../../core/constants/assets_path.dart';
 import '../../core/widgets/mentor_item.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../l10n/app_localizations.dart';
+import '../../features/dashboard/dashboard_screen.dart';
 
 class MentorsListScreen extends StatefulWidget {
   MentorsListScreen({
@@ -66,14 +67,32 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
     }
   }
 
+  void _handleBackButton(BuildContext context) {
+    // Check if we can pop, if not navigate to home
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      // Find DashboardScreen state and navigate to home
+      final dashboardState = context.findAncestorStateOfType<DashboardScreenState>();
+      if (dashboardState != null) {
+        dashboardState.navigateToHome();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _mentorsBloc,
       child: Builder(
         builder: (blocContext) {
-          return Scaffold(
-            body: Container(
+          return WillPopScope(
+            onWillPop: () async {
+              _handleBackButton(context);
+              return false; // Prevent default back behavior
+            },
+            child: Scaffold(
+              body: Container(
               width: double.infinity,
               height: double.infinity,
               color: AppColors.darkBlue,
@@ -93,6 +112,7 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
                       child: CustomAppBar(
                         isBack: true,
                         title: '${AppLocalizations.of(context)?.mentors}',
+                        onBack: () => _handleBackButton(context),
                       ),
                     ),
                     Positioned(
@@ -185,6 +205,7 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
                   ],
                 ),
               ),
+            ),
             ),
           );
         },

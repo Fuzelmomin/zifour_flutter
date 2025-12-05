@@ -74,6 +74,9 @@ UpdateProfileResponse _$UpdateProfileResponseFromJson(
     UpdateProfileResponse(
       status: json['status'] as bool,
       message: json['message'] as String,
+      data: json['data'] == null
+          ? null
+          : LoginData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UpdateProfileResponseToJson(
@@ -81,6 +84,7 @@ Map<String, dynamic> _$UpdateProfileResponseToJson(
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
+      'data': instance.data,
     };
 
 NewMediumModel _$NewMediumModelFromJson(Map<String, dynamic> json) =>
@@ -109,11 +113,11 @@ Map<String, dynamic> _$NewStandardModelToJson(NewStandardModel instance) =>
 
 NewExamModel _$NewExamModelFromJson(Map<String, dynamic> json) => NewExamModel(
       exmId: json['exm_id'] as String,
-      name: json['std_name'] as String,
+      name: json['exm_name'] as String,
     );
 
 Map<String, dynamic> _$NewExamModelToJson(NewExamModel instance) =>
     <String, dynamic>{
       'exm_id': instance.exmId,
-      'std_name': instance.name,
+      'exm_name': instance.name,
     };

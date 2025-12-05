@@ -483,6 +483,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
         if (response.status == ApiStatus.success && response.data != null) {
           // Save updated user data to SharedPreferences
+          // This will automatically update the ValueNotifier and trigger UI updates
           if (response.data!.data != null) {
             await UserPreference.saveUserData(response.data!.data!);
           }

@@ -47,4 +47,3 @@ Map<String, dynamic> _$McqItemToJson(McqItem instance) => <String, dynamic>{
       'mc_answer': instance.mcAnswer,
       'mc_solution': instance.mcSolution,
     };
-

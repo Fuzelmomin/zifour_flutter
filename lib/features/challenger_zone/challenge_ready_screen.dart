@@ -27,7 +27,7 @@ class ChallengeReadyScreen extends StatefulWidget {
   });
 
   /// Created challenge id from previous API (create_challenge)
-  final String crtChlId;
+  final int crtChlId;
 
   @override
   State<ChallengeReadyScreen> createState() => _ChallengeReadyScreenState();

@@ -24,7 +24,7 @@ class CreateChallengeResponse {
 @JsonSerializable()
 class CreatedChallengeItem {
   @JsonKey(name: 'crt_chl_id')
-  final String crtChlId;
+  final int crtChlId;
   @JsonKey(name: 'stu_id')
   final String stuId;
   final String name;

@@ -95,8 +95,13 @@ class UserPreference {
       await prefs.setString(_userDataKey, userDataJson);
       await prefs.setBool(_isLoggedInKey, true);
       
-      // Update notifier
-      userNotifier.value = userData;
+      // Create a fresh copy of the userData to ensure it's a different object reference
+      // This guarantees ValueNotifier will detect the change and notify listeners
+      final userDataMap = userData.toJson();
+      final freshUserData = LoginData.fromJson(userDataMap);
+      
+      // Update notifier with the fresh copy
+      userNotifier.value = freshUserData;
       
       return true;
     } catch (e) {
@@ -123,6 +128,29 @@ class UserPreference {
       return null;
     } catch (e) {
       return null;
+    }
+  }
+
+  /// Refresh user data from SharedPreferences and update notifier
+  /// This method ensures the ValueNotifier is always updated with the latest data
+  /// Useful after profile updates to ensure UI reflects the changes
+  static Future<void> refreshUserData() async {
+    try {
+      final userData = await getUserData();
+      if (userData != null) {
+        // Force update by creating a fresh copy from JSON
+        // This ensures ValueNotifier detects the change
+        final userDataJson = jsonEncode(userData.toJson());
+        final userDataMap = jsonDecode(userDataJson) as Map<String, dynamic>;
+        final freshUserData = LoginData.fromJson(userDataMap);
+        userNotifier.value = freshUserData;
+      } else {
+        userNotifier.value = null;
+      }
+    } catch (e) {
+      // If refresh fails, try to get data directly
+      final userData = await getUserData();
+      userNotifier.value = userData;
     }
   }
 

@@ -16,7 +16,7 @@ class ChallengeDetailsRepository {
   final DioClient _dioClient;
 
   Future<ApiResponse<ChallengeDetailsResponse>> fetchChallengeDetails({
-    required String crtChlId,
+    required int crtChlId,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();

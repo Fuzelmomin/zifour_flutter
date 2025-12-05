@@ -9,6 +9,7 @@ import 'package:zifour_sourcecode/features/courses/course_details_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
+import '../../features/dashboard/dashboard_screen.dart';
 import 'bloc/course_packages_bloc.dart';
 import 'models/course_package.dart';
 
@@ -28,9 +29,27 @@ class AllCoursesScreen extends StatelessWidget {
 class _AllCoursesView extends StatelessWidget {
   const _AllCoursesView();
 
+  void _handleBackButton(BuildContext context) {
+    // Check if we can pop, if not navigate to home
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      // Find DashboardScreen state and navigate to home
+      final dashboardState = context.findAncestorStateOfType<DashboardScreenState>();
+      if (dashboardState != null) {
+        dashboardState.navigateToHome();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        _handleBackButton(context);
+        return false; // Prevent default back behavior
+      },
+      child: Scaffold(
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -50,6 +69,7 @@ class _AllCoursesView extends StatelessWidget {
               child: CustomAppBar(
                 isBack: true,
                 title: 'Course',
+                onBack: () => _handleBackButton(context),
               ),
             ),
             Positioned(
@@ -83,6 +103,7 @@ class _AllCoursesView extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

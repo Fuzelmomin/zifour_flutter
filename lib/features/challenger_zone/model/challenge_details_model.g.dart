@@ -32,7 +32,7 @@ ChallengeDetails _$ChallengeDetailsFromJson(Map<String, dynamic> json) =>
       crtChlStatus: json['crt_chl_status'] as String,
       crtChlAdded: json['crt_chl_added'] as String,
       crtChlUpdated: json['crt_chl_updated'] as String,
-      totalMcq: json['total_mcq'] as int,
+      totalMcq: (json['total_mcq'] as num).toInt(),
       chapters: (json['chapters'] as List<dynamic>)
           .map((e) => NamedItem.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -68,5 +68,3 @@ Map<String, dynamic> _$NamedItemToJson(NamedItem instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
     };
-
-

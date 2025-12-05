@@ -19,10 +19,10 @@ class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
+  State<DashboardScreen> createState() => DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class DashboardScreenState extends State<DashboardScreen> {
   final BehaviorSubject<int> _currentIndex = BehaviorSubject<int>.seeded(0);
   late final HomeBloc _homeBloc;
   late final SubjectBloc _subjectBloc;
@@ -65,6 +65,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (index == 0) {
       _homeBloc.add(const HomeRequested());
     }
+  }
+
+  // Public method to navigate to home from child screens
+  void navigateToHome() {
+    _onItemTapped(0);
   }
 
   @override
