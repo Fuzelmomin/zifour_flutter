@@ -73,7 +73,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
 
               // App Bar
               Positioned(
-                  top: 0.h,
+                  top: 20.h,
                   left: 15.w,
                   right: 20.w,
                   child: CustomAppBar(
@@ -83,7 +83,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
 
               // Main Content with BLoC
               Positioned(
-                top: 70.h,
+                top: 90.h,
                 left: 0,
                 right: 0,
                 bottom: 0,

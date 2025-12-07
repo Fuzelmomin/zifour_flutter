@@ -55,7 +55,7 @@ class _MyPerformanceScreenState extends State<MyPerformanceScreen> {
 
               // App Bar
               Positioned(
-                  top: 0.h,
+                  top: 20.h,
                   left: 15.w,
                   right: 20.w,
                   child: CustomAppBar(
@@ -66,7 +66,7 @@ class _MyPerformanceScreenState extends State<MyPerformanceScreen> {
 
               // Main Content with BLoC
               Positioned(
-                top: 75.h,
+                top: 90.h,
                 left: 20.w,
                 right: 20.w,
                 bottom: 0,

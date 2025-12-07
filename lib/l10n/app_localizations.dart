@@ -371,7 +371,7 @@ abstract class AppLocalizations {
   /// No description provided for @uploadMarksheet.
   ///
   /// In en, this message translates to:
-  /// **'Upload your last year marksheet or 10th Exam Receipt'**
+  /// **'Upload your last year marksheet or 10th Exam Receipt (It is Optional)'**
   String get uploadMarksheet;
 
   /// No description provided for @forgotPasswordTitle.
@@ -919,6 +919,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Gender'**
   String get gender;
+
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get update;
+
+  /// No description provided for @pleaseSelectSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a subject'**
+  String get pleaseSelectSubject;
+
+  /// No description provided for @pleaseSelectChapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one chapter'**
+  String get pleaseSelectChapter;
+
+  /// No description provided for @pleaseSelectTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one topic'**
+  String get pleaseSelectTopic;
 }
 
 class _AppLocalizationsDelegate

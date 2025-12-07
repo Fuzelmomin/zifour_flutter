@@ -260,7 +260,7 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
 
                       // App Bar
                       Positioned(
-                          top: 0.h,
+                          top: 20.h,
                           left: 15.w,
                           right: 5.w,
                           child: CustomAppBar(
@@ -295,7 +295,7 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
 
                       // Main Content with BLoC
                       Positioned(
-                        top: 70.h,
+                        top: 90.h,
                         left: 20.w,
                         right: 20.w,
                         bottom: 0,

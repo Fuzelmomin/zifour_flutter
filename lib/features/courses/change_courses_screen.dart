@@ -63,7 +63,7 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
 
             // App Bar
             Positioned(
-                top: 40.h,
+                top: 20.h,
                 left: 15.w,
                 right: 20.w,
                 child: CustomAppBar(
@@ -73,7 +73,7 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
 
             // Main Content with BLoC
             Positioned(
-              top: 110.h,
+              top: 90.h,
               left: 20.w,
               right: 20.w,
               bottom: 0,
@@ -158,7 +158,7 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                "SELECT CHAPTERS",
+                                "SELECT SUBJECT",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 14,

@@ -44,7 +44,7 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
 
               // App Bar
               Positioned(
-                  top: 0.h,
+                  top: 20.h,
                   left: 15.w,
                   right: 20.w,
                   child: CustomAppBar(
@@ -54,7 +54,7 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
 
               // Main Content with BLoC
               Positioned(
-                top: 70.h,
+                top: 90.h,
                 left: 20.w,
                 right: 20.w,
                 bottom: 50.h,

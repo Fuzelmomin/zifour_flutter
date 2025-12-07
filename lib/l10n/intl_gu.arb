@@ -137,6 +137,10 @@
   "passwordMustBe6Characters": "Password must be at least 6 characters long",
   "passwordNotMatch": "Passwords do not match",
   "languagePreference": "LANGUAGE PREFERENCE",
-  "gender": "Gender"
+  "gender": "Gender",
+  "update": "Update",
+  "pleaseSelectSubject": "Please select a subject",
+  "pleaseSelectChapter": "Please select at least one chapter",
+  "pleaseSelectTopic": "Please select at least one topic"
 }
 

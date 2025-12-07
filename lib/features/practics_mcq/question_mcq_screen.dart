@@ -1,18 +1,19 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
+import '../../core/utils/connectivity_helper.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
+import '../../core/widgets/custom_loading_widget.dart';
+import '../challenger_zone/challenge_result_screen.dart';
 import 'bloc/challenge_mcq_list_bloc.dart';
+import 'bloc/submit_mcq_answer_bloc.dart';
 import 'model/challenge_mcq_list_model.dart';
 
 class QuestionMcqScreen extends StatefulWidget {
@@ -31,9 +32,13 @@ class QuestionMcqScreen extends StatefulWidget {
 
 class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   late final ChallengeMcqListBloc _mcqListBloc;
+  late final SubmitMcqAnswerBloc _submitMcqAnswerBloc;
   final BehaviorSubject<String?> selectedOption =
       BehaviorSubject<String?>.seeded(null);
   int _currentQuestionIndex = 0;
+  
+  // Store all answers: key = mcId, value = selected option (A, B, C, D)
+  final Map<String, String> _allAnswers = {};
 
 
   String selectedFilter = "";
@@ -47,6 +52,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   void initState() {
     super.initState();
     _mcqListBloc = ChallengeMcqListBloc();
+    _submitMcqAnswerBloc = SubmitMcqAnswerBloc();
     if (widget.crtChlId != null && widget.crtChlId!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _mcqListBloc.add(
@@ -60,102 +66,228 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   void dispose() {
     selectedOption.close();
     _mcqListBloc.close();
+    _submitMcqAnswerBloc.close();
     super.dispose();
   }
 
-  void _goToNextQuestion() {
-    if (_mcqListBloc.state.hasData) {
-      final totalQuestions = _mcqListBloc.state.data!.mcqList.length;
-      if (_currentQuestionIndex < totalQuestions - 1) {
-        setState(() {
-          _currentQuestionIndex++;
-          selectedOption.add(null);
-        });
-      }
+  void _goToNextQuestion() async {
+    print('_goToNextQuestion');
+    if (!_mcqListBloc.state.hasData) return;
+    print('_goToNextQuestion 111');
+    final mcqList = _mcqListBloc.state.data!.mcqList;
+    final totalQuestions = mcqList.length;
+    final currentMcq = mcqList[_currentQuestionIndex];
+    
+    // Validation: Check if answer is selected
+    final currentSelected = selectedOption.value;
+    if (currentSelected == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please select an answer before proceeding.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+    
+    // Save current answer
+    _allAnswers[currentMcq.mcId] = currentSelected;
+    
+    // Check if this is the last question
+    if (_currentQuestionIndex == totalQuestions - 1) {
+      // Last question - submit answers via API
+      await _submitAnswers();
+    } else {
+      // Move to next question
+      final nextIndex = _currentQuestionIndex + 1;
+      final nextMcq = mcqList[nextIndex];
+      final savedAnswer = _allAnswers[nextMcq.mcId];
+      
+      setState(() {
+        _currentQuestionIndex = nextIndex;
+      });
+      
+      // Restore saved answer for next question if exists
+      selectedOption.add(savedAnswer);
     }
   }
 
   void _goToPreviousQuestion() {
-    if (_currentQuestionIndex > 0) {
+    if (_currentQuestionIndex > 0 && _mcqListBloc.state.hasData) {
+      final mcqList = _mcqListBloc.state.data!.mcqList;
+      final currentMcq = mcqList[_currentQuestionIndex];
+      
+      // Save current answer before moving
+      final currentSelected = selectedOption.value;
+      if (currentSelected != null) {
+        _allAnswers[currentMcq.mcId] = currentSelected;
+      }
+      
+      final previousIndex = _currentQuestionIndex - 1;
+      final previousMcq = mcqList[previousIndex];
+      final savedAnswer = _allAnswers[previousMcq.mcId];
+      
       setState(() {
-        _currentQuestionIndex--;
-        selectedOption.add(null);
+        _currentQuestionIndex = previousIndex;
       });
+      
+      // Restore saved answer for previous question
+      selectedOption.add(savedAnswer);
     }
   }
 
   void onOptionSelect(String option) {
     selectedOption.sink.add(option);
+    // Save answer immediately when selected
+    if (_mcqListBloc.state.hasData) {
+      final mcqList = _mcqListBloc.state.data!.mcqList;
+      if (_currentQuestionIndex < mcqList.length) {
+        final currentMcq = mcqList[_currentQuestionIndex];
+        _allAnswers[currentMcq.mcId] = option;
+      }
+    }
+  }
+  
+  Future<void> _submitAnswers() async {
+    if (!_mcqListBloc.state.hasData || widget.crtChlId == null) return;
+    
+    // Check internet connectivity
+    final isConnected = await ConnectivityHelper.checkConnectivity();
+    if (!isConnected) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No internet connection. Please check your network.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+    
+    final mcqList = _mcqListBloc.state.data!.mcqList;
+    final optionLabels = ['A', 'B', 'C', 'D'];
+    
+    // Prepare mcq_list for API
+    final List<Map<String, String>> mcqListForApi = [];
+    
+    for (final mcq in mcqList) {
+      final selectedOption = _allAnswers[mcq.mcId] ?? '';
+      // Convert option label (A, B, C, D) to index (0, 1, 2, 3)
+      final studentAnswerIndex = optionLabels.indexOf(selectedOption);
+      
+      mcqListForApi.add({
+        'mc_id': mcq.mcId,
+        'mc_answer_stu': studentAnswerIndex >= 0 ? studentAnswerIndex.toString() : '0',
+        'mc_answer': mcq.mcAnswer,
+      });
+    }
+    
+    // Call API
+    _submitMcqAnswerBloc.add(
+      SubmitMcqAnswerRequested(
+        crtChlId: int.parse(widget.crtChlId!),
+        mcqList: mcqListForApi,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _mcqListBloc,
-      child: BlocBuilder<ChallengeMcqListBloc, ChallengeMcqListState>(
-        builder: (context, state) {
-          return Scaffold(
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: AppColors.darkBlue,
-              child: SafeArea(
-                child: Stack(
-                  children: [
-                    // Background Decoration set
-                    Positioned.fill(
-                      child: Image.asset(
-                        AssetsPath.signupBgImg,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-
-                    // App Bar
-                    Positioned(
-                      top: 0.h,
-                      left: 15.w,
-                      right: 15.w,
-                      child: CustomAppBar(
-                        isBack: true,
-                        title: state.hasData
-                            ? 'Question ${_currentQuestionIndex + 1}/${state.data!.mcqList.length}'
-                            : 'MCQ Challenge',
-                        isActionWidget: true,
-                        actionWidget: PopupMenuButton<String>(
-                          onSelected: (value) =>
-                              setState(() => selectedFilter = value),
-                          itemBuilder: (context) {
-                            return options
-                                .map((e) => PopupMenuItem(
-                                      value: e,
-                                      child: Text(e),
-                                    ))
-                                .toList();
-                          },
-                          child: Image.asset(
-                            AssetsPath.icMenuBox,
-                            width: 30.w,
-                            height: 30.h,
-                          ),
-                        ),
-                        actionClick: () {},
-                      ),
-                    ),
-
-                    // Main Content with BLoC
-                    Positioned(
-                      top: 70.h,
-                      left: 20.w,
-                      right: 20.w,
-                      bottom: 0,
-                      child: _buildContent(state),
-                    ),
-                  ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _mcqListBloc),
+        BlocProvider.value(value: _submitMcqAnswerBloc),
+      ],
+      child: BlocListener<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
+        listener: (context, state) {
+          if (state.status == SubmitMcqAnswerStatus.success) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChallengeResultScreen(
+                  title: 'Challenge Results',
                 ),
               ),
-            ),
-          );
+            );
+          } else if (state.status == SubmitMcqAnswerStatus.failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage ?? 'Unable to submit answers.'),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
         },
+        child: BlocBuilder<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
+          builder: (context, submitState) {
+            return BlocBuilder<ChallengeMcqListBloc, ChallengeMcqListState>(
+              builder: (context, state) {
+                return CustomLoadingOverlay(
+                  isLoading: submitState.isLoading,
+                  child: Scaffold(
+                    body: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: AppColors.darkBlue,
+                      child: SafeArea(
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: Image.asset(
+                                AssetsPath.signupBgImg,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+
+                            Positioned(
+                              top: 20.h,
+                              left: 15.w,
+                              right: 15.w,
+                              child: CustomAppBar(
+                                isBack: true,
+                                title: state.hasData
+                                    ? 'Question ${_currentQuestionIndex + 1}/${state.data!.mcqList.length}'
+                                    : 'MCQ Challenge',
+                                isActionWidget: true,
+                                actionWidget: PopupMenuButton<String>(
+                                  onSelected: (value) =>
+                                      setState(() => selectedFilter = value),
+                                  itemBuilder: (context) {
+                                    return options
+                                        .map(
+                                          (e) => PopupMenuItem(
+                                        value: e,
+                                        child: Text(e),
+                                      ),
+                                    )
+                                        .toList();
+                                  },
+                                  child: Image.asset(
+                                    AssetsPath.icMenuBox,
+                                    width: 30.w,
+                                    height: 30.h,
+                                  ),
+                                ),
+                                actionClick: () {},
+                              ),
+                            ),
+
+                            Positioned(
+                              top: 90.h,
+                              left: 20.w,
+                              right: 20.w,
+                              bottom: 0,
+                              child: _buildContent(state),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -192,6 +324,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     }
 
     final mcqList = state.data!.mcqList;
+
     if (_currentQuestionIndex >= mcqList.length) {
       _currentQuestionIndex = 0;
     }
@@ -202,10 +335,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Question Number Indicator
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
@@ -223,7 +354,6 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           ),
           const SizedBox(height: 14),
 
-          // Difficulty + Timer
           Row(
             children: [
               const Text(
@@ -236,8 +366,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
               ),
               const Spacer(),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white.withOpacity(0.15),
@@ -255,7 +384,6 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           ),
           const SizedBox(height: 18),
 
-          // Question Card
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -271,6 +399,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
               ),
             ),
           ),
+
           if (currentMcq.mcDescription.isNotEmpty) ...[
             const SizedBox(height: 12),
             Container(
@@ -289,9 +418,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
               ),
             ),
           ],
+
           const SizedBox(height: 20),
 
-          // Options Stream
           StreamBuilder<String?>(
             stream: selectedOption.stream,
             builder: (context, snapshot) {
@@ -302,7 +431,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
               return Column(
                 children: List.generate(
                   options.length,
-                  (index) => _optionTile(
+                      (index) => _optionTile(
                     optionLabels[index],
                     options[index].replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
                     selected,
@@ -315,7 +444,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           SizedBox(height: 50.h),
 
           Row(
-            spacing: 15.w,
+            spacing: 10.0,
             children: [
               Expanded(
                 child: CustomGradientButton(
@@ -323,15 +452,15 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   onPressed: () {},
                   customDecoration: widget.type == "Start Exam"
                       ? BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: Colors.black.withOpacity(0.2),
-                          ),
-                          color: Colors.grey.withOpacity(0.3))
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.black.withOpacity(0.2),
+                      ),
+                      color: Colors.grey.withOpacity(0.3))
                       : null,
                   textStyle: widget.type == "Start Exam"
-                      ? AppTypography.inter14Bold.copyWith(
-                          color: Colors.white.withOpacity(0.2))
+                      ? AppTypography.inter14Bold
+                      .copyWith(color: Colors.white.withOpacity(0.2))
                       : null,
                 ),
               ),
@@ -343,32 +472,31 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   },
                   customDecoration: widget.type == "Start Exam"
                       ? BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: Colors.black.withOpacity(0.2),
-                          ),
-                          color: Colors.grey.withOpacity(0.3))
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.black.withOpacity(0.2),
+                      ),
+                      color: Colors.grey.withOpacity(0.3))
                       : null,
                   textStyle: widget.type == "Start Exam"
-                      ? AppTypography.inter14Bold.copyWith(
-                          color: Colors.white.withOpacity(0.2))
+                      ? AppTypography.inter14Bold
+                      .copyWith(color: Colors.white.withOpacity(0.2))
                       : null,
                 ),
               ),
             ],
           ),
+
           SizedBox(height: 20.h),
 
-          // Prev & Next Buttons
           Row(
-            spacing: 15.w,
+            spacing: 10.0,
             children: [
               Expanded(
                 child: CustomGradientButton(
                   text: 'Previous',
-                  onPressed: _currentQuestionIndex > 0
-                      ? _goToPreviousQuestion
-                      : null,
+                  onPressed:
+                  _currentQuestionIndex > 0 ? _goToPreviousQuestion : null,
                   customDecoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
@@ -380,14 +508,15 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
               ),
               Expanded(
                 child: CustomGradientButton(
-                  text: 'Next',
-                  onPressed: _currentQuestionIndex < totalQuestions - 1
-                      ? _goToNextQuestion
-                      : null,
+                  text: _currentQuestionIndex < totalQuestions - 1
+                      ? 'Next'
+                      : 'Submit',
+                  onPressed: _goToNextQuestion,
                 ),
               ),
             ],
           ),
+
           SizedBox(height: 50.h),
         ],
       ),
@@ -398,7 +527,6 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Shimmer.fromColors(
@@ -487,6 +615,41 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     );
   }
 
+  Widget _optionTile(String label, String text, String? selected) {
+    final bool isSelected = selected == label;
+
+    return GestureDetector(
+      onTap: () => onOptionSelect(label),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(isSelected ? 0.18 : 0.08),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? Colors.purpleAccent : Colors.transparent,
+            width: 2,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(label,
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w600)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
 
   Widget _infoTag({required String title, required String value}) {
     return Container(
@@ -513,37 +676,37 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     );
   }
 
-  Widget _optionTile(String label, String text, String? selected) {
-    final bool isSelected = selected == label;
-
-    return GestureDetector(
-      onTap: () => onOptionSelect(label),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(isSelected ? 0.18 : 0.08),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isSelected ? Colors.purpleAccent : Colors.transparent,
-            width: 2,
-          ),
-        ),
-        child: Row(
-          children: [
-            Text(label,
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.w600)),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Text(text,
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 14)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _optionTile(String label, String text, String? selected) {
+  //   final bool isSelected = selected == label;
+  //
+  //   return GestureDetector(
+  //     onTap: () => onOptionSelect(label),
+  //     child: Container(
+  //       margin: const EdgeInsets.only(bottom: 12),
+  //       padding: const EdgeInsets.all(14),
+  //       decoration: BoxDecoration(
+  //         color: Colors.white.withOpacity(isSelected ? 0.18 : 0.08),
+  //         borderRadius: BorderRadius.circular(14),
+  //         border: Border.all(
+  //           color: isSelected ? Colors.purpleAccent : Colors.transparent,
+  //           width: 2,
+  //         ),
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           Text(label,
+  //               style: const TextStyle(
+  //                   color: Colors.white, fontWeight: FontWeight.w600)),
+  //           const SizedBox(width: 14),
+  //           Expanded(
+  //             child: Text(text,
+  //                 style: const TextStyle(
+  //                     color: Colors.white, fontSize: 14)),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
 }

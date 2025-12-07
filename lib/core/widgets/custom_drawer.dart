@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/constants/assets_path.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/utils/dialogs_utils.dart';
 import 'package:zifour_sourcecode/core/utils/user_preference.dart';
 import 'package:zifour_sourcecode/core/widgets/my_notes_item.dart';
+import 'package:zifour_sourcecode/features/auth/login_screen.dart';
 import 'package:zifour_sourcecode/features/bookmarked/bookmarked_list_screen.dart';
 import 'package:zifour_sourcecode/features/courses/change_courses_screen.dart';
 import 'package:zifour_sourcecode/features/dashboard/profile_screen.dart';
@@ -42,6 +44,7 @@ class CustomDrawer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 30.h,),
               // Profile Header
               ValueListenableBuilder(
                 valueListenable: UserPreference.userNotifier,
@@ -195,8 +198,10 @@ class CustomDrawer extends StatelessWidget {
                         positiveClick: (){
                           Navigator.pop(context, false);
                         },
-                        negativeClick: (){
-
+                        negativeClick: () async{
+                            final pref = await SharedPreferences.getInstance();
+                            pref.clear();
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false,);
                         }
                       );
                     }),

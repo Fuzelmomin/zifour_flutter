@@ -146,7 +146,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get uploadMarksheet =>
-      'Upload your last year marksheet or 10th Exam Receipt';
+      'Upload your last year marksheet or 10th Exam Receipt (It is Optional)';
 
   @override
   String get forgotPasswordTitle => 'Forgot Password';
@@ -428,4 +428,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gender => 'Gender';
+
+  @override
+  String get update => 'Update';
+
+  @override
+  String get pleaseSelectSubject => 'Please select a subject';
+
+  @override
+  String get pleaseSelectChapter => 'Please select at least one chapter';
+
+  @override
+  String get pleaseSelectTopic => 'Please select at least one topic';
 }

@@ -45,7 +45,7 @@
   "alreadyAMember": "Already a Member? ",
   "signUpButton": "Sign Up",
   "signupSuccessful": "Signup successful!",
-  "uploadMarksheet": "Upload your last year marksheet or 10th Exam Receipt",
+  "uploadMarksheet": "Upload your last year marksheet or 10th Exam Receipt (It is Optional)",
   "forgotPasswordTitle": "Forgot Password",
   "send": "Send",
   "pleaseEnterPhoneNumber": "Please enter phone number",
@@ -136,7 +136,11 @@
   "passwordMustBe6Characters": "Password must be at least 6 characters long",
   "passwordNotMatch": "Passwords do not match",
   "languagePreference": "LANGUAGE PREFERENCE",
-  "gender": "Gender"
+  "gender": "Gender",
+  "update": "Update",
+  "pleaseSelectSubject": "Please select a subject",
+  "pleaseSelectChapter": "Please select at least one chapter",
+  "pleaseSelectTopic": "Please select at least one topic"
 
 }
 

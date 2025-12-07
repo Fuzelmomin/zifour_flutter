@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -49,8 +50,14 @@ class _AllCoursesView extends StatelessWidget {
         _handleBackButton(context);
         return false; // Prevent default back behavior
       },
-      child: Scaffold(
-      body: Container(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        ),
+        child: Scaffold(
+          body: Container(
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
@@ -63,7 +70,7 @@ class _AllCoursesView extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 40.h,
+              top: 20.h,
               left: 15.w,
               right: 20.w,
               child: CustomAppBar(
@@ -73,7 +80,7 @@ class _AllCoursesView extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 110.h,
+              top: 90.h,
               left: 20.w,
               right: 20.w,
               bottom: 0,
@@ -104,6 +111,7 @@ class _AllCoursesView extends StatelessWidget {
           ],
         ),
       ),
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
@@ -20,6 +21,17 @@ import 'core/bloc/signup_bloc.dart';
 import 'l10n/app_localizations.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Configure status bar globally to be visible with light icons
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -43,12 +55,20 @@ class MyApp extends StatelessWidget {
             locale = state.locale;
           }
 
-          return ScreenUtilInit(
-            designSize: const Size(375, 812), // iPhone X design size
-            minTextAdapt: true,
-            splitScreenMode: true,
-            builder: (context, child) {
-              return MaterialApp(
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.light,
+              statusBarBrightness: Brightness.dark,
+              systemNavigationBarColor: Colors.transparent,
+              systemNavigationBarIconBrightness: Brightness.light,
+            ),
+            child: ScreenUtilInit(
+              designSize: const Size(375, 812), // iPhone X design size
+              minTextAdapt: true,
+              splitScreenMode: true,
+              builder: (context, child) {
+                return MaterialApp(
                 title: 'Zifour',
                 debugShowCheckedModeBanner: false,
                 locale: locale,
@@ -69,10 +89,26 @@ class MyApp extends StatelessWidget {
                       ),
                     ),
                   ),
+                  appBarTheme: const AppBarTheme(
+                    systemOverlayStyle: SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness: Brightness.light,
+                      statusBarBrightness: Brightness.dark,
+                    ),
+                  ),
                 ),
+                builder: (context, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                      padding: EdgeInsets.zero,
+                    ),
+                    child: child!,
+                  );
+                },
                 home: SplashScreen(), // Start with splash screen
               );
             },
+            ),
           );
         },
       ),

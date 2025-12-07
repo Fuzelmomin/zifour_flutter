@@ -78,7 +78,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 
             // App Bar
             Positioned(
-                top: 40.h,
+                top: 20.h,
                 left: 15.w,
                 right: 20.w,
                 child: CustomAppBar(
@@ -88,7 +88,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 
             // Main Content with BLoC
             Positioned(
-              top: 110.h,
+              top: 90.h,
               left: 0.w,
               right: 0.w,
               bottom: 0.h,

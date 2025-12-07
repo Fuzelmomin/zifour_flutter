@@ -70,7 +70,9 @@ class CoursesItemWidget extends StatelessWidget {
                         children: [
                           _buildBadge(
                             text: badge ?? 'Best Seller',
-                            //background: Colors.black.withOpacity(0.7),
+                            background: LinearGradient(
+                              colors: [Colors.black.withOpacity(0.7), Colors.black.withOpacity(0.7)],
+                            ),
                           ),
                           if ((discount ?? '').isNotEmpty)
                             _buildBadge(
@@ -85,7 +87,7 @@ class CoursesItemWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 10.h),
+              SizedBox(height: 8.h),
               Text(
                 title,
                 style: AppTypography.inter14SemiBold,
@@ -104,7 +106,7 @@ class CoursesItemWidget extends StatelessWidget {
                 children: [
                   if ((finalPrice ?? '').isNotEmpty)
                     Text(
-                      finalPrice!,
+                      "₹ ${finalPrice!}",
                       style: AppTypography.inter14SemiBold.copyWith(
                         color: AppColors.white,
                       ),
@@ -112,7 +114,7 @@ class CoursesItemWidget extends StatelessWidget {
                   if ((originalPrice ?? '').isNotEmpty) ...[
                     SizedBox(width: 8.w),
                     Text(
-                      originalPrice!,
+                      "₹ ${originalPrice!}",
                       style: AppTypography.inter12Regular.copyWith(
                         color: Colors.white.withOpacity(0.6),
                         decoration: TextDecoration.lineThrough,
@@ -142,7 +144,7 @@ class CoursesItemWidget extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: AppTypography.inter10SemiBold,
+        style: AppTypography.inter10SemiBold.copyWith(fontSize: 12.sp),
       ),
     );
   }

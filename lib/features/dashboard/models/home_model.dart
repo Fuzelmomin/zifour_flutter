@@ -1,3 +1,5 @@
+import '../../courses/models/course_package.dart';
+
 class HomeResponse {
   final bool status;
   final String message;
@@ -6,7 +8,7 @@ class HomeResponse {
   final bool isSoftBoxEnabled;
   final List<MentorVideo> mentorVideos;
   final List<HomeSlider> sliders;
-  final List<HomePackage> packages;
+  final List<CoursePackage> packages;
 
   HomeResponse({
     required this.status,
@@ -33,7 +35,7 @@ class HomeResponse {
           .map((item) => HomeSlider.fromJson(item as Map<String, dynamic>))
           .toList(),
       packages: (json['package_list'] as List<dynamic>? ?? [])
-          .map((item) => HomePackage.fromJson(item as Map<String, dynamic>))
+          .map((item) => CoursePackage.fromJson(item as Map<String, dynamic>))
           .toList(),
     );
   }

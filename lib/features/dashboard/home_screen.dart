@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,6 +23,8 @@ import '../../l10n/app_localizations.dart';
 import '../al_based_performance/al_based_performanc_screen.dart';
 import '../challenger_zone/challenger_zone_screen.dart';
 import '../courses/all_course_list_screen.dart';
+import '../courses/bloc/course_package_details_bloc.dart';
+import '../courses/course_details_screen.dart';
 import '../doubts/ask_doubts_screen.dart';
 import '../india_test_series/all_india_test_series_screen.dart';
 import '../learning_course/learning_course_screen.dart';
@@ -206,87 +209,87 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         state.showSkeleton
                             ? Shimmer.fromColors(
-                                baseColor: AppColors.selectedBoxColor,
-                                highlightColor: Colors.white.withOpacity(0.1),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 10.h,
-                                        horizontal: 15.w,
-                                      ).copyWith(top: 20.h),
-                                      child: ValueListenableBuilder(
-                                        valueListenable: UserPreference.userNotifier,
-                                        builder: (context, userData, child) {
-                                          return HomeAppBar(
-                                            profileImg: userData?.stuImage ?? '',
-                                            profileClick: () {
-                                              _scaffoldKey.currentState?.openDrawer();
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.h),
-                                    _buildBannerSection(state),
-                                    SizedBox(height: 15.h),
-                                    _buildTrendingCoursesSection(state),
-                                    SizedBox(height: 20.h),
-                                    _buildMentorsSection(state),
-                                    SizedBox(height: 25.h),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: const [BeZiddiItemWidget()],
-                                    ),
-                                    SizedBox(height: 20.h),
-                                    _buildHomeOptionNewSection(),
-                                    SizedBox(height: 20.h),
-                                  ],
-                                ),
-                              )
-                            : Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 10.h,
-                                      horizontal: 15.w,
-                                    ).copyWith(top: 20.h),
-                                    child: ValueListenableBuilder(
-                                      valueListenable: UserPreference.userNotifier,
-                                      builder: (context, userData, child) {
-                                        return HomeAppBar(
-                                          profileImg: userData?.stuImage ?? '',
-                                          profileClick: () {
-                                            _scaffoldKey.currentState?.openDrawer();
-                                          },
-                                        );
+                          baseColor: AppColors.selectedBoxColor,
+                          highlightColor: Colors.white.withOpacity(0.1),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 10.h,
+                                  horizontal: 15.w,
+                                ).copyWith(top: 20.h),
+                                child: ValueListenableBuilder(
+                                  valueListenable: UserPreference.userNotifier,
+                                  builder: (context, userData, child) {
+                                    return HomeAppBar(
+                                      profileImg: userData?.stuImage ?? '',
+                                      profileClick: () {
+                                        _scaffoldKey.currentState?.openDrawer();
                                       },
-                                    ),
-                                  ),
-                                  SizedBox(height: 10.h),
-                                  if (state.data?.sliders.isNotEmpty ?? false)
-                                    _buildBannerSection(state),
-                                  if (state.data?.sliders.isNotEmpty ?? false)
-                                    SizedBox(height: 15.h),
-                                  if (state.data?.packages.isNotEmpty ?? false)
-                                    _buildTrendingCoursesSection(state),
-                                  if (state.data?.packages.isNotEmpty ?? false)
-                                    SizedBox(height: 20.h),
-                                  if (state.data?.mentorVideos.isNotEmpty ?? false)
-                                    _buildMentorsSection(state),
-                                  if (state.data?.mentorVideos.isNotEmpty ?? false)
-                                    SizedBox(height: 25.h),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [BeZiddiItemWidget()],
-                                  ),
-                                  SizedBox(height: 20.h),
-                                  _buildHomeOptionNewSection(),
-                                  SizedBox(height: 20.h),
-                                ],
+                                    );
+                                  },
+                                ),
                               ),
+                              SizedBox(height: 10.h),
+                              _buildBannerSection(state),
+                              SizedBox(height: 15.h),
+                              _buildTrendingCoursesSection(state),
+                              SizedBox(height: 20.h),
+                              _buildMentorsSection(state),
+                              SizedBox(height: 25.h),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [BeZiddiItemWidget()],
+                              ),
+                              SizedBox(height: 20.h),
+                              _buildHomeOptionNewSection(),
+                              SizedBox(height: 20.h),
+                            ],
+                          ),
+                        )
+                            : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 10.h,
+                                horizontal: 15.w,
+                              ).copyWith(top: 20.h),
+                              child: ValueListenableBuilder(
+                                valueListenable: UserPreference.userNotifier,
+                                builder: (context, userData, child) {
+                                  return HomeAppBar(
+                                    profileImg: userData?.stuImage ?? '',
+                                    profileClick: () {
+                                      _scaffoldKey.currentState?.openDrawer();
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 10.h),
+                            if (state.data?.sliders.isNotEmpty ?? false)
+                              _buildBannerSection(state),
+                            if (state.data?.sliders.isNotEmpty ?? false)
+                              SizedBox(height: 15.h),
+                            if (state.data?.packages.isNotEmpty ?? false)
+                              _buildTrendingCoursesSection(state),
+                            if (state.data?.packages.isNotEmpty ?? false)
+                              SizedBox(height: 20.h),
+                            if (state.data?.mentorVideos.isNotEmpty ?? false)
+                              _buildMentorsSection(state),
+                            if (state.data?.mentorVideos.isNotEmpty ?? false)
+                              SizedBox(height: 25.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [BeZiddiItemWidget()],
+                            ),
+                            SizedBox(height: 20.h),
+                            _buildHomeOptionNewSection(),
+                            SizedBox(height: 20.h),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -462,7 +465,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           else
             SizedBox(
-              height: 200.h,
+              height: 220.h,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
@@ -478,6 +481,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     imageUrl: package.imageUrl,
                     onTap: () {
                       // Navigate to package details if needed
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (_) => CoursePackageDetailsBloc(),  // <-- your BLoC instance
+                            child: CourseDetailsScreen(
+                              package: package,
+                            ),
+                          ),
+                        ),
+                      );
                     },
                   );
                 },

@@ -38,7 +38,7 @@ class _LearningChapterVideosScreenState extends State<LearningChapterVideosScree
 
               // App Bar
               Positioned(
-                  top: 0.h,
+                  top: 20.h,
                   left: 15.w,
                   right: 20.w,
                   child: CustomAppBar(

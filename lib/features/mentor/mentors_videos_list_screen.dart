@@ -76,7 +76,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
                       ),
                     ),
                     Positioned(
-                      top: 0.h,
+                      top: 20.h,
                       left: 15.w,
                       right: 20.w,
                       child: CustomAppBar(
@@ -86,7 +86,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
                       ),
                     ),
                     Positioned(
-                      top: 70.h,
+                      top: 90.h,
                       left: 20.w,
                       right: 20.w,
                       bottom: 0,
@@ -136,7 +136,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
 
                             return SizedBox(
                               height: 200.h,
-                              child: ListView.builder(
+                              child: ListView.separated(
                                 scrollDirection: Axis.vertical,
                                 physics: const BouncingScrollPhysics(),
                                 itemCount: videos.length,
@@ -158,6 +158,9 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
                                       );
                                     },
                                   );
+                                },
+                                separatorBuilder: (context, index){
+                                  return SizedBox(height: 10.h,);
                                 },
                               ),
                             );

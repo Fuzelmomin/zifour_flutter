@@ -429,4 +429,16 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get gender => 'Gender';
+
+  @override
+  String get update => 'Update';
+
+  @override
+  String get pleaseSelectSubject => 'Please select a subject';
+
+  @override
+  String get pleaseSelectChapter => 'Please select at least one chapter';
+
+  @override
+  String get pleaseSelectTopic => 'Please select at least one topic';
 }
