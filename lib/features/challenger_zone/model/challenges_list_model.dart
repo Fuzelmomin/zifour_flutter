@@ -33,6 +33,8 @@ class ChallengeListItem {
   final String chapters;
   final String topics;
   final String subjects;
+  @JsonKey(name: 'er_flag')
+  final String erFlag;
   @JsonKey(name: 'created_at')
   final String createdAt;
   @JsonKey(name: 'updated_at')
@@ -45,6 +47,7 @@ class ChallengeListItem {
     required this.chapters,
     required this.topics,
     required this.subjects,
+    required this.erFlag,
     required this.createdAt,
     required this.updatedAt,
   });

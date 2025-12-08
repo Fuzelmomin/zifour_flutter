@@ -134,7 +134,7 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
         final challenge = challenges[index];
         return ChallengesItemWidget(
           challenge: challenge,
-          btnName: 'Start Exam',
+          btnName: challenge.erFlag == "2" ? "View Results" : "Start Exam",
           onTap: () {
             Navigator.push(
               context,
@@ -144,7 +144,9 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
                   crtChlId: challenge.crtChlId,
                 ),
               ),
-            );
+            ).then((value){
+              _challengesListBloc.add(const ChallengesListRequested());
+            });
           },
         );
       },

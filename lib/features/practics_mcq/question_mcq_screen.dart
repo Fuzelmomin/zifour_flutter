@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:zifour_sourcecode/core/dialogs/add_note_dialog.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -14,6 +15,7 @@ import '../../core/widgets/custom_loading_widget.dart';
 import '../challenger_zone/challenge_result_screen.dart';
 import 'bloc/challenge_mcq_list_bloc.dart';
 import 'bloc/submit_mcq_answer_bloc.dart';
+import 'bloc/mcq_bookmark_bloc.dart';
 import 'model/challenge_mcq_list_model.dart';
 
 class QuestionMcqScreen extends StatefulWidget {
@@ -33,6 +35,7 @@ class QuestionMcqScreen extends StatefulWidget {
 class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   late final ChallengeMcqListBloc _mcqListBloc;
   late final SubmitMcqAnswerBloc _submitMcqAnswerBloc;
+  late final McqBookmarkBloc _mcqBookmarkBloc;
   final BehaviorSubject<String?> selectedOption =
       BehaviorSubject<String?>.seeded(null);
   int _currentQuestionIndex = 0;
@@ -53,6 +56,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     super.initState();
     _mcqListBloc = ChallengeMcqListBloc();
     _submitMcqAnswerBloc = SubmitMcqAnswerBloc();
+    _mcqBookmarkBloc = McqBookmarkBloc();
     if (widget.crtChlId != null && widget.crtChlId!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _mcqListBloc.add(
@@ -67,6 +71,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     selectedOption.close();
     _mcqListBloc.close();
     _submitMcqAnswerBloc.close();
+    _mcqBookmarkBloc.close();
     super.dispose();
   }
 
@@ -147,6 +152,39 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       }
     }
   }
+
+  void _handleMenuSelection(String value) {
+    if (value == "Mark as Bookmark") {
+      _addBookmark();
+    } else if(value == "Add Note"){
+      if (!_mcqListBloc.state.hasData) return;
+      
+      final mcqList = _mcqListBloc.state.data!.mcqList;
+      if (_currentQuestionIndex < mcqList.length) {
+        final currentMcq = mcqList[_currentQuestionIndex];
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => AddNoteDialog(mcqId: currentMcq.mcId),
+        );
+      }
+    }
+    else {
+      setState(() => selectedFilter = value);
+    }
+  }
+
+  void _addBookmark() {
+    if (!_mcqListBloc.state.hasData) return;
+    
+    final mcqList = _mcqListBloc.state.data!.mcqList;
+    if (_currentQuestionIndex < mcqList.length) {
+      final currentMcq = mcqList[_currentQuestionIndex];
+      _mcqBookmarkBloc.add(
+        McqBookmarkRequested(mcqId: currentMcq.mcId),
+      );
+    }
+  }
   
   Future<void> _submitAnswers() async {
     if (!_mcqListBloc.state.hasData || widget.crtChlId == null) return;
@@ -196,8 +234,31 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       providers: [
         BlocProvider.value(value: _mcqListBloc),
         BlocProvider.value(value: _submitMcqAnswerBloc),
+        BlocProvider.value(value: _mcqBookmarkBloc),
       ],
-      child: BlocListener<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
+      child: BlocListener<McqBookmarkBloc, McqBookmarkState>(
+        listener: (context, bookmarkState) {
+          if (bookmarkState.status == McqBookmarkStatus.success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  bookmarkState.data?.message ?? 'Bookmark added successfully.',
+                ),
+                backgroundColor: AppColors.success,
+              ),
+            );
+          } else if (bookmarkState.status == McqBookmarkStatus.failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  bookmarkState.errorMessage ?? 'Unable to add bookmark.',
+                ),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
+        },
+        child: BlocListener<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
         listener: (context, state) {
           if (state.status == SubmitMcqAnswerStatus.success) {
             Navigator.pushReplacement(
@@ -219,12 +280,14 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         },
         child: BlocBuilder<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
           builder: (context, submitState) {
-            return BlocBuilder<ChallengeMcqListBloc, ChallengeMcqListState>(
-              builder: (context, state) {
-                return CustomLoadingOverlay(
-                  isLoading: submitState.isLoading,
-                  child: Scaffold(
-                    body: Container(
+            return BlocBuilder<McqBookmarkBloc, McqBookmarkState>(
+              builder: (context, bookmarkState) {
+                return BlocBuilder<ChallengeMcqListBloc, ChallengeMcqListState>(
+                  builder: (context, state) {
+                    return CustomLoadingOverlay(
+                      isLoading: submitState.isLoading || bookmarkState.isLoading,
+                      child: Scaffold(
+                        body: Container(
                       width: double.infinity,
                       height: double.infinity,
                       color: AppColors.darkBlue,
@@ -249,8 +312,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                                     : 'MCQ Challenge',
                                 isActionWidget: true,
                                 actionWidget: PopupMenuButton<String>(
-                                  onSelected: (value) =>
-                                      setState(() => selectedFilter = value),
+                                  onSelected: _handleMenuSelection,
                                   itemBuilder: (context) {
                                     return options
                                         .map(
@@ -284,11 +346,14 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                     ),
                   ),
                 );
+                  },
+                );
               },
             );
           },
         ),
       ),
+    ),
     );
   }
 

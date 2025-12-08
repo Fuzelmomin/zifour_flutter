@@ -53,7 +53,7 @@ class MyNotesItem extends StatelessWidget {
                   flex: 1,
                   child: GestureDetector(
                     onTap: (){
-
+                      deleteClick!();
                     },
                     child: SvgPicture.asset(
                       AssetsPath.svgCloseCircle,

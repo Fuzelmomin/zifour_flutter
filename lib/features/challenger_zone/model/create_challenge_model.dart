@@ -6,7 +6,7 @@ part 'create_challenge_model.g.dart';
 class CreateChallengeResponse {
   final bool status;
   final String message;
-  @JsonKey(name: 'topic_list')
+  @JsonKey(name: 'create_challenge_list')
   final List<CreatedChallengeItem> topicList;
 
   CreateChallengeResponse({

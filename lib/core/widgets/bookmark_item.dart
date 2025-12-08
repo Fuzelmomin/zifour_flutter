@@ -9,6 +9,7 @@ import '../theme/app_typography.dart';
 class BookmarkItem extends StatelessWidget {
 
   String? title;
+  String? description;
   String? bookmarkType;
   Function()? deleteClick;
 
@@ -16,6 +17,7 @@ class BookmarkItem extends StatelessWidget {
   BookmarkItem({
     super.key,
     this.title,
+    this.description,
     this.bookmarkType,
     this.deleteClick,
   });
@@ -51,7 +53,7 @@ class BookmarkItem extends StatelessWidget {
                   flex: 1,
                   child: GestureDetector(
                     onTap: (){
-
+                      deleteClick!();
                     },
                     child: SvgPicture.asset(
                       AssetsPath.svgCloseCircle,
@@ -62,6 +64,14 @@ class BookmarkItem extends StatelessWidget {
                   ),
                 )
               ],
+            ),
+            SizedBox(height: 5.h,),
+            Expanded(
+              flex: 9,
+              child: Text(
+                description ?? '',
+                style: AppTypography.inter12Medium.copyWith(color: AppColors.hintTextColor),
+              ),
             ),
             SizedBox(height: 7.h,),
             Container(

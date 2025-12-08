@@ -1,13 +1,18 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
+import '../../core/utils/dialogs_utils.dart';
 import '../../core/widgets/bookmark_item.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../l10n/app_localizations.dart';
+import 'bloc/mcq_bookmark_list_bloc.dart';
+import 'bloc/mcq_bookmark_delete_bloc.dart';
 
 class BookmarkedListScreen extends StatefulWidget {
   const BookmarkedListScreen({super.key});
@@ -17,6 +22,8 @@ class BookmarkedListScreen extends StatefulWidget {
 }
 
 class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
+  late McqBookmarkListBloc _mcqBookmarkListBloc;
+  late McqBookmarkDeleteBloc _mcqBookmarkDeleteBloc;
 
   String selectedFilter = "Practice MCQ";
   final filters = [
@@ -27,32 +34,86 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
   ];
 
   @override
-  void dispose() {
+  void initState() {
+    super.initState();
+    _mcqBookmarkListBloc = McqBookmarkListBloc();
+    _mcqBookmarkDeleteBloc = McqBookmarkDeleteBloc();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mcqBookmarkListBloc.add(const McqBookmarkListRequested());
+    });
+  }
 
+  @override
+  void dispose() {
+    _mcqBookmarkListBloc.close();
+    _mcqBookmarkDeleteBloc.close();
     super.dispose();
+  }
+
+  void _showDeleteConfirmation(String mcqId) {
+    DialogsUtils.confirmDialog(
+      context,
+      title: 'Delete Bookmark?',
+      message: 'Are you sure you want to delete this bookmark?',
+      negativeBtnName: 'Cancel',
+      positiveBtnName: 'Delete',
+      positiveClick: () {
+        _mcqBookmarkDeleteBloc.add(
+          McqBookmarkDeleteRequested(mcqId: mcqId),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: AppColors.darkBlue,
-        child: SafeArea(
-          child: Stack(
-            children: [
-              // Background Decoration set
-
-              Positioned.fill(
-                child: Image.asset(
-                  AssetsPath.signupBgImg,
-                  fit: BoxFit.cover,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _mcqBookmarkListBloc),
+        BlocProvider.value(value: _mcqBookmarkDeleteBloc),
+      ],
+      child: BlocListener<McqBookmarkDeleteBloc, McqBookmarkDeleteState>(
+        listener: (context, deleteState) {
+          if (deleteState.status == McqBookmarkDeleteStatus.success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  deleteState.data?.message ?? 'Bookmark deleted successfully.',
                 ),
+                backgroundColor: AppColors.success,
               ),
+            );
+            // Refresh the bookmark list
+            _mcqBookmarkListBloc.add(const McqBookmarkListRequested());
+          } else if (deleteState.status == McqBookmarkDeleteStatus.failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  deleteState.errorMessage ?? 'Unable to delete bookmark.',
+                ),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
+        },
+        child: Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: AppColors.darkBlue,
+          child: SafeArea(
+            child: Stack(
+              children: [
+                // Background Decoration set
+                Positioned.fill(
+                  child: Image.asset(
+                    AssetsPath.signupBgImg,
+                    fit: BoxFit.cover,
+                  ),
+                ),
 
-              // App Bar
-              Positioned(
+                // App Bar
+                Positioned(
                   top: 20.h,
                   left: 15.w,
                   right: 5.w,
@@ -74,8 +135,10 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                           gradient: LinearGradient(
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
-                            colors: [Color(0xFFCF078A), // Pink
-                              Color(0xFF5E00D8)],
+                            colors: [
+                              Color(0xFFCF078A), // Pink
+                              Color(0xFF5E00D8)
+                            ],
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -97,34 +160,126 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                         ),
                       ),
                     ),
-                    actionClick: (){
-
-                    },
-                  )),
-
-              // Main Content with BLoC
-              Positioned(
-                top: 90.h,
-                left: 20.w,
-                right: 20.w,
-                bottom: 0,
-                child: SignupFieldBox(
-                  child: ListView.builder(
-                    itemCount: 8,
-                    padding: const EdgeInsets.only(bottom: 20),
-                    itemBuilder: (context, index) => Container(
-                      child: BookmarkItem(
-                        title: 'Why does tension act upward in pulley system?',
-                        bookmarkType: 'Practice MCQ',
-                      ),
-                    ),
+                    actionClick: () {},
                   ),
                 ),
-              ),
-            ],
+
+                // Main Content with BLoC
+                Positioned(
+                  top: 90.h,
+                  left: 20.w,
+                  right: 20.w,
+                  bottom: 0,
+                  child: BlocBuilder<McqBookmarkListBloc, McqBookmarkListState>(
+                    builder: (context, state) {
+                      if (state.status == McqBookmarkListStatus.loading ||
+                          state.status == McqBookmarkListStatus.initial) {
+                        return SignupFieldBox(
+                          child: _buildShimmerLoading(),
+                        );
+                      }
+
+                      if (state.status == McqBookmarkListStatus.failure) {
+                        return SignupFieldBox(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  state.errorMessage ?? 'Unable to load bookmarks.',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.7),
+                                    fontSize: 14.sp,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 16.h),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _mcqBookmarkListBloc.add(
+                                      const McqBookmarkListRequested(),
+                                    );
+                                  },
+                                  child: Text('Retry'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (state.status == McqBookmarkListStatus.success) {
+                        final bookmarkList = state.data?.mcqBookmarkList ?? [];
+                        if (bookmarkList.isEmpty) {
+                          return SignupFieldBox(
+                            child: Center(
+                              child: Text(
+                                'No bookmarks found.',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.7),
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        return BlocBuilder<McqBookmarkDeleteBloc, McqBookmarkDeleteState>(
+                          builder: (context, deleteState) {
+                            return SignupFieldBox(
+                              child: ListView.builder(
+                                itemCount: bookmarkList.length,
+                                padding: const EdgeInsets.only(bottom: 20),
+                                itemBuilder: (context, index) {
+                                  final bookmark = bookmarkList[index];
+                                  return BookmarkItem(
+                                    title: bookmark.mcQuestion
+                                        .replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                                    description: bookmark.mcDescription
+                                        .replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                                    bookmarkType: 'Practice MCQ',
+                                    deleteClick: () {
+                                      _showDeleteConfirmation(bookmark.mcqId);
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
+    ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return ListView.builder(
+      itemCount: 5,
+      padding: const EdgeInsets.only(bottom: 20),
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.white.withOpacity(0.08),
+          highlightColor: Colors.white.withOpacity(0.2),
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 6),
+            height: 100.h,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+          ),
+        );
+      },
     );
   }
 

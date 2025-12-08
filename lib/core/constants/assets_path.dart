@@ -73,6 +73,7 @@ class AssetsPath {
   static const String svgExpertLecture = "assets/icons/ic_expert_lectures.svg";
   static const String svgChallengerSolution = "assets/icons/ic_challenger_solution.svg";
   static const String svgTestSolution = "assets/icons/ic_test_solution.svg";
+  static const String svgAddNote = "assets/icons/add_note.svg";
 
 
   // Images Paths

@@ -11,7 +11,7 @@ CreateChallengeResponse _$CreateChallengeResponseFromJson(
     CreateChallengeResponse(
       status: json['status'] as bool,
       message: json['message'] as String,
-      topicList: (json['topic_list'] as List<dynamic>)
+      topicList: (json['create_challenge_list'] as List<dynamic>)
           .map((e) => CreatedChallengeItem.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -21,7 +21,7 @@ Map<String, dynamic> _$CreateChallengeResponseToJson(
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
-      'topic_list': instance.topicList,
+      'create_challenge_list': instance.topicList,
     };
 
 CreatedChallengeItem _$CreatedChallengeItemFromJson(
