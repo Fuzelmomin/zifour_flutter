@@ -209,12 +209,12 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     
     for (final mcq in mcqList) {
       final selectedOption = _allAnswers[mcq.mcId] ?? '';
-      // Convert option label (A, B, C, D) to index (0, 1, 2, 3)
+      // Convert option label (A, B, C, D) to index (1, 2, 3, 4)
       final studentAnswerIndex = optionLabels.indexOf(selectedOption);
       
       mcqListForApi.add({
         'mc_id': mcq.mcId,
-        'mc_answer_stu': studentAnswerIndex >= 0 ? studentAnswerIndex.toString() : '0',
+        'mc_answer_stu': studentAnswerIndex >= 0 ? (studentAnswerIndex+1).toString() : '1',
         'mc_answer': mcq.mcAnswer,
       });
     }
@@ -261,14 +261,16 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         child: BlocListener<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
         listener: (context, state) {
           if (state.status == SubmitMcqAnswerStatus.success) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChallengeResultScreen(
-                  title: 'Challenge Results',
-                ),
-              ),
-            );
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => ChallengeResultScreen(
+            //       title: 'Challenge Results',
+            //       crtChlId: "",
+            //     ),
+            //   ),
+            // );
+            Navigator.pop(context);
           } else if (state.status == SubmitMcqAnswerStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -430,21 +432,21 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 style: TextStyle(color: Colors.pinkAccent, fontSize: 14),
               ),
               const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.white.withOpacity(0.15),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.timer, color: Colors.orange, size: 16),
-                    SizedBox(width: 5),
-                    Text("00:53",
-                        style: TextStyle(color: Colors.white, fontSize: 13)),
-                  ],
-                ),
-              )
+              // Container(
+              //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(10),
+              //     color: Colors.white.withOpacity(0.15),
+              //   ),
+              //   child: const Row(
+              //     children: [
+              //       Icon(Icons.timer, color: Colors.orange, size: 16),
+              //       SizedBox(width: 5),
+              //       Text("00:53",
+              //           style: TextStyle(color: Colors.white, fontSize: 13)),
+              //     ],
+              //   ),
+              // )
             ],
           ),
           const SizedBox(height: 18),

@@ -114,7 +114,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
 
                 // App Bar
                 Positioned(
-                  top: 20.h,
+                  top: 30.h,
                   left: 15.w,
                   right: 5.w,
                   child: CustomAppBar(
@@ -166,7 +166,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
 
                 // Main Content with BLoC
                 Positioned(
-                  top: 90.h,
+                  top: 100.h,
                   left: 20.w,
                   right: 20.w,
                   bottom: 0,

@@ -33,6 +33,7 @@ class CreateChallengeBloc
       chapterIds: event.chapterIds,
       topicIds: event.topicIds,
       subId: event.subId,
+      challengeType: event.challengeType,
     );
     
     print('CreateChallengeBloc: Repository response status: ${response.status}');

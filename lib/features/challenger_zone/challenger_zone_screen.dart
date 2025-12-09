@@ -18,6 +18,7 @@ import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/text_field_container.dart';
 import '../../core/widgets/upload_box_widget.dart';
 import '../../l10n/app_localizations.dart';
+import 'challenges_list_screen.dart';
 
 class ChallengerZoneScreen extends StatefulWidget {
   const ChallengerZoneScreen({super.key});
@@ -89,6 +90,15 @@ class _ChallengerZoneScreenState extends State<ChallengerZoneScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => CreateOwnChallengerScreen()),
+                        );
+                      },
+                      buttonText1: "My Own Challenges",
+                      onTap1: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ChallengesListScreen(
+                            challengeType: "1",
+                          )),
                         );
                       },
                     ),

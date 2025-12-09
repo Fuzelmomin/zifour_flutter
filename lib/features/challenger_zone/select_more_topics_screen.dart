@@ -26,10 +26,12 @@ class SelectMoreTopicsScreen extends StatefulWidget {
     super.key,
     required this.subId,
     required this.chapterIds,
+    required this.challengeType,
   });
 
   /// Selected subject id (sub_id) from previous screen
   final String subId;
+  final String challengeType;
 
   /// Selected chapter ids (chp_id) from previous screen
   final List<String> chapterIds;
@@ -86,6 +88,7 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
               MaterialPageRoute(
                 builder: (context) => ChallengeReadyScreen(
                   crtChlId: created.crtChlId,
+                  challengeType: widget.challengeType,
                 ),
               ),
             );
@@ -348,6 +351,7 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
         chapterIds: widget.chapterIds,
         topicIds: selectedTopics,
         subId: widget.subId,
+        challengeType: widget.challengeType,
       ),
     );
   }

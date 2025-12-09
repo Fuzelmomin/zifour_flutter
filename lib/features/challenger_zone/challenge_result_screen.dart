@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -12,16 +14,47 @@ import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/info_row.dart';
 import '../../l10n/app_localizations.dart';
+import 'bloc/challenge_result_bloc.dart';
 
-class ChallengeResultScreen extends StatefulWidget {
-  String? title;
-  ChallengeResultScreen({super.key, this.title});
+class ChallengeResultScreen extends StatelessWidget {
+  final String? title;
+  final String crtChlId;
+  
+  const ChallengeResultScreen({
+    super.key, 
+    this.title,
+    required this.crtChlId,
+  });
 
   @override
-  State<ChallengeResultScreen> createState() => _ChallengeResultScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => ChallengeResultBloc()
+        ..add(ChallengeResultRequested(
+          crtChlId: crtChlId,
+        )),
+      child: _ChallengeResultView(
+        title: title,
+        crtChlId: crtChlId,
+      ),
+    );
+  }
 }
 
-class _ChallengeResultScreenState extends State<ChallengeResultScreen> {
+class _ChallengeResultView extends StatefulWidget {
+  final String? title;
+  final String crtChlId;
+  
+  const _ChallengeResultView({
+    this.title,
+    required this.crtChlId,
+  });
+
+  @override
+  State<_ChallengeResultView> createState() => _ChallengeResultViewState();
+}
+
+class _ChallengeResultViewState extends State<_ChallengeResultView> {
 
   String selectedFilter = "Monthly";
   List<String> filters = ["Monthly", "Weekly", "Yearly"];
@@ -44,8 +77,292 @@ class _ChallengeResultScreenState extends State<ChallengeResultScreen> {
 
   @override
   void dispose() {
-
     super.dispose();
+  }
+
+  Widget _buildShimmerLoader() {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Shimmer.fromColors(
+            baseColor: Colors.white.withOpacity(0.08),
+            highlightColor: Colors.white.withOpacity(0.2),
+            child: Container(
+              height: 20.h,
+              width: 250.w,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.r),
+                color: Colors.white.withOpacity(0.1),
+              ),
+            ),
+          ),
+          SizedBox(height: 25.h),
+          Shimmer.fromColors(
+            baseColor: Colors.white.withOpacity(0.08),
+            highlightColor: Colors.white.withOpacity(0.2),
+            child: Container(
+              height: 200.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18.r),
+                color: Colors.white.withOpacity(0.1),
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Shimmer.fromColors(
+            baseColor: Colors.white.withOpacity(0.08),
+            highlightColor: Colors.white.withOpacity(0.2),
+            child: Container(
+              height: 300.h,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18.r),
+                color: Colors.white.withOpacity(0.1),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildError({required String message, required VoidCallback onRetry}) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: AppColors.orange,
+            size: 60.sp,
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: AppTypography.inter16Regular.copyWith(
+              color: AppColors.white.withOpacity(0.8),
+            ),
+          ),
+          SizedBox(height: 24.h),
+          CustomGradientButton(
+            text: 'Retry',
+            onPressed: onRetry,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContent(ChallengeResultState state) {
+    final data = state.data!;
+    
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "See how you performed in this challenge.",
+            style: AppTypography.inter16Regular.copyWith(
+              color: AppColors.white.withOpacity(0.6),
+            ),
+          ),
+          SizedBox(height: 25.h),
+
+          /// Score Card
+          _glassCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data.subject ?? "Challenge Result",
+                  style: AppTypography.inter16Medium,
+                ),
+                SizedBox(height: 4),
+                Text(
+                  "Challenge Completed",
+                  style: AppTypography.inter12SemiBold.copyWith(
+                    color: AppColors.orange,
+                  ),
+                ),
+                SizedBox(height: 16),
+
+                Row(
+                  spacing: 15.w,
+                  children: [
+                    Expanded(
+                      child: InfoRow(
+                        title: "TOTAL",
+                        value: data.total ?? "0",
+                      ),
+                    ),
+                    Expanded(
+                      child: InfoRow(
+                        title: "ATTENDED",
+                        value: data.attended ?? "0",
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 10.h),
+                
+                Row(
+                  spacing: 15.w,
+                  children: [
+                    Expanded(
+                      child: InfoRow(
+                        title: "CORRECT",
+                        value: data.correct ?? "0",
+                      ),
+                    ),
+                    Expanded(
+                      child: InfoRow(
+                        title: "WRONG",
+                        value: data.wrong ?? "0",
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 10.h),
+                
+                Row(
+                  spacing: 15.w,
+                  children: [
+                    Expanded(
+                      child: InfoRow(
+                        title: "MARKS",
+                        value: data.marks ?? "0",
+                      ),
+                    ),
+                    Expanded(
+                      child: InfoRow(
+                        title: "PERCENTAGE",
+                        value: "${data.percentage ?? '0'}",
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20.h),
+
+          /// Graph Card (keeping the existing graph for now)
+          Visibility(
+            visible: widget.title == "Challenge Result 🏆" ? false : true,
+            child: _glassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Performance Overview",
+                        style: AppTypography.inter16Medium,
+                      ),
+                      DropdownButton(
+                        dropdownColor: Colors.black87,
+                        value: selectedFilter,
+                        underline: const SizedBox(),
+                        icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                        style: GoogleFonts.inter(color: Colors.white),
+                        items: filters.map((item) => DropdownMenuItem(
+                          value: item,
+                          child: Text(item, style: const TextStyle(color: Colors.white)),
+                        )).toList(),
+                        onChanged: (value) {
+                          setState(() => selectedFilter = value!);
+                        },
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 12),
+
+                  Row(
+                    children: [
+                      _legendDot(Colors.pinkAccent),
+                      const SizedBox(width: 6),
+                      Text("This month", style: AppTypography.inter14Regular.copyWith(color: const Color(0xFF848A9C))),
+                      const SizedBox(width: 16),
+                      _legendDot(Colors.amberAccent),
+                      const SizedBox(width: 6),
+                      Text("Last month", style: AppTypography.inter14Regular.copyWith(color: const Color(0xFF848A9C))),
+                    ],
+                  ),
+
+                  SizedBox(height: 16),
+
+                  /// Syncfusion Bar Chart
+                  SizedBox(
+                    height: 240,
+                    child: SfCartesianChart(
+                      plotAreaBorderWidth: 0,
+                      primaryXAxis: const CategoryAxis(
+                        labelStyle: TextStyle(color: Colors.white70),
+                      ),
+                      primaryYAxis: const NumericAxis(isVisible: false),
+                      legend: const Legend(isVisible: false),
+                      series: <CartesianSeries>[
+                        ColumnSeries<ChartData, String>(
+                          color: Colors.pinkAccent,
+                          width: 0.4,
+                          dataSource: graphData,
+                          xValueMapper: (data, _) => data.month,
+                          yValueMapper: (data, _) => data.value1,
+                        ),
+                        ColumnSeries<ChartData, String>(
+                          color: Colors.amberAccent,
+                          width: 0.4,
+                          dataSource: graphData,
+                          xValueMapper: (data, _) => data.month,
+                          yValueMapper: (data, _) => data.value2,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          SizedBox(height: 25.h),
+          Row(
+            spacing: 15.w,
+            children: [
+              Expanded(
+                child: CustomGradientButton(
+                  text: 'Download PDF',
+                  onPressed: () {},
+                  customDecoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                    ),
+                    color: const Color(0xFF464375),
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: CustomGradientButton(
+                  text: 'View Solutions',
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 70.h),
+        ],
+      ),
+    );
   }
 
   @override
@@ -82,183 +399,27 @@ class _ChallengeResultScreenState extends State<ChallengeResultScreen> {
                 left: 20.w,
                 right: 20.w,
                 bottom: 0,
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "See how you performed in this challenge.",
-                        style: AppTypography.inter16Regular.copyWith(
-                            color: AppColors.white.withOpacity(0.6)
-                        ),
-                      ),
-                      SizedBox(height: 25.h),
-
-                      /// Score Card
-                      _glassCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "July NEET Mini Challenge",
-                              style: AppTypography.inter16Medium,
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              "20 July 2025",
-                              style: AppTypography.inter12SemiBold.copyWith(
-                                color: AppColors.orange
+                child: BlocBuilder<ChallengeResultBloc, ChallengeResultState>(
+                  builder: (context, state) {
+                    switch (state.status) {
+                      case ChallengeResultStatus.loading:
+                      case ChallengeResultStatus.initial:
+                        return _buildShimmerLoader();
+                      case ChallengeResultStatus.failure:
+                        return _buildError(
+                          message: state.errorMessage ?? 'Unable to load challenge result.',
+                          onRetry: () {
+                            context.read<ChallengeResultBloc>().add(
+                              ChallengeResultRequested(
+                                crtChlId: widget.crtChlId,
                               ),
-                            ),
-                            SizedBox(height: 16),
-
-                            Row(
-                              spacing: 15.w,
-                              children: [
-                                Expanded(
-                                  child: InfoRow(title: "YOUR SCORE", value: "72 / 100"),
-                                ),
-                                Expanded(
-                                  child: InfoRow(title: "ALL INDIA RANK", value: "AIR 324"),
-                                )
-                              ],
-                            ),
-
-                            SizedBox(
-                              height: 10.h,
-                            ),
-                            Row(
-                              spacing: 15.w,
-                              children: [
-                                Expanded(
-                                  child: InfoRow(title: "PERCENTILE", value: "89%"),
-                                ),
-                                Expanded(
-                                    child: InfoRow(title: "ACCURACY", value: "76%"),
-                                )
-                              ],
-                            ),
-
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-
-                      /// Graph Card
-                      _glassCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Your spending",
-                                  style: AppTypography.inter16Medium,
-                                ),
-                                DropdownButton(
-                                  dropdownColor: Colors.black87,
-                                  value: selectedFilter,
-                                  underline: SizedBox(),
-                                  icon: Icon(Icons.keyboard_arrow_down, color: Colors.white),
-                                  style: GoogleFonts.inter(color: Colors.white),
-                                  items: filters.map((item) => DropdownMenuItem(
-                                    value: item,
-                                    child: Text(item, style: TextStyle(color: Colors.white)),
-                                  )).toList(),
-                                  onChanged: (value) {
-                                    setState(() => selectedFilter = value!);
-                                  },
-                                ),
-                              ],
-                            ),
-
-                            SizedBox(height: 12),
-
-                            Row(
-                              children: [
-                                _legendDot(Colors.pinkAccent),
-                                SizedBox(width: 6),
-                                Text("This month", style: AppTypography.inter14Regular.copyWith(color: Color(0xFF848A9C))),
-                                SizedBox(width: 16),
-                                _legendDot(Colors.amberAccent),
-                                SizedBox(width: 6),
-                                Text("Last month", style: AppTypography.inter14Regular.copyWith(color: Color(0xFF848A9C))),
-                              ],
-                            ),
-
-                            SizedBox(height: 16),
-
-                            /// Syncfusion Bar Chart
-                            SizedBox(
-                              height: 240,
-                              child: SfCartesianChart(
-                                plotAreaBorderWidth: 0,
-                                primaryXAxis: CategoryAxis(
-                                  labelStyle: TextStyle(color: Colors.white70),
-                                ),
-                                primaryYAxis: NumericAxis(isVisible: false),
-                                legend: Legend(isVisible: false),
-                                series: <CartesianSeries>[
-                                  ColumnSeries<ChartData, String>(
-                                    color: Colors.pinkAccent,
-                                    width: 0.4,
-                                    dataSource: graphData,
-                                    xValueMapper: (data, _) => data.month,
-                                    yValueMapper: (data, _) => data.value1,
-                                  ),
-                                  ColumnSeries<ChartData, String>(
-                                    color: Colors.amberAccent,
-                                    width: 0.4,
-                                    dataSource: graphData,
-                                    xValueMapper: (data, _) => data.month,
-                                    yValueMapper: (data, _) => data.value2,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(height: 25.h),
-                      Row(
-                        spacing: 15.w,
-                        children: [
-                          Expanded(
-                            child: CustomGradientButton(
-                              text: 'Download PDF',
-                              onPressed: () {},
-                              customDecoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.circular(12.r),
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.2),
-                                  ),
-                                  color: Color(0xFF464375)
-                              ),
-                            ),
-                          ),
-
-                          Expanded(
-                            child: CustomGradientButton(
-                              text: 'View Solutions',
-                              onPressed: () {
-
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-
-
-                      SizedBox(height: 70.h),
-                    ],
-                  ),
+                            );
+                          },
+                        );
+                      case ChallengeResultStatus.success:
+                        return _buildContent(state);
+                    }
+                  },
                 ),
               ),
             ],

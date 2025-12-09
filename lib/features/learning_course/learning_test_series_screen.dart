@@ -75,6 +75,7 @@ class _LearningTestSeriesScreenState extends State<LearningTestSeriesScreen> {
                           context,
                           MaterialPageRoute(builder: (context) => ChallengeResultScreen(
                             title: "Test Series Results 🏆",
+                            crtChlId: "",
                           )),
                         );
                       }

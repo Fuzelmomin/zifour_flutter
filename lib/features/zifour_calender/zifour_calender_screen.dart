@@ -322,51 +322,60 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
   }
 
   bool _validateFields(BuildContext context) {
-    if (nameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter event name'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.all(16),
+    // Helper function to show error dialog
+    void showError(String message) {
+      showDialog(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          backgroundColor: const Color(0xFF1E1E2E),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+            side: const BorderSide(color: Colors.white12),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.error_outline, color: AppColors.error, size: 24),
+              SizedBox(width: 8),
+              Text(
+                'Validation Error',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ],
+          ),
+          content: Text(
+            message,
+            style: const TextStyle(color: Colors.white70, fontSize: 14),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text(
+                'OK',
+                style: TextStyle(color: Colors.purpleAccent),
+              ),
+            ),
+          ],
         ),
       );
+    }
+
+    if (nameController.text.trim().isEmpty) {
+      showError('Please enter event name');
       return false;
     }
 
     if (noteController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter event description'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.all(16),
-        ),
-      );
+      showError('Please enter event description');
       return false;
     }
 
     if (selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select date'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.all(16),
-        ),
-      );
+      showError('Please select date');
       return false;
     }
 
     if (selectedTime == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select time'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.all(16),
-        ),
-      );
+      showError('Please select time');
       return false;
     }
 

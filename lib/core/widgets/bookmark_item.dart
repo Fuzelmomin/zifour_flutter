@@ -66,12 +66,16 @@ class BookmarkItem extends StatelessWidget {
               ],
             ),
             SizedBox(height: 5.h,),
-            Expanded(
-              flex: 9,
-              child: Text(
-                description ?? '',
-                style: AppTypography.inter12Medium.copyWith(color: AppColors.hintTextColor),
-              ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 9,
+                  child: Text(
+                    description ?? '',
+                    style: AppTypography.inter12Medium.copyWith(color: AppColors.hintTextColor),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 7.h,),
             Container(

@@ -93,6 +93,9 @@ class _ChallengerZoneSolutionScreenState extends State<ChallengerZoneSolutionScr
                           context,
                           MaterialPageRoute(builder: (context) => ChallengeResultScreen(
                             title: "Challenger Test Results 🏆",
+                            crtChlId: "",
+
+
                           )),
                         );
                       },

@@ -39,12 +39,13 @@ class APIConstants {
   static const updateProfileImage = 'profile_photo_update.php';
   static const changePassword = 'change_password.php';
   static const updateChallenge = 'create_challenge_update.php';
-  static const submitMcqAnswer = 'mcq_answer.php';
+  static const submitMcqAnswer = 'create_challenge_mcq_answer.php';
   static const addMcqBookmark = 'mcq_bookmark_add.php';
   static const addMcqNote = 'mcq_notes_add.php';
   static const getMcqBookmarks = 'mcq_bookmark_list.php';
   static const deleteMcqBookmarks = 'mcq_bookmark_delete.php';
   static const getMcqNotes = 'mcq_notes_list.php';
   static const deleteMcqNotes = 'mcq_notes_delete.php';
+  static const create_challenge_result = 'create_challenge_result.php';
 
 }

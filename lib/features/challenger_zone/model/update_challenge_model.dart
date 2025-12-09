@@ -6,7 +6,7 @@ part 'update_challenge_model.g.dart';
 class UpdateChallengeResponse {
   final bool status;
   final String message;
-  @JsonKey(name: 'challenge_detail')
+  @JsonKey(name: 'updated_challenge')
   final ChallengeDetail challengeDetail;
 
   UpdateChallengeResponse({
@@ -27,7 +27,6 @@ class ChallengeDetail {
   final String crtChlId;
   @JsonKey(name: 'stu_id')
   final String stuId;
-  final String name;
   final String chapter;
   final String topic;
   final String subjects;
@@ -35,7 +34,6 @@ class ChallengeDetail {
   ChallengeDetail({
     required this.crtChlId,
     required this.stuId,
-    required this.name,
     required this.chapter,
     required this.topic,
     required this.subjects,

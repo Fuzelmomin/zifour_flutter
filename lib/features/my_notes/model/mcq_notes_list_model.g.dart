@@ -11,7 +11,7 @@ McqNotesListResponse _$McqNotesListResponseFromJson(
     McqNotesListResponse(
       status: json['status'] as bool,
       message: json['message'] as String,
-      mcqNotesList: (json['mcq_bookmark_list'] as List<dynamic>)
+      mcqNotesList: (json['mcq_notes_list'] as List<dynamic>)
           .map((e) => McqNotesListItem.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -21,7 +21,7 @@ Map<String, dynamic> _$McqNotesListResponseToJson(
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
-      'mcq_bookmark_list': instance.mcqNotesList,
+      'mcq_notes_list': instance.mcqNotesList,
     };
 
 McqNotesListItem _$McqNotesListItemFromJson(Map<String, dynamic> json) =>

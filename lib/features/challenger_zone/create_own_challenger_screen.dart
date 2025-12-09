@@ -251,6 +251,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                               builder: (context) => SelectMoreTopicsScreen(
                                 subId: _selectedSubjectId ?? '',
                                 chapterIds: _selectedChapters.value,
+                                challengeType: "1",
                               )),
                         );
                       },

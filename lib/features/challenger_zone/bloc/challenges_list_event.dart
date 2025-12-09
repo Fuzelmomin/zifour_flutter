@@ -5,6 +5,7 @@ abstract class ChallengesListEvent {
 }
 
 class ChallengesListRequested extends ChallengesListEvent {
-  const ChallengesListRequested();
+  String challengeType;
+  ChallengesListRequested({required this.challengeType});
 }
 

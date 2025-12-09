@@ -20,9 +20,14 @@ import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/line_label_row.dart';
 import '../../l10n/app_localizations.dart';
 import 'bloc/challenges_list_bloc.dart';
+import 'challenge_result_screen.dart';
 
 class ChallengesListScreen extends StatefulWidget {
-  const ChallengesListScreen({super.key});
+  String challengeType;
+  ChallengesListScreen({
+    super.key,
+    required this.challengeType
+  });
 
   @override
   State<ChallengesListScreen> createState() => _ChallengesListScreenState();
@@ -36,7 +41,7 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
     super.initState();
     _challengesListBloc = ChallengesListBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _challengesListBloc.add(const ChallengesListRequested());
+      _challengesListBloc.add(ChallengesListRequested(challengeType: widget.challengeType));
     });
   }
 
@@ -54,7 +59,6 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
         builder: (context, state) {
           return CustomLoadingOverlay(
             isLoading: state.isLoading,
-            message: 'Loading challenges...',
             child: Scaffold(
               body: Container(
                 width: double.infinity,
@@ -136,17 +140,37 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
           challenge: challenge,
           btnName: challenge.erFlag == "2" ? "View Results" : "Start Exam",
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => QuestionMcqScreen(
-                  type: 'Start Exam',
-                  crtChlId: challenge.crtChlId,
+
+            if(challenge.erFlag == "2"){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChallengeResultScreen(
+                    title: 'Challenge Result 🏆',
+                    crtChlId: challenge.crtChlId,
+                  ),
                 ),
-              ),
-            ).then((value){
-              _challengesListBloc.add(const ChallengesListRequested());
-            });
+              ).then((value){
+                _challengesListBloc.add(ChallengesListRequested(
+                  challengeType: widget.challengeType
+                ));
+              });
+            }else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => QuestionMcqScreen(
+                    type: 'Start Exam',
+                    crtChlId: challenge.crtChlId,
+                  ),
+                ),
+              ).then((value){
+                _challengesListBloc.add(ChallengesListRequested(
+                  challengeType: widget.challengeType
+                ));
+              });
+            }
+
           },
         );
       },

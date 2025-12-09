@@ -7,19 +7,16 @@ import '../../../core/api_models/api_response.dart';
 import '../../../core/api_models/api_status.dart';
 import '../../../core/utils/connectivity_helper.dart';
 import '../../../core/utils/user_preference.dart';
-import '../model/create_challenge_model.dart';
+import '../model/challenge_result_model.dart';
 
-class CreateChallengeRepository {
-  CreateChallengeRepository({DioClient? dioClient})
+class ChallengeResultRepository {
+  ChallengeResultRepository({DioClient? dioClient})
       : _dioClient = dioClient ?? DioClient();
 
   final DioClient _dioClient;
 
-  Future<ApiResponse<CreateChallengeResponse>> createChallenge({
-    required List<String> chapterIds,
-    required List<String> topicIds,
-    required String subId,
-    required String challengeType,
+  Future<ApiResponse<ChallengeResultResponse>> getChallengeResult({
+    required String crtChlId,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -36,17 +33,11 @@ class CreateChallengeRepository {
         );
       }
 
-      final chaptersParam = _encodeIdList(chapterIds);
-      final topicsParam = _encodeIdList(topicIds);
-
       final response = await _dioClient.getDio().post(
-        APIConstants.createChallenge,
+        APIConstants.create_challenge_result,
         queryParameters: {
           'stu_id': user.stuId,
-          'chapters': chaptersParam,
-          'topics': topicsParam,
-          'sub_id': subId,
-          'oe_challenge': challengeType,
+          'crt_chl_id': crtChlId,
         },
       );
 
@@ -54,17 +45,17 @@ class CreateChallengeRepository {
         final data = response.data;
         if (data['status'] == true) {
           final model =
-              CreateChallengeResponse.fromJson(data as Map<String, dynamic>);
+              ChallengeResultResponse.fromJson(data as Map<String, dynamic>);
           return ApiResponse.success(data: model);
         }
         return ApiResponse.error(
           errorMsg:
-              data['message']?.toString() ?? 'Unable to create challenge.',
+              data['message']?.toString() ?? 'Unable to fetch challenge result.',
         );
       }
 
       return ApiResponse.error(
-        errorMsg: 'Unable to create challenge.',
+        errorMsg: 'Unable to fetch challenge result.',
       );
     } on DioException catch (e) {
       final apiError = ApiUtils.getApiError(e);
@@ -78,11 +69,4 @@ class CreateChallengeRepository {
       );
     }
   }
-
-  String _encodeIdList(List<String> ids) {
-    if (ids.isEmpty) return '[]';
-    return '[${ids.join(',')}]';
-  }
 }
-
-

@@ -15,7 +15,7 @@ class ChallengesListRepository {
 
   final DioClient _dioClient;
 
-  Future<ApiResponse<ChallengesListResponse>> fetchChallengesList() async {
+  Future<ApiResponse<ChallengesListResponse>> fetchChallengesList(String challengeType) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
       if (!isConnected) {
@@ -35,6 +35,7 @@ class ChallengesListRepository {
         APIConstants.getChallengesList,
         queryParameters: {
           'stu_id': user.stuId,
+          'oe_challenge': challengeType,
         },
       );
 

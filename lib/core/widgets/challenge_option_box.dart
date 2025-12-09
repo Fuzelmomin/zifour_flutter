@@ -11,8 +11,10 @@ class ChallengeOptionBox extends StatelessWidget {
   String? title;
   String? subtitle;
   String? buttonText;
+  String? buttonText1;
   Function()? onTap;
-  ChallengeOptionBox({super.key, this.iconPath, this.title, this.subtitle, this.buttonText, this.onTap});
+  Function()? onTap1;
+  ChallengeOptionBox({super.key, this.iconPath, this.title, this.subtitle, this.buttonText, this.onTap, this.buttonText1, this.onTap1});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +59,14 @@ class ChallengeOptionBox extends StatelessWidget {
             onPressed: () {
               onTap!();
             },
-          )
+          ),
+          SizedBox(height: buttonText1 != null ? 13.h : 0.0,),
+          buttonText1 != null ? CustomGradientArrowButton(
+            text: buttonText1 ?? '',
+            onPressed: () {
+              onTap1!();
+            },
+          ) : Container(),
         ],
       ),
     );

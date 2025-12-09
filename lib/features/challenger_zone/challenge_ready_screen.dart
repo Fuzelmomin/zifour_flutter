@@ -29,13 +29,15 @@ import 'bloc/topic_bloc.dart';
 import 'bloc/update_challenge_bloc.dart';
 
 class ChallengeReadyScreen extends StatefulWidget {
-  const ChallengeReadyScreen({
+  ChallengeReadyScreen({
     super.key,
     required this.crtChlId,
+    required this.challengeType,
   });
 
   /// Created challenge id from previous API (create_challenge)
   final int crtChlId;
+  String challengeType;
 
   @override
   State<ChallengeReadyScreen> createState() => _ChallengeReadyScreenState();
@@ -592,7 +594,9 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ChallengesListScreen(),
+                                      builder: (context) => ChallengesListScreen(
+                                        challengeType: widget.challengeType,
+                                      ),
                                     ),
                                   );
                                 },

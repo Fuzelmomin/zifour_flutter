@@ -6,7 +6,7 @@ part 'mcq_notes_list_model.g.dart';
 class McqNotesListResponse {
   final bool status;
   final String message;
-  @JsonKey(name: 'mcq_bookmark_list')
+  @JsonKey(name: 'mcq_notes_list')
   final List<McqNotesListItem> mcqNotesList;
 
   McqNotesListResponse({

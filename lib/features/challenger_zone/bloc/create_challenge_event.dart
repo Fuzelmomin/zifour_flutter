@@ -8,11 +8,13 @@ class CreateChallengeRequested extends CreateChallengeEvent {
   final List<String> chapterIds;
   final List<String> topicIds;
   final String subId;
+  final String challengeType;
 
   const CreateChallengeRequested({
     required this.chapterIds,
     required this.topicIds,
     required this.subId,
+    required this.challengeType,
   });
 }
 

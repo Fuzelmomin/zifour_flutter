@@ -72,13 +72,17 @@ class MyNotesItem extends StatelessWidget {
                   color: const Color(0xFFF58D30)
               ),
             ),
-            Expanded(
-              child: Text(
-                'Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search ',
-                style: AppTypography.inter10Medium.copyWith(
-                    color: AppColors.skyColor
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search ',
+                    style: AppTypography.inter10Medium.copyWith(
+                        color: AppColors.skyColor
+                    ),
+                  ),
                 ),
-              ),
+              ],
             )
           ],
         )

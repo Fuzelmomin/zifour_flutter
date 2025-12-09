@@ -26,7 +26,7 @@ class ChallengesListBloc
       clearError: true,
     ));
 
-    final response = await _repository.fetchChallengesList();
+    final response = await _repository.fetchChallengesList(event.challengeType);
 
     if (response.status == ApiStatus.success && response.data != null) {
       emit(state.copyWith(
