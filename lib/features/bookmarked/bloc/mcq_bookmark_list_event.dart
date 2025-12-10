@@ -8,3 +8,8 @@ class McqBookmarkListRequested extends McqBookmarkListEvent {
   const McqBookmarkListRequested();
 }
 
+class McqBookmarkItemRemoved extends McqBookmarkListEvent {
+  final String mcqId;
+  const McqBookmarkItemRemoved({required this.mcqId});
+}
+

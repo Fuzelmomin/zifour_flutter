@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import '../../../core/api_client/api_constans.dart';
@@ -39,7 +41,7 @@ class SubmitMcqAnswerRepository {
         queryParameters: {
           'stu_id': user.stuId,
           'crt_chl_id': crtChlId,
-          'mcq_list': mcqList,
+          'mcq_list': jsonEncode(mcqList),
         },
       );
 

@@ -43,6 +43,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   // Store all answers: key = mcId, value = selected option (A, B, C, D)
   final Map<String, String> _allAnswers = {};
 
+  // Track slide direction: true = forward (right to left), false = backward (left to right)
+  bool _isMovingForward = true;
 
   String selectedFilter = "";
   final options = [
@@ -85,18 +87,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     
     // Validation: Check if answer is selected
     final currentSelected = selectedOption.value;
-    if (currentSelected == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please select an answer before proceeding.'),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return;
-    }
     
     // Save current answer
-    _allAnswers[currentMcq.mcId] = currentSelected;
+    _allAnswers[currentMcq.mcId] = currentSelected ?? "";
     
     // Check if this is the last question
     if (_currentQuestionIndex == totalQuestions - 1) {
@@ -109,6 +102,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       final savedAnswer = _allAnswers[nextMcq.mcId];
       
       setState(() {
+        _isMovingForward = true;
         _currentQuestionIndex = nextIndex;
       });
       
@@ -133,6 +127,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       final savedAnswer = _allAnswers[previousMcq.mcId];
       
       setState(() {
+        _isMovingForward = false;
         _currentQuestionIndex = previousIndex;
       });
       
@@ -206,7 +201,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     
     // Prepare mcq_list for API
     final List<Map<String, String>> mcqListForApi = [];
-    
+
     for (final mcq in mcqList) {
       final selectedOption = _allAnswers[mcq.mcId] ?? '';
       // Convert option label (A, B, C, D) to index (1, 2, 3, 4)
@@ -214,11 +209,11 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       
       mcqListForApi.add({
         'mc_id': mcq.mcId,
-        'mc_answer_stu': studentAnswerIndex >= 0 ? (studentAnswerIndex+1).toString() : '1',
+        'mc_answer_stu': selectedOption == "" ? "" : studentAnswerIndex >= 0 ? (studentAnswerIndex+1).toString() : '1',
         'mc_answer': mcq.mcAnswer,
       });
     }
-    
+
     // Call API
     _submitMcqAnswerBloc.add(
       SubmitMcqAnswerRequested(
@@ -399,193 +394,205 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     final currentMcq = mcqList[_currentQuestionIndex];
     final totalQuestions = mcqList.length;
 
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              'Question ${_currentQuestionIndex + 1} of $totalQuestions',
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          const SizedBox(height: 14),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        // Only animate the NEW incoming widget, not the old outgoing one
+        final isNewWidget = child.key == ValueKey<int>(_currentQuestionIndex);
+        
+        if (!isNewWidget) {
+          // Old widget - just hide it instantly (no animation)
+          return const SizedBox.shrink();
+        }
+        
+        // New widget - slide animation
+        final offsetAnimation = Tween<Offset>(
+          begin: Offset(_isMovingForward ? 1.0 : -1.0, 0.0),
+          end: Offset.zero,
+        ).animate(CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeInOut,
+        ));
 
-          Row(
-            children: [
-              const Text(
-                "Difficulty : ",
-                style: TextStyle(color: Colors.white54, fontSize: 14),
-              ),
-              const Text(
-                "Easy",
-                style: TextStyle(color: Colors.pinkAccent, fontSize: 14),
-              ),
-              const Spacer(),
-              // Container(
-              //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(10),
-              //     color: Colors.white.withOpacity(0.15),
-              //   ),
-              //   child: const Row(
-              //     children: [
-              //       Icon(Icons.timer, color: Colors.orange, size: 16),
-              //       SizedBox(width: 5),
-              //       Text("00:53",
-              //           style: TextStyle(color: Colors.white, fontSize: 13)),
-              //     ],
-              //   ),
-              // )
-            ],
-          ),
-          const SizedBox(height: 18),
-
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.pinkColor3.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Text(
-              currentMcq.mcQuestion.replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                height: 1.5,
-              ),
-            ),
-          ),
-
-          if (currentMcq.mcDescription.isNotEmpty) ...[
-            const SizedBox(height: 12),
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+      child: SingleChildScrollView(
+        key: ValueKey<int>(_currentQuestionIndex),
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                currentMcq.mcDescription.replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                'Question ${_currentQuestionIndex + 1} of $totalQuestions',
                 style: const TextStyle(
                   color: Colors.white70,
-                  fontSize: 13,
-                  height: 1.4,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-          ],
+            const SizedBox(height: 14),
 
-          const SizedBox(height: 20),
-
-          StreamBuilder<String?>(
-            stream: selectedOption.stream,
-            builder: (context, snapshot) {
-              final selected = snapshot.data;
-              final options = currentMcq.options;
-              final optionLabels = ['A', 'B', 'C', 'D'];
-
-              return Column(
-                children: List.generate(
-                  options.length,
-                      (index) => _optionTile(
-                    optionLabels[index],
-                    options[index].replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
-                    selected,
-                  ),
+            Row(
+              children: [
+                const Text(
+                  "Difficulty : ",
+                  style: TextStyle(color: Colors.white54, fontSize: 14),
                 ),
-              );
-            },
-          ),
+                const Text(
+                  "Easy",
+                  style: TextStyle(color: Colors.pinkAccent, fontSize: 14),
+                ),
+                const Spacer(),
+              ],
+            ),
+            const SizedBox(height: 18),
 
-          SizedBox(height: 50.h),
-
-          Row(
-            spacing: 10.0,
-            children: [
-              Expanded(
-                child: CustomGradientButton(
-                  text: 'Video Solution',
-                  onPressed: () {},
-                  customDecoration: widget.type == "Start Exam"
-                      ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: Colors.black.withOpacity(0.2),
-                      ),
-                      color: Colors.grey.withOpacity(0.3))
-                      : null,
-                  textStyle: widget.type == "Start Exam"
-                      ? AppTypography.inter14Bold
-                      .copyWith(color: Colors.white.withOpacity(0.2))
-                      : null,
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.pinkColor3.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Text(
+                currentMcq.mcQuestion.replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  height: 1.5,
                 ),
               ),
-              Expanded(
-                child: CustomGradientButton(
-                  text: 'Text Solution',
-                  onPressed: () {
-                    _showSolutionDialog(currentMcq);
-                  },
-                  customDecoration: widget.type == "Start Exam"
-                      ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: Colors.black.withOpacity(0.2),
-                      ),
-                      color: Colors.grey.withOpacity(0.3))
-                      : null,
-                  textStyle: widget.type == "Start Exam"
-                      ? AppTypography.inter14Bold
-                      .copyWith(color: Colors.white.withOpacity(0.2))
-                      : null,
+            ),
+
+            if (currentMcq.mcDescription.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  currentMcq.mcDescription.replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
                 ),
               ),
             ],
-          ),
 
-          SizedBox(height: 20.h),
+            const SizedBox(height: 20),
 
-          Row(
-            spacing: 10.0,
-            children: [
-              Expanded(
-                child: CustomGradientButton(
-                  text: 'Previous',
-                  onPressed:
-                  _currentQuestionIndex > 0 ? _goToPreviousQuestion : null,
-                  customDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
+            StreamBuilder<String?>(
+              stream: selectedOption.stream,
+              builder: (context, snapshot) {
+                final selected = snapshot.data;
+                final options = currentMcq.options;
+                final optionLabels = ['A', 'B', 'C', 'D'];
+
+                return Column(
+                  children: List.generate(
+                    options.length,
+                        (index) => _optionTile(
+                      optionLabels[index],
+                      options[index].replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                      selected,
                     ),
-                    color: const Color(0xFF464375),
+                  ),
+                );
+              },
+            ),
+
+            SizedBox(height: 50.h),
+
+            Row(
+              spacing: 10.0,
+              children: [
+                Expanded(
+                  child: CustomGradientButton(
+                    text: 'Video Solution',
+                    onPressed: () {},
+                    customDecoration: widget.type == "Start Exam"
+                        ? BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: Colors.black.withOpacity(0.2),
+                        ),
+                        color: Colors.grey.withOpacity(0.3))
+                        : null,
+                    textStyle: widget.type == "Start Exam"
+                        ? AppTypography.inter14Bold
+                        .copyWith(color: Colors.white.withOpacity(0.2))
+                        : null,
                   ),
                 ),
-              ),
-              Expanded(
-                child: CustomGradientButton(
-                  text: _currentQuestionIndex < totalQuestions - 1
-                      ? 'Next'
-                      : 'Submit',
-                  onPressed: _goToNextQuestion,
+                Expanded(
+                  child: CustomGradientButton(
+                    text: 'Text Solution',
+                    onPressed: () {
+                      _showSolutionDialog(currentMcq);
+                    },
+                    customDecoration: widget.type == "Start Exam"
+                        ? BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color: Colors.black.withOpacity(0.2),
+                        ),
+                        color: Colors.grey.withOpacity(0.3))
+                        : null,
+                    textStyle: widget.type == "Start Exam"
+                        ? AppTypography.inter14Bold
+                        .copyWith(color: Colors.white.withOpacity(0.2))
+                        : null,
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          SizedBox(height: 50.h),
-        ],
+            SizedBox(height: 20.h),
+
+            Row(
+              spacing: 10.0,
+              children: [
+                Expanded(
+                  child: CustomGradientButton(
+                    text: 'Previous',
+                    onPressed:
+                    _currentQuestionIndex > 0 ? _goToPreviousQuestion : null,
+                    customDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                      ),
+                      color: const Color(0xFF464375),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: CustomGradientButton(
+                    text: _currentQuestionIndex < totalQuestions - 1
+                        ? 'Next'
+                        : 'Submit',
+                    onPressed: _goToNextQuestion,
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 50.h),
+          ],
+        ),
       ),
     );
   }

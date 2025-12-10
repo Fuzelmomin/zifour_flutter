@@ -13,6 +13,7 @@ class McqBookmarkListBloc
       : _repository = repository ?? McqBookmarkListRepository(),
         super(McqBookmarkListState.initial()) {
     on<McqBookmarkListRequested>(_onRequested);
+    on<McqBookmarkItemRemoved>(_onItemRemoved);
   }
 
   final McqBookmarkListRepository _repository;
@@ -40,6 +41,29 @@ class McqBookmarkListBloc
         errorMessage: response.errorMsg ?? 'Unable to load bookmarks.',
       ));
     }
+  }
+
+  void _onItemRemoved(
+    McqBookmarkItemRemoved event,
+    Emitter<McqBookmarkListState> emit,
+  ) {
+    if (state.data == null) return;
+
+    // Remove item from list locally
+    final updatedList = state.data!.mcqBookmarkList
+        .where((item) => item.mcqId != event.mcqId)
+        .toList();
+
+    final updatedData = McqBookmarkListResponse(
+      status: state.data!.status,
+      message: state.data!.message,
+      mcqBookmarkList: updatedList,
+    );
+
+    emit(state.copyWith(
+      status: McqBookmarkListStatus.success,
+      data: updatedData,
+    ));
   }
 }
 

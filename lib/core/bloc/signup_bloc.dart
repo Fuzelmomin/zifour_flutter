@@ -557,7 +557,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         ));
         return;
       }
-      if (data.imageFile == null) {
+      
+      // Marksheet is mandatory only for Female gender
+      final bool isFemale = data.gender == 'Female';
+      if (isFemale && data.imageFile == null) {
         emit(SignupError('Please upload marksheet image'));
         // Restore SignupLoaded state to preserve selections
         emit(SignupLoaded(
@@ -568,44 +571,47 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         return;
       }
 
-      // Step 1: Upload Image
-      emit(ImageUploading(
-        data: data,
-        standards: currentState.standards,
-        exams: currentState.exams,
-      ));
-      
       try {
-
         final medId = await LanguagePreference.getSelectedMediumId();
+        String imageUrl = '';
 
-        final imageResponse = await _signupRepository.uploadImage(
-          imageFile: data.imageFile!,
-        );
-
-        if (imageResponse.status != ApiStatus.success || 
-            imageResponse.data == null || 
-            imageResponse.data!.imageurl == null) {
-          emit(SignupError(imageResponse.errorMsg ?? 'Failed to upload image'));
-          // Restore SignupLoaded state with standards/exams preserved
-          emit(SignupLoaded(
+        // Upload image only for Female gender
+        if (isFemale && data.imageFile != null) {
+          // Step 1: Upload Image
+          emit(ImageUploading(
             data: data,
             standards: currentState.standards,
             exams: currentState.exams,
           ));
-          return;
+
+          final imageResponse = await _signupRepository.uploadImage(
+            imageFile: data.imageFile!,
+          );
+
+          if (imageResponse.status != ApiStatus.success || 
+              imageResponse.data == null || 
+              imageResponse.data!.imageurl == null) {
+            emit(SignupError(imageResponse.errorMsg ?? 'Failed to upload image'));
+            // Restore SignupLoaded state with standards/exams preserved
+            emit(SignupLoaded(
+              data: data,
+              standards: currentState.standards,
+              exams: currentState.exams,
+            ));
+            return;
+          }
+
+          imageUrl = imageResponse.data!.imageurl!;
+          
+          // Update state with imageUrl
+          emit(SignupLoaded(
+            data: data.copyWith(imageUrl: imageUrl),
+            standards: currentState.standards,
+            exams: currentState.exams,
+          ));
         }
 
-        final imageUrl = imageResponse.data!.imageurl!;
-        
-        // Update state with imageUrl
-        emit(SignupLoaded(
-          data: data.copyWith(imageUrl: imageUrl),
-          standards: currentState.standards,
-          exams: currentState.exams,
-        ));
-
-        // Step 2: Send OTP
+        // Step 2: Send OTP (with imageUrl for Female, empty string for others)
         emit(OtpSending(
           data: data.copyWith(imageUrl: imageUrl),
           standards: currentState.standards,

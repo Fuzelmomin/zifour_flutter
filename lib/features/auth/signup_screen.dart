@@ -211,32 +211,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   // Course Selection
                                   _buildCourseSelection(state),
-                                  SizedBox(height: 20.h),
-
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: BlocBuilder<SignupBloc, SignupState>(
-                                      builder: (context, state) {
-                                        File? imageFile;
-                                        if (state is SignupLoaded) {
-                                          imageFile = state.data.imageFile;
-                                        } else if (state is OtpSent) {
-                                          imageFile = state.imageFile;
-                                        } else if (state is SignupMobileVerified) {
-                                          imageFile = state.imageFile;
-                                        }
-                                        
-                                        return UploadDocBoxWidget(
-                                          title: '${AppLocalizations.of(context)?.uploadMarksheet}',
-                                          itemClick: () {
-                                            _showImageSourceDialog(context, state);
-                                          },
-                                          // Show image preview if selected
-                                          imageFile: imageFile,
-                                        );
-                                      },
-                                    ),
-                                  )
+                                  
+                                  // Marksheet Upload - Only visible for Female gender
+                                  _buildMarksheetUploadSection(state),
                                 ],
                               ),
                             ),
@@ -641,6 +618,52 @@ class _SignupScreenState extends State<SignupScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMarksheetUploadSection(SignupState state) {
+    // Get gender from state
+    String selectedGender = 'Male';
+    if (state is SignupLoaded) {
+      selectedGender = state.data.gender;
+    } else if (state is OtpSent) {
+      selectedGender = state.gender ?? 'Male';
+    } else if (state is SignupMobileVerified) {
+      selectedGender = 'Male'; // Default, but at this point gender was already used
+    }
+
+    // Only show marksheet upload for Female gender
+    if (selectedGender != 'Female') {
+      return const SizedBox.shrink();
+    }
+
+    return Column(
+      children: [
+        SizedBox(height: 20.h),
+        SizedBox(
+          width: double.infinity,
+          child: BlocBuilder<SignupBloc, SignupState>(
+            builder: (context, state) {
+              File? imageFile;
+              if (state is SignupLoaded) {
+                imageFile = state.data.imageFile;
+              } else if (state is OtpSent) {
+                imageFile = state.imageFile;
+              } else if (state is SignupMobileVerified) {
+                imageFile = state.imageFile;
+              }
+
+              return UploadDocBoxWidget(
+                title: '${AppLocalizations.of(context)?.uploadMarksheet}',
+                itemClick: () {
+                  _showImageSourceDialog(context, state);
+                },
+                imageFile: imageFile,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

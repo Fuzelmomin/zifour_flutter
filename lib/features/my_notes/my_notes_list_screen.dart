@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/widgets/my_notes_item.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
@@ -50,6 +51,8 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
     super.dispose();
   }
 
+  String? _deletingMcqId;
+
   void _showDeleteConfirmation(String mcqId) {
     DialogsUtils.confirmDialog(
       context,
@@ -58,6 +61,7 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
       negativeBtnName: 'Cancel',
       positiveBtnName: 'Delete',
       positiveClick: () {
+        _deletingMcqId = mcqId;
         _mcqNotesDeleteBloc.add(
           McqNotesDeleteRequested(mcqId: mcqId),
         );
@@ -83,9 +87,13 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
                 backgroundColor: AppColors.success,
               ),
             );
-            // Refresh the notes list
-            _mcqNotesListBloc.add(const McqNotesListRequested());
+            // Remove item locally from list (no API call)
+            if (_deletingMcqId != null) {
+              _mcqNotesListBloc.add(McqNotesItemRemoved(mcqId: _deletingMcqId!));
+              _deletingMcqId = null;
+            }
           } else if (deleteState.status == McqNotesDeleteStatus.failure) {
+            _deletingMcqId = null;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -187,6 +195,20 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                Lottie.network(
+                                  'https://lottie.host/b60fe9e0-8c77-4ece-b056-4d5aa54e53fa/KLlnG0PoUp.json',
+                                  width: 180.w,
+                                  height: 180.h,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.error_outline,
+                                      size: 80.sp,
+                                      color: Colors.white.withOpacity(0.3),
+                                    );
+                                  },
+                                ),
+                                SizedBox(height: 16.h),
                                 Text(
                                   state.errorMessage ?? 'Unable to load notes.',
                                   style: TextStyle(
@@ -215,12 +237,41 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
                         if (notesList.isEmpty) {
                           return SignupFieldBox(
                             child: Center(
-                              child: Text(
-                                'No notes found.',
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.7),
-                                  fontSize: 14.sp,
-                                ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Lottie.network(
+                                    'https://lottie.host/b60fe9e0-8c77-4ece-b056-4d5aa54e53fa/KLlnG0PoUp.json',
+                                    width: 200.w,
+                                    height: 200.h,
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Icon(
+                                        Icons.note_alt_outlined,
+                                        size: 80.sp,
+                                        color: Colors.white.withOpacity(0.3),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: 16.h),
+                                  Text(
+                                    'No notes found.',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.7),
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Your saved notes will appear here.',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.5),
+                                      fontSize: 12.sp,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
                             ),
                           );
