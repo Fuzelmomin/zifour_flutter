@@ -7,17 +7,15 @@ import '../../../core/api_models/api_response.dart';
 import '../../../core/api_models/api_status.dart';
 import '../../../core/utils/connectivity_helper.dart';
 import '../../../core/utils/user_preference.dart';
-import '../model/challenge_result_model.dart';
+import '../model/doubts_list_model.dart';
 
-class ChallengeResultRepository {
-  ChallengeResultRepository({DioClient? dioClient})
+class DoubtsListRepository {
+  DoubtsListRepository({DioClient? dioClient})
       : _dioClient = dioClient ?? DioClient();
 
   final DioClient _dioClient;
 
-  Future<ApiResponse<ChallengeResultResponse>> getChallengeResult({
-    required String crtChlId,
-  }) async {
+  Future<ApiResponse<DoubtsListResponse>> fetchDoubtsList() async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
       if (!isConnected) {
@@ -33,29 +31,27 @@ class ChallengeResultRepository {
         );
       }
 
-      final response = await _dioClient.getDio().post(
-        APIConstants.createChallengeResult,
+      final response = await _dioClient.getDio().get(
+        APIConstants.getDoubtsList,
         queryParameters: {
           'stu_id': user.stuId,
-          'crt_chl_id': crtChlId,
         },
       );
 
       if (response.statusCode == 200) {
         final data = response.data;
         if (data['status'] == true) {
-          final model =
-              ChallengeResultResponse.fromJson(data as Map<String, dynamic>);
-          return ApiResponse.success(data: model);
+          final doubtsListResponse =
+              DoubtsListResponse.fromJson(data as Map<String, dynamic>);
+          return ApiResponse.success(data: doubtsListResponse);
         }
         return ApiResponse.error(
-          errorMsg:
-              data['message']?.toString() ?? 'Unable to fetch challenge result.',
+          errorMsg: data['message']?.toString() ?? 'Unable to load doubts.',
         );
       }
 
       return ApiResponse.error(
-        errorMsg: 'Unable to fetch challenge result.',
+        errorMsg: 'Unable to load doubts.',
       );
     } on DioException catch (e) {
       final apiError = ApiUtils.getApiError(e);
@@ -70,3 +66,4 @@ class ChallengeResultRepository {
     }
   }
 }
+

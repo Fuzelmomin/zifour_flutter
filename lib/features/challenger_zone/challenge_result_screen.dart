@@ -200,14 +200,29 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                       ),
                     ),
                     Expanded(
+                      child: Container(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10.h),
+
+                Row(
+                  spacing: 15.w,
+                  children: [
+                    Expanded(
                       child: InfoRow(
                         title: "ATTENDED",
                         value: data.attended ?? "0",
                       ),
                     ),
+                    Expanded(
+                      child: InfoRow(
+                        title: "UNATTENDED",
+                        value: data.unattended ?? "0",
+                      ),
+                    ),
                   ],
                 ),
-
                 SizedBox(height: 10.h),
                 
                 Row(

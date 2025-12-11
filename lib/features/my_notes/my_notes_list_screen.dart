@@ -286,11 +286,9 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
                                 itemBuilder: (context, index) {
                                   final note = notesList[index];
                                   return MyNotesItem(
-                                    title: note.mcQuestion
-                                        .replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                                    title: note.mcqNotesTitle,
                                     noteType: 'Practice MCQ',
-                                    notesDes: note.mcDescription
-                                        .replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                                    notesDes: note.mcqNotesDescription,
                                     deleteClick: () {
                                       _showDeleteConfirmation(note.mcqId);
                                     },

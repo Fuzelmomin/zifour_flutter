@@ -46,6 +46,8 @@ class APIConstants {
   static const deleteMcqBookmarks = 'mcq_bookmark_delete.php';
   static const getMcqNotes = 'mcq_notes_list.php';
   static const deleteMcqNotes = 'mcq_notes_delete.php';
-  static const create_challenge_result = 'create_challenge_result.php';
+  static const createChallengeResult = 'create_challenge_result.php';
+  static const createDoubtSubmit = 'doubt_submit.php';
+  static const getDoubtsList = 'doubts_get.php';
 
 }

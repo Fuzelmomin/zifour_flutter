@@ -30,6 +30,8 @@ McqNotesListItem _$McqNotesListItemFromJson(Map<String, dynamic> json) =>
       mcqId: json['mcq_id'] as String,
       mcQuestion: json['mc_question'] as String,
       mcDescription: json['mc_description'] as String,
+      mcqNotesTitle: json['mcq_notes_title'] as String,
+      mcqNotesDescription: json['mcq_notes_description'] as String,
     );
 
 Map<String, dynamic> _$McqNotesListItemToJson(McqNotesListItem instance) =>
@@ -38,4 +40,6 @@ Map<String, dynamic> _$McqNotesListItemToJson(McqNotesListItem instance) =>
       'mcq_id': instance.mcqId,
       'mc_question': instance.mcQuestion,
       'mc_description': instance.mcDescription,
+      'mcq_notes_title': instance.mcqNotesTitle,
+      'mcq_notes_description': instance.mcqNotesDescription,
     };

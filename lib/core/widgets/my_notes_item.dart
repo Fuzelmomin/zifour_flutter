@@ -76,7 +76,7 @@ class MyNotesItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search ',
+                    notesDes ?? '',
                     style: AppTypography.inter10Medium.copyWith(
                         color: AppColors.skyColor
                     ),
