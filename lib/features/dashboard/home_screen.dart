@@ -785,7 +785,7 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 55.h,
               height: 55.h,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
               item['title'],
               style: const TextStyle(
@@ -793,18 +793,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             if (item["subtitle"] != "")
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  item["subtitle"],
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.85),
-                    fontSize: 13,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      item["subtitle"],
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.85),
+                        fontSize: 13,
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
-              )
+              ),
           ],
         ),
       ),

@@ -49,8 +49,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   String selectedFilter = "";
   final options = [
     "Add Note",
-    "Mark as Bookmark",
-    "Feedback"
+    "Mark as Bookmark"
   ];
 
   @override
@@ -516,51 +515,51 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
 
             SizedBox(height: 50.h),
 
-            Row(
-              spacing: 10.0,
-              children: [
-                Expanded(
-                  child: CustomGradientButton(
-                    text: 'Video Solution',
-                    onPressed: () {},
-                    customDecoration: widget.type == "Start Exam"
-                        ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                        color: Colors.grey.withOpacity(0.3))
-                        : null,
-                    textStyle: widget.type == "Start Exam"
-                        ? AppTypography.inter14Bold
-                        .copyWith(color: Colors.white.withOpacity(0.2))
-                        : null,
-                  ),
-                ),
-                Expanded(
-                  child: CustomGradientButton(
-                    text: 'Text Solution',
-                    onPressed: () {
-                      _showSolutionDialog(currentMcq);
-                    },
-                    customDecoration: widget.type == "Start Exam"
-                        ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                          color: Colors.black.withOpacity(0.2),
-                        ),
-                        color: Colors.grey.withOpacity(0.3))
-                        : null,
-                    textStyle: widget.type == "Start Exam"
-                        ? AppTypography.inter14Bold
-                        .copyWith(color: Colors.white.withOpacity(0.2))
-                        : null,
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 20.h),
+            // Row(
+            //   spacing: 10.0,
+            //   children: [
+            //     Expanded(
+            //       child: CustomGradientButton(
+            //         text: 'Video Solution',
+            //         onPressed: () {},
+            //         customDecoration: widget.type == "Start Exam"
+            //             ? BoxDecoration(
+            //             borderRadius: BorderRadius.circular(12.r),
+            //             border: Border.all(
+            //               color: Colors.black.withOpacity(0.2),
+            //             ),
+            //             color: Colors.grey.withOpacity(0.3))
+            //             : null,
+            //         textStyle: widget.type == "Start Exam"
+            //             ? AppTypography.inter14Bold
+            //             .copyWith(color: Colors.white.withOpacity(0.2))
+            //             : null,
+            //       ),
+            //     ),
+            //     Expanded(
+            //       child: CustomGradientButton(
+            //         text: 'Text Solution',
+            //         onPressed: () {
+            //           _showSolutionDialog(currentMcq);
+            //         },
+            //         customDecoration: widget.type == "Start Exam"
+            //             ? BoxDecoration(
+            //             borderRadius: BorderRadius.circular(12.r),
+            //             border: Border.all(
+            //               color: Colors.black.withOpacity(0.2),
+            //             ),
+            //             color: Colors.grey.withOpacity(0.3))
+            //             : null,
+            //         textStyle: widget.type == "Start Exam"
+            //             ? AppTypography.inter14Bold
+            //             .copyWith(color: Colors.white.withOpacity(0.2))
+            //             : null,
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            //
+            // SizedBox(height: 20.h),
 
             Row(
               spacing: 10.0,

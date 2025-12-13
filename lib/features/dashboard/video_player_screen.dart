@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -31,7 +33,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         autoPlay: true,
         mute: false,
         loop: false,
-        enableCaption: true,
+        enableCaption: false,
       ),
     );
   }
@@ -45,14 +47,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.darkBlue,
+      backgroundColor: Colors.transparent,
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            CustomAppBar(
-              isBack: true,
-              title: widget.videoTitle,
-            ),
             Expanded(
               child: YoutubePlayerBuilder(
                 player: YoutubePlayer(
@@ -74,6 +72,30 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 },
               ),
             ),
+            Positioned(
+              top: 20.h,
+              left: 10.w,
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  width: 40.h,
+                  height: 40.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black.withOpacity(0.5)
+                  ),
+                  child: Center(
+                    child: SvgPicture.asset(
+                      AssetsPath.svgBack,
+                      width: 32.w,
+                      height: 32.h,
+                    ),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

@@ -160,7 +160,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
                                   );
                                 },
                                 separatorBuilder: (context, index){
-                                  return SizedBox(height: 10.h,);
+                                  return SizedBox(height: 20.h,);
                                 },
                               ),
                             );
@@ -183,7 +183,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
   Widget _buildShimmerLoading() {
     return SizedBox(
       height: 200.h,
-      child: ListView.builder(
+      child: ListView.separated(
         scrollDirection: Axis.vertical,
         physics: const BouncingScrollPhysics(),
         itemCount: 3,
@@ -201,6 +201,9 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
               ),
             ),
           );
+        },
+        separatorBuilder: (context, index){
+          return SizedBox(height: 20.h,);
         },
       ),
     );

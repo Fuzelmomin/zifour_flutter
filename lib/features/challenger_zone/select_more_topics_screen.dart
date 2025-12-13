@@ -27,6 +27,7 @@ class SelectMoreTopicsScreen extends StatefulWidget {
     required this.subId,
     required this.chapterIds,
     required this.challengeType,
+    this.topicIds = const [],
   });
 
   /// Selected subject id (sub_id) from previous screen
@@ -35,6 +36,9 @@ class SelectMoreTopicsScreen extends StatefulWidget {
 
   /// Selected chapter ids (chp_id) from previous screen
   final List<String> chapterIds;
+
+  /// Pre-selected topic ids from previous screen
+  final List<String> topicIds;
 
   @override
   State<SelectMoreTopicsScreen> createState() => _SelectMoreTopicsScreenState();
@@ -53,6 +57,11 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
     super.initState();
     _topicBloc = TopicBloc();
     _createChallengeBloc = CreateChallengeBloc();
+
+    // Pre-select topics if provided
+    if (widget.topicIds.isNotEmpty) {
+      _selectedTopicIds.add(widget.topicIds);
+    }
 
     // Fetch topics for selected chapters when screen opens
     WidgetsBinding.instance.addPostFrameCallback((_) {

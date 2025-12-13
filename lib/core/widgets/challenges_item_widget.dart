@@ -11,13 +11,17 @@ import '../../l10n/app_localizations.dart';
 class ChallengesItemWidget extends StatelessWidget {
   final ChallengeListItem? challenge;
   final String? btnName;
+  final String? btnName2;
   final Function() onTap;
+  final Function() onEditTap;
 
   ChallengesItemWidget({
     super.key,
     this.challenge,
     this.btnName,
+    this.btnName2,
     required this.onTap,
+    required this.onEditTap,
   });
 
   @override
@@ -71,11 +75,29 @@ class ChallengesItemWidget extends StatelessWidget {
             ),
           ],
           SizedBox(height: 12.h,),
-          CustomGradientArrowButton(
-            text: btnName ?? '',
-            onPressed: () {
-              onTap();
-            },
+          Row(
+            spacing: 10.0,
+            children: [
+              Expanded(
+                child: CustomGradientArrowButton(
+                  text: btnName ?? '',
+                  onPressed: () {
+                    onTap();
+                  },
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                ),
+              ),
+
+              challenge?.erFlag == "1" ? Expanded(
+                child: CustomGradientArrowButton(
+                  text: btnName2 ?? '',
+                  onPressed: () {
+                    onEditTap();
+                  },
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                ),
+              ) : Container(width: 0.0, height: 0.0,),
+            ],
           ),
         ],
       ),

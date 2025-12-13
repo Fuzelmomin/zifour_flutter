@@ -10,6 +10,7 @@ import 'package:zifour_sourcecode/core/widgets/challenge_ready_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/chapter_selection_box.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_loading_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
+import 'package:zifour_sourcecode/features/challenger_zone/challenge_ready_screen.dart';
 import 'package:zifour_sourcecode/features/practics_mcq/question_mcq_screen.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -24,9 +25,11 @@ import 'challenge_result_screen.dart';
 
 class ChallengesListScreen extends StatefulWidget {
   String challengeType;
+  String from;
   ChallengesListScreen({
     super.key,
-    required this.challengeType
+    required this.challengeType,
+    required this.from,
   });
 
   @override
@@ -171,6 +174,15 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
               });
             }
 
+          },
+          btnName2: "Edit Challenge",
+          onEditTap: (){
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) =>
+                    ChallengeReadyScreen(
+                        crtChlId: int.parse(challenge.crtChlId),
+                        challengeType: widget.challengeType
+                    )));
           },
         );
       },

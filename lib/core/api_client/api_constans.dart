@@ -6,6 +6,7 @@ class APIConstants {
 
   // End Points
   static const mediumLanguage = 'medium.php';
+  static const getWelcomeImages = 'walkthrough.php';
   static const getStandard = 'standard.php';
   static const getExam = 'exam.php';
   static const imageUpload = 'image_upload_api.php';

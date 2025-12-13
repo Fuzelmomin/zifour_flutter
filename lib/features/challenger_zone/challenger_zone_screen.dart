@@ -98,6 +98,7 @@ class _ChallengerZoneScreenState extends State<ChallengerZoneScreen> {
                           context,
                           MaterialPageRoute(builder: (context) => ChallengesListScreen(
                             challengeType: "1",
+                            from: "zone",
                           )),
                         );
                       },

@@ -71,7 +71,7 @@ class MentorItem extends StatelessWidget {
               ),
               CustomGradientArrowButton(
                 width: 100.w,
-                height: 45.h,
+                height: 40.h,
                 text: 'VIEW',
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 icon: Image.asset(

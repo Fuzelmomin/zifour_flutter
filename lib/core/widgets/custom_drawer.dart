@@ -28,6 +28,26 @@ import '../../l10n/app_localizations.dart';
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
 
+  void _closeDrawerAndPush(BuildContext context, WidgetBuilder builder) {
+    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: builder));
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    // Capture NavigatorState before `await` to avoid looking up ancestors
+    // after the widget tree is already disposed.
+    final navigator = Navigator.of(context);
+
+    final pref = await SharedPreferences.getInstance();
+    await pref.clear();
+
+    if (!navigator.mounted) return;
+    navigator.pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => LoginScreen()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -111,81 +131,37 @@ class CustomDrawer extends StatelessWidget {
                 child: ListView(
                   children: [
                     _drawerItem(AssetsPath.svgUser, "My Profile", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => ProfileScreen());
                     }),
                     _drawerItem(AssetsPath.svgEdit, "Change Course", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ChangeCourseScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => const ChangeCourseScreen());
                     }),
                     _drawerItem(AssetsPath.svgCalendar, "Zifour Calendar", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const ZifourCalenderScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => const ZifourCalenderScreen());
                     }),
                     _drawerItem(AssetsPath.svgBookmark, "Bookmarked Question", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const BookmarkedListScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => const BookmarkedListScreen());
                     }),
                     _drawerItem(AssetsPath.svgHelpCircle, "My Doubts", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AskDoubtsScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => AskDoubtsScreen());
                     }),
                     _drawerItem(AssetsPath.svgNote, "My Notes", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyNotesListScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => MyNotesListScreen());
                     }),
                     _drawerItem(AssetsPath.svgBarChart, "My Performance", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyPerformanceScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => MyPerformanceScreen());
                     }),
                     _drawerItem(AssetsPath.svgStar, "Feedback", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const GiveFeedbackScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => const GiveFeedbackScreen());
                     }),
                     _drawerItem(AssetsPath.svgHelpCircle, "Help/Support", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HelpSupportScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => const HelpSupportScreen());
                     }),
                     _drawerItem(AssetsPath.svgRefresh, "Reset Password", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => ResetPasswordScreen());
                     }),
                     _drawerItem(AssetsPath.svgPlayCircle, "Multimedia Library", (){
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MultimediaLibraryScreen()),
-                      );
+                      _closeDrawerAndPush(context, (_) => MultimediaLibraryScreen());
                     }),
                     _drawerItem(AssetsPath.svgLogout, "Logout", (){
                       Navigator.pop(context);
@@ -195,13 +171,11 @@ class CustomDrawer extends StatelessWidget {
                         message: '${AppLocalizations.of(context)?.areYouWantLogout}',
                         negativeBtnName: '${AppLocalizations.of(context)?.no}',
                         positiveBtnName: '${AppLocalizations.of(context)?.yes}',
-                        positiveClick: (){
-                          Navigator.pop(context, false);
+                        positiveClick: () async{
+                          await _logout(context);
                         },
                         negativeClick: () async{
-                            final pref = await SharedPreferences.getInstance();
-                            pref.clear();
-                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()), (route) => false,);
+                          Navigator.pop(context, false);
                         }
                       );
                     }),

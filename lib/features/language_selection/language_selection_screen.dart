@@ -11,6 +11,7 @@ import '../../core/widgets/custom_loading_widget.dart';
 import '../../core/api_models/medium_model.dart';
 import '../../core/presentation/pages/no_internet_screen.dart';
 import '../welcome/welcome_screen.dart';
+import '../welcome/bloc/walkthrough_bloc.dart';
 import '../../l10n/app_localizations.dart';
 
 class LanguageSelectionScreen extends StatefulWidget {
@@ -233,7 +234,12 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                       // Navigate to welcome screen
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (context) => WalkthroughBloc(),
+                            child: const WelcomeScreen(),
+                          ),
+                        ),
                       );
                     },
                   ),

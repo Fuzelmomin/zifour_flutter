@@ -93,12 +93,12 @@ class MentorVideosItem extends StatelessWidget {
                 // ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 15),
             Text(
               videoName ?? '',
               style: AppTypography.inter14SemiBold,
             ),
-            // const SizedBox(height: 3),
+            const SizedBox(height: 10),
             // Text(
             //   item['desc'] ?? '',
             //   style: AppTypography.inter12Regular.copyWith(

@@ -21,6 +21,11 @@ abstract class WelcomeEvent {}
 
 class LoadWelcomeContent extends WelcomeEvent {}
 
+class LoadWelcomeContentWithData extends WelcomeEvent {
+  final List<WelcomeContent> content;
+  LoadWelcomeContentWithData(this.content);
+}
+
 class NextWelcomeScreen extends WelcomeEvent {}
 
 class PreviousWelcomeScreen extends WelcomeEvent {}
@@ -52,12 +57,14 @@ class WelcomeLoaded extends WelcomeState {
 class WelcomeChanged extends WelcomeState {
   final int newIndex;
   final WelcomeContent currentContent;
+  final List<WelcomeContent> content;
   final bool canGoNext;
   final bool canGoPrevious;
 
   WelcomeChanged({
     required this.newIndex,
     required this.currentContent,
+    required this.content,
     required this.canGoNext,
     required this.canGoPrevious,
   });
@@ -67,6 +74,7 @@ class WelcomeChanged extends WelcomeState {
 class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
   WelcomeBloc() : super(WelcomeInitial()) {
     on<LoadWelcomeContent>(_onLoadWelcomeContent);
+    on<LoadWelcomeContentWithData>(_onLoadWelcomeContentWithData);
     on<NextWelcomeScreen>(_onNextWelcomeScreen);
     on<PreviousWelcomeScreen>(_onPreviousWelcomeScreen);
     on<GoToWelcomeScreen>(_onGoToWelcomeScreen);
@@ -82,70 +90,93 @@ class WelcomeBloc extends Bloc<WelcomeEvent, WelcomeState> {
     ));
   }
 
+  void _onLoadWelcomeContentWithData(
+    LoadWelcomeContentWithData event,
+    Emitter<WelcomeState> emit,
+  ) {
+    final content = event.content.isNotEmpty ? event.content : _getWelcomeContent();
+    emit(WelcomeLoaded(
+      content: content,
+      currentIndex: 0,
+      canGoNext: content.length > 1,
+      canGoPrevious: false,
+    ));
+  }
+
   void _onNextWelcomeScreen(NextWelcomeScreen event, Emitter<WelcomeState> emit) {
+    List<WelcomeContent> content;
+    int currentIndex;
+    
     if (state is WelcomeLoaded) {
       final currentState = state as WelcomeLoaded;
-      final nextIndex = currentState.currentIndex + 1;
-      
-      if (nextIndex < currentState.content.length) {
-        emit(WelcomeChanged(
-          newIndex: nextIndex,
-          currentContent: currentState.content[nextIndex],
-          canGoNext: nextIndex < currentState.content.length - 1,
-          canGoPrevious: nextIndex > 0,
-        ));
-      }
+      content = currentState.content;
+      currentIndex = currentState.currentIndex;
     } else if (state is WelcomeChanged) {
       final currentState = state as WelcomeChanged;
-      final content = _getWelcomeContent();
-      final nextIndex = currentState.newIndex + 1;
-      
-      if (nextIndex < content.length) {
-        emit(WelcomeChanged(
-          newIndex: nextIndex,
-          currentContent: content[nextIndex],
-          canGoNext: nextIndex < content.length - 1,
-          canGoPrevious: nextIndex > 0,
-        ));
-      }
+      content = currentState.content;
+      currentIndex = currentState.newIndex;
+    } else {
+      content = _getWelcomeContent();
+      currentIndex = 0;
+    }
+    
+    final nextIndex = currentIndex + 1;
+    if (nextIndex < content.length) {
+      emit(WelcomeChanged(
+        newIndex: nextIndex,
+        currentContent: content[nextIndex],
+        content: content,
+        canGoNext: nextIndex < content.length - 1,
+        canGoPrevious: nextIndex > 0,
+      ));
     }
   }
 
   void _onPreviousWelcomeScreen(PreviousWelcomeScreen event, Emitter<WelcomeState> emit) {
+    List<WelcomeContent> content;
+    int currentIndex;
+    
     if (state is WelcomeLoaded) {
       final currentState = state as WelcomeLoaded;
-      final prevIndex = currentState.currentIndex - 1;
-      
-      if (prevIndex >= 0) {
-        emit(WelcomeChanged(
-          newIndex: prevIndex,
-          currentContent: currentState.content[prevIndex],
-          canGoNext: prevIndex < currentState.content.length - 1,
-          canGoPrevious: prevIndex > 0,
-        ));
-      }
+      content = currentState.content;
+      currentIndex = currentState.currentIndex;
     } else if (state is WelcomeChanged) {
       final currentState = state as WelcomeChanged;
-      final content = _getWelcomeContent();
-      final prevIndex = currentState.newIndex - 1;
-      
-      if (prevIndex >= 0) {
-        emit(WelcomeChanged(
-          newIndex: prevIndex,
-          currentContent: content[prevIndex],
-          canGoNext: prevIndex < content.length - 1,
-          canGoPrevious: prevIndex > 0,
-        ));
-      }
+      content = currentState.content;
+      currentIndex = currentState.newIndex;
+    } else {
+      content = _getWelcomeContent();
+      currentIndex = 0;
+    }
+    
+    final prevIndex = currentIndex - 1;
+    if (prevIndex >= 0) {
+      emit(WelcomeChanged(
+        newIndex: prevIndex,
+        currentContent: content[prevIndex],
+        content: content,
+        canGoNext: prevIndex < content.length - 1,
+        canGoPrevious: prevIndex > 0,
+      ));
     }
   }
 
   void _onGoToWelcomeScreen(GoToWelcomeScreen event, Emitter<WelcomeState> emit) {
-    final content = _getWelcomeContent();
+    List<WelcomeContent> content;
+    
+    if (state is WelcomeLoaded) {
+      content = (state as WelcomeLoaded).content;
+    } else if (state is WelcomeChanged) {
+      content = (state as WelcomeChanged).content;
+    } else {
+      content = _getWelcomeContent();
+    }
+    
     if (event.index >= 0 && event.index < content.length) {
       emit(WelcomeChanged(
         newIndex: event.index,
         currentContent: content[event.index],
+        content: content,
         canGoNext: event.index < content.length - 1,
         canGoPrevious: event.index > 0,
       ));
