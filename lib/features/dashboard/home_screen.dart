@@ -683,7 +683,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Expanded(
                 flex: 1,
-                child: _widgetOption(menuItems[1], 1),
+                child: _widgetOption(
+                    menuItems[1],
+                    1,
+                ),
               ),
             ],
           ),
@@ -737,22 +740,40 @@ class _HomeScreenState extends State<HomeScreen> {
         if(index == 0){
 
         }else if(index == 1){
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LiveClassScreen()),
+          );
         }else if(index == 2){
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LearningCourseScreen()),
+          );
         }else if(index == 3){
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PracticeSubjectScreen()),
+          );
         }else if(index == 4){
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ChallengerZoneScreen()),
           );
         }else if(index == 5){
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AllIndiaTestSeriesScreen()),
+          );
         }else if(index == 6){
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AskDoubtsScreen()),
+          );
         }else if(index == 7){
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AiBasedPerformanceScreen()),
+          );
         }
       },
       child: Container(

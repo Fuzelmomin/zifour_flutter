@@ -181,7 +181,8 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
                 MaterialPageRoute(builder: (context) =>
                     ChallengeReadyScreen(
                         crtChlId: int.parse(challenge.crtChlId),
-                        challengeType: widget.challengeType
+                        challengeType: widget.challengeType,
+                      from: "edit",
                     )));
           },
         );

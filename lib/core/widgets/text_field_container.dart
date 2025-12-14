@@ -124,6 +124,7 @@ class CustomTextField extends StatefulWidget {
   final bool? isMessageTextField;
   final double? textFieldHeight;
   final bool? enabled;
+  final bool? readOnly;
 
   const CustomTextField({
     super.key,
@@ -141,6 +142,7 @@ class CustomTextField extends StatefulWidget {
     this.isMessageTextField,
     this.textFieldHeight,
     this.enabled,
+    this.readOnly,
   });
 
   @override
@@ -167,6 +169,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       child: TextField(
         controller: widget.editingController,
         textInputAction: widget.keyboardAction ?? TextInputAction.next,
+        readOnly: widget.readOnly ?? false,
         keyboardType: widget.type == 'phone'
             ? TextInputType.phone
             : widget.type == 'email'

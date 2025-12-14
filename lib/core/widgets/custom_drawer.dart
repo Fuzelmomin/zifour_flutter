@@ -34,18 +34,16 @@ class CustomDrawer extends StatelessWidget {
   }
 
   Future<void> _logout(BuildContext context) async {
-    // Capture NavigatorState before `await` to avoid looking up ancestors
-    // after the widget tree is already disposed.
-    final navigator = Navigator.of(context);
 
+    // Clear SharedPreferences
     final pref = await SharedPreferences.getInstance();
     await pref.clear();
 
-    if (!navigator.mounted) return;
-    navigator.pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => LoginScreen()),
-      (route) => false,
-    );
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LoginScreen()),
+        (route) => false,);
   }
 
   @override
@@ -164,7 +162,7 @@ class CustomDrawer extends StatelessWidget {
                       _closeDrawerAndPush(context, (_) => MultimediaLibraryScreen());
                     }),
                     _drawerItem(AssetsPath.svgLogout, "Logout", (){
-                      Navigator.pop(context);
+                      //Navigator.pop(context);
                       DialogsUtils.confirmDialog(
                           context,
                         title: '${AppLocalizations.of(context)?.logout}?',
@@ -173,6 +171,7 @@ class CustomDrawer extends StatelessWidget {
                         positiveBtnName: '${AppLocalizations.of(context)?.yes}',
                         positiveClick: () async{
                           await _logout(context);
+
                         },
                         negativeClick: () async{
                           Navigator.pop(context, false);

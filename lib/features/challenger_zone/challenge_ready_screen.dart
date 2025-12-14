@@ -33,11 +33,13 @@ class ChallengeReadyScreen extends StatefulWidget {
     super.key,
     required this.crtChlId,
     required this.challengeType,
+    required this.from,
   });
 
   /// Created challenge id from previous API (create_challenge)
   final int crtChlId;
   String challengeType;
+  String from;
 
   @override
   State<ChallengeReadyScreen> createState() => _ChallengeReadyScreenState();
@@ -63,6 +65,9 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
   @override
   void initState() {
     super.initState();
+    if(widget.from == "edit"){
+      isEdit.add(true);
+    }
     _detailsBloc = ChallengeDetailsBloc();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -165,15 +170,25 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
       child: BlocListener<UpdateChallengeBloc, UpdateChallengeState>(
         listener: (context, state) {
           if (state.status == UpdateChallengeStatus.success) {
-            isEdit.add(false);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.data?.message ?? 'Challenge updated successfully'),
                 backgroundColor: AppColors.success,
               ),
             );
-            // Refresh challenge details
-            _detailsBloc.add(ChallengeDetailsRequested(crtChlId: widget.crtChlId));
+            if(widget.from == "edit"){
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) =>
+                      ChallengesListScreen(
+                        from: "",
+                        challengeType: widget.challengeType,
+                      )));
+            } else{
+              isEdit.add(false);
+              // Refresh challenge details
+              _detailsBloc.add(ChallengeDetailsRequested(crtChlId: widget.crtChlId));
+            }
+
           } else if (state.status == UpdateChallengeStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

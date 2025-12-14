@@ -50,5 +50,9 @@ class APIConstants {
   static const createChallengeResult = 'create_challenge_result.php';
   static const createDoubtSubmit = 'doubt_submit.php';
   static const getDoubtsList = 'doubts_get.php';
+  static const getLectures = 'lectures.php';
+  static const addLectureReminder = 'lecture_reminder.php';
+  static const lectureView = 'lecture_view.php';
+  static const changeCourse = 'change_course.php';
 
 }

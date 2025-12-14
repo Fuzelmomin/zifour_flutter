@@ -252,6 +252,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   hint:
                                       '${AppLocalizations.of(context)?.mobileNumber.toUpperCase()}',
                                   type: "phone",
+                                  readOnly: true,
                                   maxLength: 10,
                                   editingController: _mobileController,
                                   textFieldBgColor: Colors.black.withOpacity(0.1),

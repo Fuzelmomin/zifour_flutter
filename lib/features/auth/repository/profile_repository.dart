@@ -63,6 +63,7 @@ class ProfileRepository {
     required String stuStdId,
     required String stuExmId,
     required String stuMedId,
+    required String stuGender,
   }) async {
     try {
       final response = await _dioClient.getDio().post(
@@ -77,6 +78,7 @@ class ProfileRepository {
           'stu_std_id': stuStdId,
           'stu_exm_id': stuExmId,
           'stu_med_id': stuMedId,
+          'stu_gender': stuGender,
         },
       );
 

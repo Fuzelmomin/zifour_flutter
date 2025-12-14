@@ -98,6 +98,7 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
                 builder: (context) => ChallengeReadyScreen(
                   crtChlId: created.crtChlId,
                   challengeType: widget.challengeType,
+                  from: "select_topic"
                 ),
               ),
             );

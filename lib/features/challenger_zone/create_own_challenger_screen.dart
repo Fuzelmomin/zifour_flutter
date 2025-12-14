@@ -101,6 +101,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                 builder: (context) => ChallengeReadyScreen(
                   crtChlId: created.crtChlId,
                   challengeType: "1",
+                  from: "create_own",
                 ),
               ),
             );

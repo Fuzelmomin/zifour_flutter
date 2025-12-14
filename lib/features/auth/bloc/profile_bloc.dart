@@ -479,6 +479,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           stuStdId: currentState.selectedStdId,
           stuExmId: currentState.selectedExmId,
           stuMedId: currentState.selectedMedId,
+          stuGender: currentState.selectedGender.toString() ?? "",
         );
 
         if (response.status == ApiStatus.success && response.data != null) {

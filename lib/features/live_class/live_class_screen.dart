@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zifour_sourcecode/core/api_models/subject_model.dart';
+import 'package:zifour_sourcecode/core/services/subject_service.dart';
 import 'package:zifour_sourcecode/core/widgets/course_item.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/live_class/live_class_details_screen.dart';
@@ -24,8 +26,11 @@ class LiveClassScreen extends StatefulWidget {
 
 class _LiveClassScreenState extends State<LiveClassScreen> {
   int selectedTab = 0;
+  final SubjectService _subjectService = SubjectService();
+
   @override
   Widget build(BuildContext context) {
+    final subjects = _subjectService.subjects;
 
     return Scaffold(
       body: Container(
@@ -90,45 +95,74 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
 
                     const SizedBox(height: 15),
                     /// Class Cards List
-                    selectedTab == 0 ? Expanded(
-                      child: ListView(
-                        children: [
-                          _classCard("Physics", "Laws of Motion", "11:30 AM", Icons.science, null, "Join Now!", (){}),
-                          const SizedBox(height: 14),
-                          _classCard("Biology", "Photosynthesis", "9:30 AM", Icons.biotech, null, "Join Now!", (){}),
-                          const SizedBox(height: 14),
-                          _classCard("Chemistry", "Laws of Motion", "12:30 AM", Icons.local_fire_department, null, "Join Now!", (){}),
-                        ],
-                      ),
-                    ) : Expanded(
-                      child: ListView(
-                        children: [
-                          _classCard("Physics", "Laws of Motion", "11:30 AM", Icons.science, "15th July 2025", "Remind Me", (){
-                            showDialog(
-                              context: context,
-                              barrierDismissible: true, // Optional tap outside close
-                              builder: (_) => const CreateReminderDialog(),
-                            );
-                          }),
-                          const SizedBox(height: 14),
-                          _classCard("Biology", "Photosynthesis", "9:30 AM", Icons.biotech, "17th July 2025", "Remind Me", (){
-                            showDialog(
-                              context: context,
-                              barrierDismissible: true, // Optional tap outside close
-                              builder: (_) => const CreateReminderDialog(),
-                            );
-                          }),
-                          const SizedBox(height: 14),
-                          _classCard("Chemistry", "Laws of Motion", "12:30 AM", Icons.local_fire_department, "20th July 2025", "Remind Me", (){
-                            showDialog(
-                              context: context,
-                              barrierDismissible: true, // Optional tap outside close
-                              builder: (_) => const CreateReminderDialog(),
-                            );
-                          }),
-                        ],
-                      ),
-                    )
+                    subjects.isEmpty
+                        ? Expanded(
+                            child: Center(
+                              child: Text(
+                                'No subjects available',
+                                style: AppTypography.inter14Regular.copyWith(
+                                  color: AppColors.white.withOpacity(0.6),
+                                ),
+                              ),
+                            ),
+                          )
+                        : selectedTab == 0
+                            ? Expanded(
+                                child: ListView.separated(
+                                  itemCount: subjects.length,
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(height: 14),
+                                  itemBuilder: (context, index) {
+                                    final subject = subjects[index];
+                                    return _classCard(
+                                      subject: subject,
+                                      subtitle: "Live Class",
+                                      time: "",
+                                      date: null,
+                                      type: "today",
+                                      btnName: "Join Now!",
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => LiveClassDetailsScreen(
+                                              subjectName: subject.name,
+                                              subId: subject.subId,
+                                              lvCls: "1",
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              )
+                            : Expanded(
+                                child: ListView.separated(
+                                  itemCount: subjects.length,
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(height: 14),
+                                  itemBuilder: (context, index) {
+                                    final subject = subjects[index];
+                                    return _classCard(
+                                      subject: subject,
+                                      subtitle: "Upcoming Class",
+                                      time: "",
+                                      date: "",
+                                      btnName: "Remind Me",
+                                      type: "upcoming",
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: true,
+                                          builder: (_) =>
+                                              const CreateReminderDialog(),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              )
                   ],
                 ),
               ),
@@ -169,57 +203,98 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
     );
   }
 
+  /// Get icon based on subject name
+  IconData _getSubjectIcon(String subjectName) {
+    final name = subjectName.toLowerCase();
+    if (name.contains('physics')) {
+      return Icons.science;
+    } else if (name.contains('biology')) {
+      return Icons.biotech;
+    } else if (name.contains('chemistry')) {
+      return Icons.local_fire_department;
+    } else if (name.contains('math') || name.contains('mathematics')) {
+      return Icons.calculate;
+    } else {
+      return Icons.book;
+    }
+  }
+
   /// Class Card UI
-  Widget _classCard(String title, String subtitle, String time, IconData icon, String? date, String btnName, Function() onTap, {Function()? itemClick}) {
+  Widget _classCard({
+    required SubjectModel subject,
+    required String subtitle,
+    required String time,
+    String? date,
+    required String btnName,
+    required String type,
+    required Function() onTap,
+  }) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LiveClassDetailsScreen()),
+          MaterialPageRoute(
+            builder: (context) => LiveClassDetailsScreen(
+              subjectName: subject.name,
+              subId: subject.subId,
+              lvCls: type == "today" ? "1" : "2",
+            ),
+          ),
         );
       },
       child: SignupFieldBox(
-
         padding: const EdgeInsets.all(18),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Container(
-                    width: 50.h,
-                    height: 50.h,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.white.withOpacity(0.1),
-                      border: Border.all(
-                        color: AppColors.white.withOpacity(0.2),
-                        width: 1.2
-                      )
+                  width: 50.h,
+                  height: 50.h,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.white.withOpacity(0.1),
+                    border: Border.all(
+                      color: AppColors.white.withOpacity(0.2),
+                      width: 1.2,
                     ),
-                    child: Center(child: Icon(icon, color: Colors.white70, size: 28))),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      _getSubjectIcon(subject.name),
+                      color: Colors.white70,
+                      size: 28,
+                    ),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                    Text(
+                      subject.name,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                     const SizedBox(height: 2),
-                    Text(subtitle,
-                        style: const TextStyle(fontSize: 13, color: Colors.white54)),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.white54,
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
-
             const SizedBox(height: 15),
-
             Container(height: 1, color: Colors.white24),
-
             const SizedBox(height: 12),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -230,37 +305,70 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.access_time, size: 18, color: AppColors.orange),
+                        Icon(
+                          Icons.access_time,
+                          size: 18,
+                          color: AppColors.orange,
+                        ),
                         const SizedBox(width: 6),
-                        Text(time, style: AppTypography.inter12SemiBold.copyWith(color: AppColors.orange)),
+                        Text(
+                          time,
+                          style: AppTypography.inter12SemiBold.copyWith(
+                            color: AppColors.orange,
+                          ),
+                        ),
                       ],
                     ),
-                    date != null ? Row(
-                      children: [
-                        Icon(Icons.calendar_month_rounded, size: 18, color: AppColors.orange),
-                        const SizedBox(width: 6),
-                        Text(date ?? '', style: AppTypography.inter12SemiBold.copyWith(color: AppColors.orange)),
-                      ],
-                    ) : Container(),
+                    date != null
+                        ? Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_month_rounded,
+                                size: 18,
+                                color: AppColors.orange,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                date,
+                                style: AppTypography.inter12SemiBold.copyWith(
+                                  color: AppColors.orange,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
                   ],
                 ),
-
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     onTap();
                   },
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                          colors: [Color(0xFFFD2D7B), Color(0xFF6B2CF5)]),
+                        colors: [Color(0xFFFD2D7B), Color(0xFF6B2CF5)],
+                      ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
                       children: [
-                        Text(btnName, style: TextStyle(color: Colors.white,fontSize: 13)),
-                        SizedBox(width: 6),
-                        Icon(Icons.arrow_forward, size: 16, color: Colors.white),
+                        Text(
+                          btnName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Icon(
+                          Icons.arrow_forward,
+                          size: 16,
+                          color: Colors.white,
+                        ),
                       ],
                     ),
                   ),
