@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/utils/user_preference.dart';
+import 'package:zifour_sourcecode/features/doubts/my_doubts_list_screen.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -767,7 +768,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }else if(index == 6){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AskDoubtsScreen()),
+            MaterialPageRoute(builder: (context) => const MyDoubtsListScreen()),
           );
         }else if(index == 7){
           Navigator.push(

@@ -298,47 +298,47 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 7.0,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 18,
-                          color: AppColors.orange,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          time,
-                          style: AppTypography.inter12SemiBold.copyWith(
-                            color: AppColors.orange,
-                          ),
-                        ),
-                      ],
-                    ),
-                    date != null
-                        ? Row(
-                            children: [
-                              Icon(
-                                Icons.calendar_month_rounded,
-                                size: 18,
-                                color: AppColors.orange,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                date,
-                                style: AppTypography.inter12SemiBold.copyWith(
-                                  color: AppColors.orange,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Container(),
-                  ],
-                ),
+                // Column(
+                //   mainAxisAlignment: MainAxisAlignment.start,
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   spacing: 7.0,
+                //   children: [
+                //     Row(
+                //       children: [
+                //         Icon(
+                //           Icons.access_time,
+                //           size: 18,
+                //           color: AppColors.orange,
+                //         ),
+                //         const SizedBox(width: 6),
+                //         Text(
+                //           time,
+                //           style: AppTypography.inter12SemiBold.copyWith(
+                //             color: AppColors.orange,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //     date != null
+                //         ? Row(
+                //             children: [
+                //               Icon(
+                //                 Icons.calendar_month_rounded,
+                //                 size: 18,
+                //                 color: AppColors.orange,
+                //               ),
+                //               const SizedBox(width: 6),
+                //               Text(
+                //                 date,
+                //                 style: AppTypography.inter12SemiBold.copyWith(
+                //                   color: AppColors.orange,
+                //                 ),
+                //               ),
+                //             ],
+                //           )
+                //         : Container(),
+                //   ],
+                // ),
                 GestureDetector(
                   onTap: () {
                     onTap();

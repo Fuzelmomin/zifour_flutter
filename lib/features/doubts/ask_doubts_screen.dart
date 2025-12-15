@@ -142,14 +142,16 @@ class _AskDoubtsScreenState extends State<AskDoubtsScreen> {
             // Reset form before navigating
             _resetForm(context);
             // Navigate to MyDoubtsListScreen
-            Future.microtask(() {
-              if (mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyDoubtsListScreen()),
-                );
-              }
-            });
+            // Future.microtask(() {
+            //   if (mounted) {
+            //     Navigator.pushReplacement(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => MyDoubtsListScreen()),
+            //     );
+            //   }
+            // });
+
+            Navigator.pop(context, true);
           } else if (state is DoubtSubmitError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -196,10 +198,11 @@ class _AskDoubtsScreenState extends State<AskDoubtsScreen> {
                           ),
                         ),
                         actionClick: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MyDoubtsListScreen()),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(builder: (context) => MyDoubtsListScreen()),
+                          // );
+                          Navigator.pop(context);
                         },
                       ),
                     ),

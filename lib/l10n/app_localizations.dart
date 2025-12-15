@@ -943,6 +943,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select at least one topic'**
   String get pleaseSelectTopic;
+
+  /// No description provided for @askDoubts.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Doubts'**
+  String get askDoubts;
 }
 
 class _AppLocalizationsDelegate

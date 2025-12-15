@@ -441,4 +441,7 @@ class AppLocalizationsGu extends AppLocalizations {
 
   @override
   String get pleaseSelectTopic => 'Please select at least one topic';
+
+  @override
+  String get askDoubts => 'Ask Doubts';
 }

@@ -27,6 +27,7 @@ import 'bloc/challenge_details_bloc.dart';
 import 'bloc/chapter_bloc.dart';
 import 'bloc/topic_bloc.dart';
 import 'bloc/update_challenge_bloc.dart';
+import 'model/challenge_details_model.dart';
 
 class ChallengeReadyScreen extends StatefulWidget {
   ChallengeReadyScreen({
@@ -59,7 +60,8 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
       BehaviorSubject<List<String>>.seeded([]);
   final BehaviorSubject<List<String>> _selectedTopics =
       BehaviorSubject<List<String>>.seeded([]);
-  
+
+  bool _isInitializingFromDetails = false;
   Timer? _topicTimer;
 
   @override
@@ -77,9 +79,12 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
     _chapterBloc = ChapterBloc();
     _topicBloc = TopicBloc();
     _updateChallengeBloc = UpdateChallengeBloc();
-    
+
     // Listen to chapter selection changes and trigger topic API after 3 seconds
     _selectedChapters.listen((chapters) {
+      if (_isInitializingFromDetails) {
+        return;
+      }
       _topicTimer?.cancel();
       // Clear selected topics when chapters change
       _selectedTopics.add([]);
@@ -103,6 +108,30 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
     _topicBloc.close();
     _updateChallengeBloc.close();
     super.dispose();
+  }
+
+  void _prefillSelectionsFromDetails(ChallengeDetails details) {
+    _isInitializingFromDetails = true;
+
+    // Prefill subject (use first subject if multiple) and rebuild UI
+    if (details.subjects.isNotEmpty) {
+      final firstSubId = details.subjects.first.id;
+      if (_selectedSubjectId != firstSubId) {
+        setState(() {
+          _selectedSubjectId = firstSubId;
+        });
+      }
+      _chapterBloc.add(ChapterRequested(subId: firstSubId));
+    }
+
+    // Prefill chapters
+    final chapterIds = details.chapters.map((e) => e.id).toList();
+    if (chapterIds.isNotEmpty) {
+      _selectedChapters.add(chapterIds);
+      _topicBloc.add(TopicRequested(chapterIds: chapterIds));
+    }
+
+    _isInitializingFromDetails = false;
   }
 
   Future<void> _handleUpdateChallenge() async {
@@ -167,37 +196,76 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
         BlocProvider.value(value: _topicBloc),
         BlocProvider.value(value: _updateChallengeBloc),
       ],
-      child: BlocListener<UpdateChallengeBloc, UpdateChallengeState>(
-        listener: (context, state) {
-          if (state.status == UpdateChallengeStatus.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.data?.message ?? 'Challenge updated successfully'),
-                backgroundColor: AppColors.success,
-              ),
-            );
-            if(widget.from == "edit"){
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) =>
-                      ChallengesListScreen(
-                        from: "",
-                        challengeType: widget.challengeType,
-                      )));
-            } else{
-              isEdit.add(false);
-              // Refresh challenge details
-              _detailsBloc.add(ChallengeDetailsRequested(crtChlId: widget.crtChlId));
-            }
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<UpdateChallengeBloc, UpdateChallengeState>(
+            listener: (context, state) {
+              if (state.status == UpdateChallengeStatus.success) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.data?.message ?? 'Challenge updated successfully'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+                if(widget.from == "edit"){
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) =>
+                          ChallengesListScreen(
+                            from: "",
+                            challengeType: widget.challengeType,
+                          )));
+                } else{
+                  isEdit.add(false);
+                  // Refresh challenge details
+                  _detailsBloc.add(ChallengeDetailsRequested(crtChlId: widget.crtChlId));
+                }
 
-          } else if (state.status == UpdateChallengeStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage ?? 'Unable to update challenge'),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          }
-        },
+              } else if (state.status == UpdateChallengeStatus.failure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.errorMessage ?? 'Unable to update challenge'),
+                    backgroundColor: AppColors.error,
+                  ),
+                );
+              }
+            },
+          ),
+          // Prefill Subject/Chapters/Topics from challenge details when available
+          BlocListener<ChallengeDetailsBloc, ChallengeDetailsState>(
+            listenWhen: (previous, current) =>
+                current.status == ChallengeDetailsStatus.success && current.hasData,
+            listener: (context, state) {
+              if ((widget.from == "edit" || isEdit.value) &&
+                  _selectedSubjectId == null &&
+                  _selectedChapters.value.isEmpty &&
+                  _selectedTopics.value.isEmpty) {
+                _prefillSelectionsFromDetails(state.data!.challenge);
+              }
+            },
+          ),
+          // Ensure topics are selected once topic list is loaded
+          BlocListener<TopicBloc, TopicState>(
+            listenWhen: (previous, current) =>
+                !current.isLoading && current.hasData,
+            listener: (context, state) {
+              // Only auto-fill when coming from edit mode and user hasn't changed topics yet
+              if ((widget.from == "edit" || isEdit.value) &&
+                  _selectedTopics.value.isEmpty &&
+                  _detailsBloc.state.hasData) {
+                final details = _detailsBloc.state.data!.challenge;
+                final availableTopicIds =
+                    state.data!.topicList.map((e) => e.tpcId).toSet();
+                final prefilledTopicIds = details.topics
+                    .map((e) => e.id)
+                    .where((id) => availableTopicIds.contains(id))
+                    .toList();
+                if (prefilledTopicIds.isNotEmpty) {
+                  _selectedTopics.add(prefilledTopicIds);
+                }
+              }
+            },
+          ),
+        ],
         child: BlocBuilder<UpdateChallengeBloc, UpdateChallengeState>(
           builder: (context, updateState) {
             return CustomLoadingOverlay(
@@ -243,6 +311,13 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                           isEdit.add(false);
                         }else {
                           isEdit.add(true);
+                          final state = _detailsBloc.state;
+                          if (state.hasData &&
+                              _selectedSubjectId == null &&
+                              _selectedChapters.value.isEmpty &&
+                              _selectedTopics.value.isEmpty) {
+                            _prefillSelectionsFromDetails(state.data!.challenge);
+                          }
                         }
                       },
                     );
@@ -664,9 +739,24 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 18.w),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.green : Colors.grey,
-          borderRadius: BorderRadius.all(Radius.circular(10.r)),
-        ),
+            color: isSelected == false ? Colors.white.withOpacity(0.1) : null,
+            gradient: isSelected
+                ? LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Color(0xFFCF078A), // Pink
+                Color(0xFF5E00D8),
+              ],
+            )
+                : null,
+            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+            border: Border.all(
+              color: isSelected == false
+                  ? Colors.white.withOpacity(0.3)
+                  : Colors.transparent,
+              width: 1.0,
+            )),
         child: Center(
           child: Text(
             subject.name,

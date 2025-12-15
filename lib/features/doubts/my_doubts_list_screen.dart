@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:zifour_sourcecode/core/widgets/my_notes_item.dart';
-import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
-import '../../core/widgets/bookmark_item.dart';
 import '../../core/widgets/custom_app_bar.dart';
+import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/my_doubts_item.dart';
+import '../../core/widgets/signup_field_box.dart';
 import '../../l10n/app_localizations.dart';
+import '../doubts/ask_doubts_screen.dart';
 import 'bloc/doubts_list_bloc.dart';
 import 'model/doubts_list_model.dart';
 
@@ -23,24 +23,34 @@ class MyDoubtsListScreen extends StatefulWidget {
 }
 
 class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
+  late final DoubtsListBloc _doubtsListBloc;
+
   String selectedFilter = "All";
-  final filters = [
+
+  final List<String> filters = [
     "All",
     "Physics",
     "Chemistry",
     "Biology",
-    "Maths"
+    "Maths",
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _doubtsListBloc = DoubtsListBloc()..add(DoubtsListRequested());
+  }
+
+  @override
   void dispose() {
+    _doubtsListBloc.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => DoubtsListBloc()..add(DoubtsListRequested()),
+    return BlocProvider.value(
+      value: _doubtsListBloc,
       child: Scaffold(
         body: Container(
           width: double.infinity,
@@ -49,7 +59,7 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
           child: SafeArea(
             child: Stack(
               children: [
-                // Background Decoration set
+                /// Background
                 Positioned.fill(
                   child: Image.asset(
                     AssetsPath.signupBgImg,
@@ -57,32 +67,40 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
                   ),
                 ),
 
-                // App Bar
+                /// App Bar
                 Positioned(
                   top: 20.h,
                   left: 15.w,
                   right: 5.w,
                   child: CustomAppBar(
                     isBack: true,
-                    title: '${AppLocalizations.of(context)?.myDoubts}',
+                    title: AppLocalizations.of(context)?.myDoubts ?? '',
                     isActionWidget: true,
                     actionWidget: PopupMenuButton<String>(
-                      onSelected: (value) => setState(() => selectedFilter = value),
+                      onSelected: (value) {
+                        setState(() => selectedFilter = value);
+                      },
                       itemBuilder: (context) {
                         return filters
-                            .map((e) => PopupMenuItem(value: e, child: Text(e)))
+                            .map(
+                              (e) => PopupMenuItem<String>(
+                            value: e,
+                            child: Text(e),
+                          ),
+                        )
                             .toList();
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12.r),
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
+                          gradient: const LinearGradient(
                             colors: [
-                              Color(0xFFCF078A), // Pink
-                              Color(0xFF5E00D8)
+                              Color(0xFFCF078A),
+                              Color(0xFF5E00D8),
                             ],
                           ),
                           boxShadow: [
@@ -94,22 +112,24 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
                           ],
                         ),
                         child: Row(
-                          children: [
+                          children: const [
                             Text(
-                              selectedFilter,
-                              style: const TextStyle(color: Colors.white),
+                              "Filter",
+                              style: TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(width: 6),
-                            const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                            SizedBox(width: 6),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.white,
+                            ),
                           ],
                         ),
                       ),
                     ),
-                    actionClick: () {},
                   ),
                 ),
 
-                // Main Content with BLoC
+                /// Main Content
                 Positioned(
                   top: 90.h,
                   left: 20.w,
@@ -119,12 +139,14 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
                     builder: (context, state) {
                       if (state is DoubtsListLoading) {
                         return SignupFieldBox(
-                          padding: EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(15),
                           child: _buildShimmerLoading(),
                         );
-                      } else if (state is DoubtsListError) {
+                      }
+
+                      if (state is DoubtsListError) {
                         return SignupFieldBox(
-                          padding: EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(15),
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -146,42 +168,48 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
                                 SizedBox(height: 16.h),
                                 ElevatedButton(
                                   onPressed: () {
-                                    context.read<DoubtsListBloc>().add(DoubtsListRequested());
+                                    context
+                                        .read<DoubtsListBloc>()
+                                        .add(DoubtsListRequested());
                                   },
-                                  child: Text('Retry'),
+                                  child: const Text('Retry'),
                                 ),
                               ],
                             ),
                           ),
                         );
-                      } else if (state is DoubtsListSuccess) {
-                        final doubtsList = state.data.doubtsList;
-                        
-                        // Filter doubts based on selected filter
-                        List<DoubtModel> filteredDoubts = doubtsList;
+                      }
+
+                      if (state is DoubtsListSuccess) {
+                        List<DoubtModel> list = state.data.doubtsList;
+
                         if (selectedFilter != "All") {
-                          filteredDoubts = doubtsList
-                              .where((doubt) => doubt.subject == selectedFilter)
+                          list = list
+                              .where(
+                                (e) => e.subject == selectedFilter,
+                          )
                               .toList();
                         }
 
-                        if (filteredDoubts.isEmpty) {
+                        if (list.isEmpty) {
                           return SignupFieldBox(
-                            padding: EdgeInsets.all(15.0),
+                            padding: const EdgeInsets.all(15),
                             child: Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
                                     Icons.inbox_outlined,
-                                    color: AppColors.white.withOpacity(0.5),
+                                    color:
+                                    AppColors.white.withOpacity(0.5),
                                     size: 48.sp,
                                   ),
                                   SizedBox(height: 16.h),
                                   Text(
                                     'No doubts found',
                                     style: TextStyle(
-                                      color: AppColors.white.withOpacity(0.7),
+                                      color: AppColors.white
+                                          .withOpacity(0.7),
                                       fontSize: 14.sp,
                                     ),
                                   ),
@@ -192,42 +220,70 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
                         }
 
                         return SignupFieldBox(
-                          padding: EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(15),
                           child: ListView.separated(
-                            itemCount: filteredDoubts.length,
-                            physics: BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(bottom: 20),
+                            itemCount: list.length,
+                            physics: const BouncingScrollPhysics(),
+                            padding:
+                            const EdgeInsets.only(bottom: 20),
                             itemBuilder: (context, index) {
-                              final doubt = filteredDoubts[index];
-                              final isReplied = doubt.dbtStatus.toLowerCase() != 'pending';
+                              final doubt = list[index];
+                              final isReplied =
+                                  doubt.dbtStatus.toLowerCase() !=
+                                      'pending';
+
                               return MyDoubtsItem(
                                 title: doubt.dbtMessage,
                                 isReplied: isReplied,
                               );
                             },
-                            separatorBuilder: (BuildContext context, int index) {
-                              return Container(
-                                width: double.infinity,
-                                height: 0.80,
-                                margin: EdgeInsets.symmetric(vertical: 10.h),
-                                color: AppColors.white.withOpacity(0.2),
-                              );
-                            },
+                            separatorBuilder: (_, __) => Container(
+                              height: 0.8,
+                              margin:
+                              EdgeInsets.symmetric(vertical: 10.h),
+                              color: AppColors.white.withOpacity(0.2),
+                            ),
                           ),
                         );
                       }
 
-                      // Initial state
-                      return SignupFieldBox(
-                        padding: EdgeInsets.all(15.0),
-                        child: _buildShimmerLoading(),
-                      );
+                      return const SizedBox();
                     },
                   ),
                 ),
               ],
             ),
           ),
+        ),
+
+        /// Floating Button
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 120.w,
+              height: 40.h,
+              child: CustomGradientArrowButton(
+                text: AppLocalizations.of(context)?.askDoubts ?? '',
+                isLoading: false,
+                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AskDoubtsScreen(),
+                    ),
+                  );
+
+                  if (!mounted) return;
+
+                  if (result == true) {
+                    _doubtsListBloc.add(DoubtsListRequested());
+                  }
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -236,9 +292,8 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
   Widget _buildShimmerLoading() {
     return ListView.separated(
       itemCount: 5,
-      physics: BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(bottom: 20),
-      itemBuilder: (context, index) {
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (_, __) {
         return Shimmer.fromColors(
           baseColor: Colors.white.withOpacity(0.08),
           highlightColor: Colors.white.withOpacity(0.2),
@@ -251,9 +306,7 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
           ),
         );
       },
-      separatorBuilder: (BuildContext context, int index) {
-        return SizedBox(height: 10.h);
-      },
+      separatorBuilder: (_, __) => SizedBox(height: 10.h),
     );
   }
 }

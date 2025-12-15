@@ -14,6 +14,7 @@ import 'package:zifour_sourcecode/features/bookmarked/bookmarked_list_screen.dar
 import 'package:zifour_sourcecode/features/courses/change_courses_screen.dart';
 import 'package:zifour_sourcecode/features/dashboard/profile_screen.dart';
 import 'package:zifour_sourcecode/features/doubts/ask_doubts_screen.dart';
+import 'package:zifour_sourcecode/features/doubts/my_doubts_list_screen.dart';
 import 'package:zifour_sourcecode/features/give_feedback/give_feedback_screen.dart';
 import 'package:zifour_sourcecode/features/help_support/help_support_screen.dart';
 import 'package:zifour_sourcecode/features/multimedia_library/multimedia_library_screen.dart';
@@ -141,7 +142,7 @@ class CustomDrawer extends StatelessWidget {
                       _closeDrawerAndPush(context, (_) => const BookmarkedListScreen());
                     }),
                     _drawerItem(AssetsPath.svgHelpCircle, "My Doubts", (){
-                      _closeDrawerAndPush(context, (_) => AskDoubtsScreen());
+                      _closeDrawerAndPush(context, (_) => MyDoubtsListScreen());
                     }),
                     _drawerItem(AssetsPath.svgNote, "My Notes", (){
                       _closeDrawerAndPush(context, (_) => MyNotesListScreen());

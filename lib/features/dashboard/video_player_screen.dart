@@ -90,7 +90,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         body: SafeArea(
           child: Stack(
             children: [
-              Expanded(
+              Positioned.fill(
                 child: YoutubePlayerBuilder(
                   player: YoutubePlayer(
                     controller: _controller,
@@ -111,33 +111,33 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   },
                 ),
               ),
-            Positioned(
-              top: 20.h,
-              left: 10.w,
-              child: GestureDetector(
-                onTap: (){
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: 40.h,
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black.withOpacity(0.5)
-                  ),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      AssetsPath.svgBack,
-                      width: 32.w,
-                      height: 32.h,
+              Positioned(
+                top: 20.h,
+                left: 10.w,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    width: 40.h,
+                    height: 40.h,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        AssetsPath.svgBack,
+                        width: 32.w,
+                        height: 32.h,
+                      ),
                     ),
                   ),
                 ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

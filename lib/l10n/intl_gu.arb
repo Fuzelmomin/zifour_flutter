@@ -141,6 +141,7 @@
   "update": "Update",
   "pleaseSelectSubject": "Please select a subject",
   "pleaseSelectChapter": "Please select at least one chapter",
-  "pleaseSelectTopic": "Please select at least one topic"
+  "pleaseSelectTopic": "Please select at least one topic",
+  "askDoubts": "Ask Doubts"
 }
 
