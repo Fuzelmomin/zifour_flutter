@@ -9,6 +9,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_app_bar.dart';
+import '../../core/services/subject_service.dart';
 import '../practics_mcq/select_chapter_screen.dart';
 
 class LearningCourseListScreen extends StatefulWidget {
@@ -19,33 +20,7 @@ class LearningCourseListScreen extends StatefulWidget {
 }
 
 class _LearningCourseListScreenState extends State<LearningCourseListScreen> {
-
-  final List<Map<String, dynamic>> courses = [
-    {
-      "name": "Physics",
-      "progress": 65,
-      "chapters": 15,
-      "lectures": 45,
-      "icon":
-      "https://cdn-icons-png.flaticon.com/512/4149/4149678.png"
-    },
-    {
-      "name": "Chemistry",
-      "progress": 80,
-      "chapters": 10,
-      "lectures": 44,
-      "icon":
-      "https://cdn-icons-png.flaticon.com/512/2927/2927347.png"
-    },
-    {
-      "name": "Maths",
-      "progress": 60,
-      "chapters": 18,
-      "lectures": 23,
-      "icon":
-      "https://cdn-icons-png.flaticon.com/512/1674/1674291.png"
-    },
-  ];
+  final SubjectService _subjectService = SubjectService();
 
   @override
   void dispose() {
@@ -88,19 +63,25 @@ class _LearningCourseListScreenState extends State<LearningCourseListScreen> {
                 right: 20.w,
                 bottom: 0,
                 child: ListView.builder(
-                  itemCount: courses.length,
+                  itemCount: _subjectService.subjects.length,
                   itemBuilder: (context, index) {
-                    final course = courses[index];
+                    final subject = _subjectService.subjects[index];
                     return _CourseCard(
-                      title: course["name"],
-                      progress: course["progress"],
-                      chapters: course["chapters"],
-                      lectures: course["lectures"],
-                      iconUrl: course["icon"],
+                      title: subject.name,
+                      progress: 65, // Static for now as API doesn't provide this
+                      chapters: 15, // Static for now as API doesn't provide this
+                      lectures: 45, // Static for now as API doesn't provide this
+                      iconUrl: "https://cdn-icons-png.flaticon.com/512/4149/4149678.png", // Static icon
                       onTap: (){
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SelectChapterScreen(from: "course",)),
+                          MaterialPageRoute(
+                            builder: (context) => SelectChapterScreen(
+                              from: "course",
+                              subjectId: subject.subId,
+                              subjectName: subject.name,
+                            ),
+                          ),
                         );
                       },
 

@@ -8,10 +8,8 @@ import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/auth/edit_profile_screen.dart';
 import 'package:zifour_sourcecode/features/courses/my_courses_screen.dart';
 import 'package:zifour_sourcecode/features/demo_ui.dart';
-import 'package:zifour_sourcecode/features/learning_course/learning_chapter_videos_screen.dart';
-import 'package:zifour_sourcecode/features/learning_course/select_course_topic_screen.dart';
 import 'package:zifour_sourcecode/features/mentor/mentors_videos_list_screen.dart';
-import 'package:zifour_sourcecode/features/practics_mcq/select_topic_screen.dart';
+import 'package:zifour_sourcecode/features/practics_mcq/question_mcq_screen.dart';
 import 'package:zifour_sourcecode/features/reset_password/reset_password_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -20,67 +18,49 @@ import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/profile_option_widget.dart';
 import '../../l10n/app_localizations.dart';
-import '../challenger_zone/bloc/chapter_bloc.dart';
+import '../challenger_zone/bloc/topic_bloc.dart';
+import 'learning_chapter_videos_screen.dart';
 
 
-class SelectChapterScreen extends StatefulWidget {
-  final String? from;
-  final String? subjectId;
-  final String? subjectName;
+class SelectCourseTopicScreen extends StatefulWidget {
+  final String subjectId;
+  final String subjectName;
+  final String chapterId;
+  final String chapterName;
   
-  SelectChapterScreen({
-    super.key, 
-    this.from,
-    this.subjectId,
-    this.subjectName,
+  const SelectCourseTopicScreen({
+    super.key,
+    required this.subjectId,
+    required this.subjectName,
+    required this.chapterId,
+    required this.chapterName,
   });
 
   @override
-  State<SelectChapterScreen> createState() => _SelectChapterScreenState();
+  State<SelectCourseTopicScreen> createState() => _SelectCourseTopicScreenState();
 }
 
-class _SelectChapterScreenState extends State<SelectChapterScreen> {
-  late final ChapterBloc _chapterBloc;
-
-  List<String> chapterOptions = [
-    "Motion",
-    "Laws of Motions",
-    "Gravitation",
-    "Work, Energy & Power",
-  ];
-
+class _SelectCourseTopicScreenState extends State<SelectCourseTopicScreen> {
+  late final TopicBloc _topicBloc;
 
   @override
   void initState() {
     super.initState();
-    _chapterBloc = ChapterBloc();
-    
-    if(widget.from == "course"){
-      // Load chapters from API if subjectId is provided
-      if (widget.subjectId != null && widget.subjectId!.isNotEmpty) {
-        _chapterBloc.add(ChapterRequested(subId: widget.subjectId!));
-      }
-    } else {
-      // Keep static data for non-course flow
-      chapterOptions = [
-        "Motion",
-        "Laws of Motions",
-        "Gravitation",
-        "Work, Energy & Power",
-      ];
-    }
+    _topicBloc = TopicBloc();
+    // Load topics from API
+    _topicBloc.add(TopicRequested(chapterIds: [widget.chapterId]));
   }
 
   @override
   void dispose() {
-    _chapterBloc.close();
+    _topicBloc.close();
     super.dispose();
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _chapterBloc,
+      value: _topicBloc,
       child: Scaffold(
         body: Container(
           width: double.infinity,
@@ -121,7 +101,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 15.h,
+
                       children: [
                         Container(
                           width: double.infinity,
@@ -145,12 +125,13 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                         children: [
 
                                           Text(
-                                            widget.subjectName ?? 'Physics',
+                                            '${widget.subjectName} - ${widget.chapterName}',
                                             style: AppTypography.inter24Medium,
+                                            textAlign: TextAlign.center,
                                           ),
                                           SizedBox(height: 5.h,),
                                           Text(
-                                            'Select a Chapter',
+                                            'Select a Topic',
                                             style: AppTypography.inter14Medium.copyWith(
                                                 color: Color(0xffC55492)
                                             ),
@@ -193,82 +174,60 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                         ),
                       ),
                       SizedBox(height: 20.h),
-                      // Dynamic chapter list based on from parameter
-                      if (widget.from == "course")
-                        BlocBuilder<ChapterBloc, ChapterState>(
-                          builder: (context, state) {
-                            if (state.isLoading) {
-                              return _buildShimmerLoading();
-                            }
+                      BlocBuilder<TopicBloc, TopicState>(
+                        builder: (context, state) {
+                          if (state.isLoading) {
+                            return _buildShimmerLoading();
+                          }
 
-                            if (state.status == ChapterStatus.failure) {
-                              return Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                                  child: Text(
-                                    state.errorMessage ?? 'No chapters found',
-                                    style: AppTypography.inter14Regular.copyWith(
-                                      color: AppColors.white.withOpacity(0.6),
-                                    ),
-                                    textAlign: TextAlign.center,
+                          if (state.status == TopicStatus.failure) {
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20.h),
+                                child: Text(
+                                  state.errorMessage ?? 'No topics found',
+                                  style: AppTypography.inter14Regular.copyWith(
+                                    color: AppColors.white.withOpacity(0.6),
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
-                              );
-                            }
+                              ),
+                            );
+                          }
 
-                            if (!state.hasData || state.data!.chapterList.isEmpty) {
-                              return Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                                  child: Text(
-                                    'No chapters found',
-                                    style: AppTypography.inter14Regular.copyWith(
-                                      color: AppColors.white.withOpacity(0.6),
-                                    ),
-                                    textAlign: TextAlign.center,
+                          if (!state.hasData || state.data!.topicList.isEmpty) {
+                            return Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20.h),
+                                child: Text(
+                                  'No topics found',
+                                  style: AppTypography.inter14Regular.copyWith(
+                                    color: AppColors.white.withOpacity(0.6),
                                   ),
+                                  textAlign: TextAlign.center,
                                 ),
+                              ),
+                            );
+                          }
+
+                          final topics = state.data!.topicList;
+                          return Column(
+                            children: topics.map((topic) {
+                              return ProfileOptionWidget(
+                                title: topic.name,
+                                itemClick: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LearningChapterVideosScreen(),
+                                    ),
+                                  );
+                                },
                               );
-                            }
-
-                            final chapters = state.data!.chapterList;
-                            return Column(
-                              children: chapters.map((chapter) {
-                                return ProfileOptionWidget(
-                                  title: chapter.name,
-                                  itemClick: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SelectCourseTopicScreen(
-                                          subjectId: widget.subjectId ?? '',
-                                          subjectName: widget.subjectName ?? '',
-                                          chapterId: chapter.chpId,
-                                          chapterName: chapter.name,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              }).toList(),
-                            );
-                          },
-                        )
-                      else
-                        Column(
-                          children: chapterOptions.map((title) {
-                            return ProfileOptionWidget(
-                              title: title,
-                              itemClick: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SelectTopicScreen()),
-                                );
-                              },
-                            );
-                          }).toList(),
-                        )
-
+                            }).toList(),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
