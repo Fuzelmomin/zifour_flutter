@@ -277,18 +277,61 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
 
                         return BlocBuilder<McqBookmarkDeleteBloc, McqBookmarkDeleteState>(
                           builder: (context, deleteState) {
+                            // Filter bookmarks based on selected filter
+                            final filteredBookmarks = bookmarkList.where((bookmark) {
+                              // Normalize both strings for comparison (case-insensitive)
+                              final bookmarkType = bookmark.type.toLowerCase().trim();
+                              final filter = selectedFilter.toLowerCase().trim();
+                              return bookmarkType == filter;
+                            }).toList();
+
+                            // Show empty state if no bookmarks match the filter
+                            if (filteredBookmarks.isEmpty) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.filter_alt_off,
+                                      size: 80.sp,
+                                      color: Colors.white.withOpacity(0.3),
+                                    ),
+                                    SizedBox(height: 16.h),
+                                    Text(
+                                      'No bookmarks found for "$selectedFilter"',
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.7),
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      'Try selecting a different filter.',
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.5),
+                                        fontSize: 12.sp,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
                             return SignupFieldBox(
                               child: ListView.builder(
-                                itemCount: bookmarkList.length,
+                                itemCount: filteredBookmarks.length,
                                 padding: const EdgeInsets.only(bottom: 20),
                                 itemBuilder: (context, index) {
-                                  final bookmark = bookmarkList[index];
+                                  final bookmark = filteredBookmarks[index];
                                   return BookmarkItem(
                                     title: bookmark.mcQuestion
                                         .replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
                                     description: bookmark.mcDescription
                                         .replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
-                                    bookmarkType: 'Practice MCQ',
+                                    bookmarkType: bookmark.type,
                                     deleteClick: () {
                                       _showDeleteConfirmation(bookmark.mcqId);
                                     },

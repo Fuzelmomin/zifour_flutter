@@ -27,6 +27,7 @@ class McqBookmarkBloc extends Bloc<McqBookmarkEvent, McqBookmarkState> {
 
     final response = await _repository.addMcqBookmark(
       mcqId: event.mcqId,
+      mcqType: event.mcqType,
     );
 
     if (response.status == ApiStatus.success && response.data != null) {

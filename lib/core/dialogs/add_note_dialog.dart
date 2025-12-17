@@ -16,10 +16,12 @@ import '../widgets/text_field_container.dart';
 
 class AddNoteDialog extends StatefulWidget {
   final String mcqId;
+  final String mcqType;
 
   const AddNoteDialog({
     super.key,
     required this.mcqId,
+    required this.mcqType,
   });
 
   @override
@@ -91,6 +93,7 @@ class _AddNoteDialogState extends State<AddNoteDialog>
     _mcqNotesBloc.add(
       McqNotesRequested(
         mcqId: widget.mcqId,
+        mcqType: widget.mcqType,
         mcqNotesTitle: title,
         mcqNotesDescription: description,
       ),

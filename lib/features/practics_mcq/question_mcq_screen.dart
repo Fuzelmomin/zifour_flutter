@@ -20,11 +20,13 @@ import 'model/challenge_mcq_list_model.dart';
 
 class QuestionMcqScreen extends StatefulWidget {
   final String type;
+  final String mcqType;
   final String? crtChlId;
 
   const QuestionMcqScreen({
     super.key,
     required this.type,
+    required this.mcqType,
     this.crtChlId,
   });
 
@@ -159,7 +161,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         showDialog(
           context: context,
           barrierDismissible: true,
-          builder: (_) => AddNoteDialog(mcqId: currentMcq.mcId),
+          builder: (_) => AddNoteDialog(mcqId: currentMcq.mcId, mcqType: widget.mcqType,),
         );
       }
     }
@@ -175,7 +177,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     if (_currentQuestionIndex < mcqList.length) {
       final currentMcq = mcqList[_currentQuestionIndex];
       _mcqBookmarkBloc.add(
-        McqBookmarkRequested(mcqId: currentMcq.mcId),
+        McqBookmarkRequested(mcqId: currentMcq.mcId, mcqType: widget.mcqType),
       );
     }
   }

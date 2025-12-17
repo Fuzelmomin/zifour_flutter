@@ -219,7 +219,14 @@ class _SelectCourseTopicScreenState extends State<SelectCourseTopicScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => LearningChapterVideosScreen(),
+                                      builder: (context) => LearningChapterVideosScreen(
+                                        topicId: topic.tpcId,
+                                        topicName: topic.name,
+                                        chapterId: widget.chapterId,
+                                        chapterName: widget.chapterName,
+                                        subjectId: widget.subjectId,
+                                        subjectName: widget.subjectName,
+                                      ),
                                     ),
                                   );
                                 },

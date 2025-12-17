@@ -17,6 +17,7 @@ class McqBookmarkRepository {
 
   Future<ApiResponse<McqBookmarkResponse>> addMcqBookmark({
     required String mcqId,
+    required String mcqType,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -38,6 +39,7 @@ class McqBookmarkRepository {
         queryParameters: {
           'stu_id': user.stuId,
           'mcq_id': mcqId,
+          'mcq_typ_id': mcqType,
         },
       );
 

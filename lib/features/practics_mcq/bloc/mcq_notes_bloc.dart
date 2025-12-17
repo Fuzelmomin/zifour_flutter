@@ -27,6 +27,7 @@ class McqNotesBloc extends Bloc<McqNotesEvent, McqNotesState> {
 
     final response = await _repository.addMcqNote(
       mcqId: event.mcqId,
+      mcqType: event.mcqType,
       mcqNotesTitle: event.mcqNotesTitle,
       mcqNotesDescription: event.mcqNotesDescription,
     );

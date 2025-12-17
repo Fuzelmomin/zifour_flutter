@@ -31,6 +31,7 @@ class McqNotesListItem {
   final String mcQuestion;
   @JsonKey(name: 'mc_description')
   final String mcDescription;
+  final String type;
 
   @JsonKey(name: 'mcq_notes_title')
   final String mcqNotesTitle;
@@ -44,6 +45,7 @@ class McqNotesListItem {
     required this.mcDescription,
     required this.mcqNotesTitle,
     required this.mcqNotesDescription,
+    required this.type,
   });
 
   factory McqNotesListItem.fromJson(Map<String, dynamic> json) =>

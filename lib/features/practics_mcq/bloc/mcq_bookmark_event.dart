@@ -6,9 +6,11 @@ abstract class McqBookmarkEvent {
 
 class McqBookmarkRequested extends McqBookmarkEvent {
   final String mcqId;
+  final String mcqType;
 
   const McqBookmarkRequested({
     required this.mcqId,
+    required this.mcqType,
   });
 }
 

@@ -30,6 +30,7 @@ McqBookmarkListItem _$McqBookmarkListItemFromJson(Map<String, dynamic> json) =>
       mcqId: json['mcq_id'] as String,
       mcQuestion: json['mc_question'] as String,
       mcDescription: json['mc_description'] as String,
+      type: json['type'] as String,
     );
 
 Map<String, dynamic> _$McqBookmarkListItemToJson(
@@ -39,4 +40,5 @@ Map<String, dynamic> _$McqBookmarkListItemToJson(
       'mcq_id': instance.mcqId,
       'mc_question': instance.mcQuestion,
       'mc_description': instance.mcDescription,
+      'type': instance.type,
     };

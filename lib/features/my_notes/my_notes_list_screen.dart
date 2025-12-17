@@ -279,15 +279,58 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
 
                         return BlocBuilder<McqNotesDeleteBloc, McqNotesDeleteState>(
                           builder: (context, deleteState) {
+                            // Filter notes based on selected filter
+                            final filteredNotes = notesList.where((note) {
+                              // Normalize both strings for comparison (case-insensitive)
+                              final noteType = note.type.toLowerCase().trim();
+                              final filter = selectedFilter.toLowerCase().trim();
+                              return noteType == filter;
+                            }).toList();
+
+                            // Show empty state if no notes match the filter
+                            if (filteredNotes.isEmpty) {
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.filter_alt_off,
+                                      size: 80.sp,
+                                      color: Colors.white.withOpacity(0.3),
+                                    ),
+                                    SizedBox(height: 16.h),
+                                    Text(
+                                      'No notes found for "$selectedFilter"',
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.7),
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      'Try selecting a different filter.',
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.5),
+                                        fontSize: 12.sp,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
                             return SignupFieldBox(
                               child: ListView.builder(
-                                itemCount: notesList.length,
+                                itemCount: filteredNotes.length,
                                 padding: const EdgeInsets.only(bottom: 20),
                                 itemBuilder: (context, index) {
-                                  final note = notesList[index];
+                                  final note = filteredNotes[index];
                                   return MyNotesItem(
                                     title: note.mcqNotesTitle,
-                                    noteType: 'Practice MCQ',
+                                    noteType: note.type,
                                     notesDes: note.mcqNotesDescription,
                                     deleteClick: () {
                                       _showDeleteConfirmation(note.mcqId);

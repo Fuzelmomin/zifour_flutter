@@ -17,6 +17,7 @@ class McqNotesRepository {
 
   Future<ApiResponse<McqNotesResponse>> addMcqNote({
     required String mcqId,
+    required String mcqType,
     required String mcqNotesTitle,
     required String mcqNotesDescription,
   }) async {
@@ -40,6 +41,7 @@ class McqNotesRepository {
         queryParameters: {
           'stu_id': user.stuId,
           'mcq_id': mcqId,
+          'mcq_typ_id': mcqType,
           'mcq_notes_title': mcqNotesTitle,
           'mcq_notes_description': mcqNotesDescription,
         },

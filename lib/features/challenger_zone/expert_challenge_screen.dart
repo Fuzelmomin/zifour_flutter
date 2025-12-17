@@ -230,6 +230,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
                   builder: (context) => QuestionMcqScreen(
                     type: 'Start Exam',
                     crtChlId: challenge.crtChlId,
+                    mcqType: "2", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
                   ),
                 ),
               ).then((value) {

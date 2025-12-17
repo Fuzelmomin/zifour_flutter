@@ -40,6 +40,12 @@ class ChallengeListItem {
   @JsonKey(name: 'updated_at')
   final String updatedAt;
 
+  @JsonKey(name: 'oe_cha_name')
+  final String oeChaName;
+  @JsonKey(name: 'solution_video')
+  final String solutionVideo;
+  final String date;
+
   ChallengeListItem({
     required this.crtChlId,
     required this.stuId,
@@ -50,6 +56,10 @@ class ChallengeListItem {
     required this.erFlag,
     required this.createdAt,
     required this.updatedAt,
+
+    required this.oeChaName,
+    required this.solutionVideo,
+    required this.date,
   });
 
   factory ChallengeListItem.fromJson(Map<String, dynamic> json) =>

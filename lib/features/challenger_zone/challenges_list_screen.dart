@@ -165,6 +165,7 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
                   builder: (context) => QuestionMcqScreen(
                     type: 'Start Exam',
                     crtChlId: challenge.crtChlId,
+                    mcqType: widget.challengeType == "1" ? "3" : "2", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
                   ),
                 ),
               ).then((value){

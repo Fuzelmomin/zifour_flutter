@@ -31,12 +31,14 @@ class McqBookmarkListItem {
   final String mcQuestion;
   @JsonKey(name: 'mc_description')
   final String mcDescription;
+  final String type;
 
   McqBookmarkListItem({
     required this.mcqBkmId,
     required this.mcqId,
     required this.mcQuestion,
     required this.mcDescription,
+    required this.type,
   });
 
   factory McqBookmarkListItem.fromJson(Map<String, dynamic> json) =>

@@ -37,6 +37,10 @@ ChallengeListItem _$ChallengeListItemFromJson(Map<String, dynamic> json) =>
       erFlag: json['er_flag'] as String,
       createdAt: json['created_at'] as String,
       updatedAt: json['updated_at'] as String,
+
+      oeChaName: json['oe_cha_name'] as String,
+      solutionVideo: json['solution_video'] as String,
+      date: json['date'] as String,
     );
 
 Map<String, dynamic> _$ChallengeListItemToJson(ChallengeListItem instance) =>
@@ -50,4 +54,8 @@ Map<String, dynamic> _$ChallengeListItemToJson(ChallengeListItem instance) =>
       'er_flag': instance.erFlag,
       'created_at': instance.createdAt,
       'updated_at': instance.updatedAt,
+
+      'oe_cha_name': instance.oeChaName,
+      'solution_video': instance.solutionVideo,
+      'date': instance.date,
     };

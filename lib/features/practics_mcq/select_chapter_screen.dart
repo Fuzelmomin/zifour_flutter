@@ -55,13 +55,13 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
     super.initState();
     _chapterBloc = ChapterBloc();
     
-    if(widget.from == "course"){
+    if(widget.from == "course" || widget.from == "practice"){
       // Load chapters from API if subjectId is provided
       if (widget.subjectId != null && widget.subjectId!.isNotEmpty) {
         _chapterBloc.add(ChapterRequested(subId: widget.subjectId!));
       }
     } else {
-      // Keep static data for non-course flow
+      // Keep static data for non-course/practice flow
       chapterOptions = [
         "Motion",
         "Laws of Motions",
@@ -193,81 +193,96 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                         ),
                       ),
                       SizedBox(height: 20.h),
-                      // Dynamic chapter list based on from parameter
-                      if (widget.from == "course")
-                        BlocBuilder<ChapterBloc, ChapterState>(
-                          builder: (context, state) {
-                            if (state.isLoading) {
-                              return _buildShimmerLoading();
-                            }
+                        // Dynamic chapter list based on from parameter
+                        if (widget.from == "course" || widget.from == "practice")
+                          BlocBuilder<ChapterBloc, ChapterState>(
+                            builder: (context, state) {
+                              if (state.isLoading) {
+                                return _buildShimmerLoading();
+                              }
 
-                            if (state.status == ChapterStatus.failure) {
-                              return Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                                  child: Text(
-                                    state.errorMessage ?? 'No chapters found',
-                                    style: AppTypography.inter14Regular.copyWith(
-                                      color: AppColors.white.withOpacity(0.6),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              );
-                            }
-
-                            if (!state.hasData || state.data!.chapterList.isEmpty) {
-                              return Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20.h),
-                                  child: Text(
-                                    'No chapters found',
-                                    style: AppTypography.inter14Regular.copyWith(
-                                      color: AppColors.white.withOpacity(0.6),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              );
-                            }
-
-                            final chapters = state.data!.chapterList;
-                            return Column(
-                              children: chapters.map((chapter) {
-                                return ProfileOptionWidget(
-                                  title: chapter.name,
-                                  itemClick: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SelectCourseTopicScreen(
-                                          subjectId: widget.subjectId ?? '',
-                                          subjectName: widget.subjectName ?? '',
-                                          chapterId: chapter.chpId,
-                                          chapterName: chapter.name,
-                                        ),
+                              if (state.status == ChapterStatus.failure) {
+                                return Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 20.h),
+                                    child: Text(
+                                      state.errorMessage ?? 'No chapters found',
+                                      style: AppTypography.inter14Regular.copyWith(
+                                        color: AppColors.white.withOpacity(0.6),
                                       ),
-                                    );
-                                  },
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 );
-                              }).toList(),
-                            );
-                          },
-                        )
-                      else
-                        Column(
-                          children: chapterOptions.map((title) {
-                            return ProfileOptionWidget(
-                              title: title,
-                              itemClick: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => SelectTopicScreen()),
+                              }
+
+                              if (!state.hasData || state.data!.chapterList.isEmpty) {
+                                return Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 20.h),
+                                    child: Text(
+                                      'No chapters found',
+                                      style: AppTypography.inter14Regular.copyWith(
+                                        color: AppColors.white.withOpacity(0.6),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 );
-                              },
-                            );
-                          }).toList(),
-                        )
+                              }
+
+                              final chapters = state.data!.chapterList;
+                              return Column(
+                                children: chapters.map((chapter) {
+                                  return ProfileOptionWidget(
+                                    title: chapter.name,
+                                    itemClick: () {
+                                      if (widget.from == "course") {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SelectCourseTopicScreen(
+                                              subjectId: widget.subjectId ?? '',
+                                              subjectName: widget.subjectName ?? '',
+                                              chapterId: chapter.chpId,
+                                              chapterName: chapter.name,
+                                            ),
+                                          ),
+                                        );
+                                      } else if (widget.from == "practice") {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SelectTopicScreen(
+                                              from: 'practice',
+                                              subjectId: widget.subjectId ?? '',
+                                              subjectName: widget.subjectName ?? '',
+                                              chapterId: chapter.chpId,
+                                              chapterName: chapter.name,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  );
+                                }).toList(),
+                              );
+                            },
+                          )
+                        else
+                          Column(
+                            children: chapterOptions.map((title) {
+                              return ProfileOptionWidget(
+                                title: title,
+                                itemClick: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => SelectTopicScreen()),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          )
 
                     ],
                   ),
