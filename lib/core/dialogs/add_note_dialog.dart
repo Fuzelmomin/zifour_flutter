@@ -66,27 +66,53 @@ class _AddNoteDialogState extends State<AddNoteDialog>
     super.dispose();
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E2E),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: Colors.white12),
+        ),
+        title: const Row(
+          children: [
+            Icon(Icons.error_outline, color: AppColors.error, size: 24),
+            SizedBox(width: 8),
+            Text(
+              'Validation Error',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ],
+        ),
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.white70, fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text(
+              'OK',
+              style: TextStyle(color: Colors.purpleAccent),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _validateAndSubmit() {
     final title = _titleController.text.trim();
     final description = _descriptionController.text.trim();
 
     if (title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please enter a title'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      _showErrorDialog('Please enter a title');
       return;
     }
 
     if (description.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Please enter a description'),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      _showErrorDialog('Please enter a description');
       return;
     }
 
@@ -138,83 +164,93 @@ class _AddNoteDialogState extends State<AddNoteDialog>
                   position: _offsetAnimation,
                   child: CustomLoadingOverlay(
                     isLoading: state.isLoading,
-                    child: SignupFieldBox(
-                      padding: EdgeInsets.symmetric(vertical: 30.h, horizontal: 20.w),
-                      child: Form(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Notification Icon Box
-                            SvgPicture.asset(
-                              AssetsPath.svgAddNote,
-                              width: 48.h,
-                              height: 48.h,
-                            ),
-                            SizedBox(height: 10.h),
-
-                            const Text(
-                              "Add Note!",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-
-                            const SizedBox(height: 6),
-
-                            CustomTextField(
-                              hint: 'Title of The Note',
-                              editingController: _titleController,
-                              type: 'text',
-                              textFieldBgColor: Colors.black.withOpacity(0.1),
-                              changedValue: (value) {},
-                            ),
-                            SizedBox(height: 10.h),
-
-                            CustomTextField(
-                              hint: 'Add Description',
-                              editingController: _descriptionController,
-                              type: 'text',
-                              textFieldBgColor: Colors.black.withOpacity(0.1),
-                              textFieldHeight: 100.h,
-                              isMessageTextField: true,
-                              changedValue: (value) {},
-                            ),
-
-                            SizedBox(height: 20.h),
-
-                            Row(
-                              spacing: 10.0,
+                    child: Scaffold(
+                      backgroundColor: Colors.transparent,
+                      resizeToAvoidBottomInset: false,
+                      body: Center(
+                        child: SignupFieldBox(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 30.h, horizontal: 20.w),
+                          child: Form(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Expanded(
-                                  child: CustomGradientButton(
-                                    text: '${AppLocalizations.of(context)?.cancel}',
-                                    onPressed: state.isLoading
-                                        ? null
-                                        : () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    customDecoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12.r),
-                                      border: Border.all(
-                                        color: Colors.white.withOpacity(0.2),
-                                      ),
-                                      color: const Color(0xFF464375),
-                                    ),
+                                // Notification Icon Box
+                                SvgPicture.asset(
+                                  AssetsPath.svgAddNote,
+                                  width: 48.h,
+                                  height: 48.h,
+                                ),
+                                SizedBox(height: 10.h),
+
+                                const Text(
+                                  "Add Note!",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
                                   ),
                                 ),
-                                Expanded(
-                                  child: CustomGradientButton(
-                                    text: '${AppLocalizations.of(context)?.submit}',
-                                    onPressed: state.isLoading
-                                        ? null
-                                        : _validateAndSubmit,
-                                  ),
+
+                                const SizedBox(height: 6),
+
+                                CustomTextField(
+                                  hint: 'Title of The Note',
+                                  editingController: _titleController,
+                                  type: 'text',
+                                  textFieldBgColor: Colors.black.withOpacity(0.1),
+                                  changedValue: (value) {},
+                                ),
+                                SizedBox(height: 10.h),
+
+                                CustomTextField(
+                                  hint: 'Add Description',
+                                  editingController: _descriptionController,
+                                  type: 'text',
+                                  textFieldBgColor: Colors.black.withOpacity(0.1),
+                                  textFieldHeight: 100.h,
+                                  isMessageTextField: true,
+                                  changedValue: (value) {},
+                                ),
+
+                                SizedBox(height: 20.h),
+
+                                Row(
+                                  spacing: 10.0,
+                                  children: [
+                                    Expanded(
+                                      child: CustomGradientButton(
+                                        text:
+                                            '${AppLocalizations.of(context)?.cancel}',
+                                        onPressed: state.isLoading
+                                            ? null
+                                            : () {
+                                                Navigator.of(context).pop();
+                                              },
+                                        customDecoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12.r),
+                                          border: Border.all(
+                                            color: Colors.white.withOpacity(0.2),
+                                          ),
+                                          color: const Color(0xFF464375),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: CustomGradientButton(
+                                        text:
+                                            '${AppLocalizations.of(context)?.submit}',
+                                        onPressed: state.isLoading
+                                            ? null
+                                            : _validateAndSubmit,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),

@@ -212,12 +212,14 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
                                   return ProfileOptionWidget(
                                     title: topic.name,
                                     itemClick: () {
+                                      print('Select TopicId: ${topic.tpcId}');
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => QuestionMcqScreen(
                                             type: "Start Exam",
                                             mcqType: "1", // 1 = Practice MCQ Type
+                                            topicId: topic.tpcId,
                                             // topicId: topic.tpcId,
                                             // topicName: topic.name,
                                             // chapterId: widget.chapterId,
@@ -246,6 +248,7 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
                                       builder: (context) => QuestionMcqScreen(
                                         type: "Start Exam",
                                         mcqType: "1", // 1 = Practice MCQ Type
+                                        topicId: "1",
                                       ),
                                     ),
                                   );

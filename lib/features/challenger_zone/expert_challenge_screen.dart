@@ -216,6 +216,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
                   builder: (context) => ChallengeResultScreen(
                     title: "Challenge Result 🏆",
                     crtChlId: challenge.crtChlId,
+                    solution: challenge.solutionVideo,
                   ),
                 ),
               ).then((value) {

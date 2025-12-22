@@ -9,6 +9,7 @@ import '../theme/app_typography.dart';
 class MyNotesItem extends StatelessWidget {
 
   String? title;
+  String? question;
   String? noteType;
   String? notesDes;
   Function()? deleteClick;
@@ -17,6 +18,7 @@ class MyNotesItem extends StatelessWidget {
   MyNotesItem({
     super.key,
     this.title,
+    this.question,
     this.noteType,
     this.notesDes,
     this.deleteClick,
@@ -64,6 +66,20 @@ class MyNotesItem extends StatelessWidget {
                   ),
                 )
               ],
+            ),
+            SizedBox(height: 7.h,),
+            Text(
+              'Question:',
+              style: AppTypography.inter10Medium.copyWith(
+                  color: const Color(0xFFF58D30)
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.sizeOf(context).width - 100.0,
+              child: Text(
+                question ?? '',
+                style: AppTypography.inter14Medium,
+              ),
             ),
             SizedBox(height: 7.h,),
             Text(

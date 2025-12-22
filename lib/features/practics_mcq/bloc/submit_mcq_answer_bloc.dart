@@ -29,6 +29,8 @@ class SubmitMcqAnswerBloc
     final response = await _repository.submitMcqAnswer(
       crtChlId: event.crtChlId,
       mcqList: event.mcqList,
+      apiType: event.apiType,
+      tpcId: event.tpcId,
     );
 
     if (response.status == ApiStatus.success && response.data != null) {

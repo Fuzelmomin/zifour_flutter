@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'challenge_mcq_list_model.g.dart';
 
+
 @JsonSerializable()
 class ChallengeMcqListResponse {
   final bool status;
@@ -9,11 +10,25 @@ class ChallengeMcqListResponse {
   @JsonKey(name: 'mcq_list')
   final List<McqItem> mcqList;
 
+  @JsonKey(name: 'chp_name')
+  final String? chpName;
+  @JsonKey(name: 'tpc_name')
+  final String? tpcName;
+  final String? standard;
+  final String? medium;
+  final String? subject;
+
   ChallengeMcqListResponse({
     required this.status,
     required this.message,
     required this.mcqList,
+    this.chpName,
+    this.tpcName,
+    this.standard,
+    this.medium,
+    this.subject,
   });
+
 
   factory ChallengeMcqListResponse.fromJson(Map<String, dynamic> json) =>
       _$ChallengeMcqListResponseFromJson(json);

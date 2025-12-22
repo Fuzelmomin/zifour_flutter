@@ -54,5 +54,8 @@ class APIConstants {
   static const addLectureReminder = 'lecture_reminder.php';
   static const lectureView = 'lecture_view.php';
   static const changeCourse = 'change_course.php';
+  static const getMCQTypes = 'mcq_types.php';
+  static const getPracticeMCQ = 'online_test.php';
+  static const submitPracticeMCQ = 'mcq_answer.php';
 
 }

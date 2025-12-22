@@ -17,6 +17,10 @@ class ChallengeMcqListRepository {
 
   Future<ApiResponse<ChallengeMcqListResponse>> fetchMcqList({
     required String crtChlId,
+    required String apiType,
+    String? sampleTest,
+    String? topicId,
+
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -33,12 +37,25 @@ class ChallengeMcqListRepository {
         );
       }
 
-      final response = await _dioClient.getDio().post(
-        APIConstants.getChallengeMcqList,
-        queryParameters: {
-          'crt_chl_id': crtChlId,
-        },
-      );
+      var response;
+      if(apiType == "1"){
+        response = await _dioClient.getDio().post(
+          APIConstants.getPracticeMCQ,
+          queryParameters: {
+            'sample_test': sampleTest,
+            'tpc_id': topicId,
+            'stu_id': user.stuId,
+          },
+        );
+      }else {
+        response = await _dioClient.getDio().post(
+          APIConstants.getChallengeMcqList,
+          queryParameters: {
+            'crt_chl_id': crtChlId,
+          },
+        );
+      }
+
 
       if (response.statusCode == 200) {
         final data = response.data;

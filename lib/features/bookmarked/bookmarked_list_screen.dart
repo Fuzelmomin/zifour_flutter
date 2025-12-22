@@ -12,6 +12,7 @@ import '../../core/utils/dialogs_utils.dart';
 import '../../core/widgets/bookmark_item.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/services/mcq_type_service.dart';
 import 'bloc/mcq_bookmark_list_bloc.dart';
 import 'bloc/mcq_bookmark_delete_bloc.dart';
 
@@ -25,14 +26,9 @@ class BookmarkedListScreen extends StatefulWidget {
 class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
   late McqBookmarkListBloc _mcqBookmarkListBloc;
   late McqBookmarkDeleteBloc _mcqBookmarkDeleteBloc;
+  final McqTypeService _mcqTypeService = McqTypeService();
 
-  String selectedFilter = "Practice MCQ";
-  final filters = [
-    "Practice MCQ",
-    "All India Test Series",
-    "Create Own Challenges",
-    "Expert Challenge"
-  ];
+  String selectedFilter = "Practice Mcq";
 
   @override
   void initState() {
@@ -132,8 +128,9 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                     actionWidget: PopupMenuButton<String>(
                       onSelected: (value) => setState(() => selectedFilter = value),
                       itemBuilder: (context) {
-                        return filters
-                            .map((e) => PopupMenuItem(value: e, child: Text(e)))
+                        final mcqTypes = _mcqTypeService.mcqTypes;
+                        return mcqTypes
+                            .map((e) => PopupMenuItem(value: e.name, child: Text(e.name)))
                             .toList();
                       },
                       child: Container(

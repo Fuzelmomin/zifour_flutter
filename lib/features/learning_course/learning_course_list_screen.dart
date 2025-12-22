@@ -69,8 +69,8 @@ class _LearningCourseListScreenState extends State<LearningCourseListScreen> {
                     return _CourseCard(
                       title: subject.name,
                       progress: 65, // Static for now as API doesn't provide this
-                      chapters: 15, // Static for now as API doesn't provide this
-                      lectures: 45, // Static for now as API doesn't provide this
+                      chapters: subject.totalChapter ?? "", // Static for now as API doesn't provide this
+                      lectures: subject.totalLectures ?? "", // Static for now as API doesn't provide this
                       iconUrl: "https://cdn-icons-png.flaticon.com/512/4149/4149678.png", // Static icon
                       onTap: (){
                         Navigator.push(
@@ -100,8 +100,8 @@ class _LearningCourseListScreenState extends State<LearningCourseListScreen> {
 class _CourseCard extends StatelessWidget {
   final String title;
   final int progress;
-  final int chapters;
-  final int lectures;
+  final String chapters;
+  final String lectures;
   final String iconUrl;
   final Function() onTap;
 
@@ -145,37 +145,37 @@ class _CourseCard extends StatelessWidget {
                     title,
                     style: AppTypography.inter20Medium,
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        "Progress: ",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
-                      ),
-                      Text(
-                        "$progress%",
-                        style: AppTypography.inter14SemiBold.copyWith(
-                            color: AppColors.white
-                        ),
-                      ),
-                      SizedBox(width: 5.0,),
-                      Text(
-                        "Completed: ",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
-                      ),
-                      Icon(
-                        Icons.check_circle,
-                        color: AppColors.green,
-                        size: 18.0,
-                      )
-                    ],
-                  ),
+                  // const SizedBox(height: 4),
+                  // Row(
+                  //   children: [
+                  //     Text(
+                  //       "Progress: ",
+                  //       style: TextStyle(
+                  //         fontSize: 13,
+                  //         color: Colors.white.withOpacity(0.8),
+                  //       ),
+                  //     ),
+                  //     Text(
+                  //       "$progress%",
+                  //       style: AppTypography.inter14SemiBold.copyWith(
+                  //           color: AppColors.white
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 5.0,),
+                  //     Text(
+                  //       "Completed: ",
+                  //       style: TextStyle(
+                  //         fontSize: 13,
+                  //         color: Colors.white.withOpacity(0.8),
+                  //       ),
+                  //     ),
+                  //     Icon(
+                  //       Icons.check_circle,
+                  //       color: AppColors.green,
+                  //       size: 18.0,
+                  //     )
+                  //   ],
+                  // ),
                   const SizedBox(height: 10),
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 15.0),

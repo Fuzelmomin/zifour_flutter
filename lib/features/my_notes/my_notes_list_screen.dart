@@ -12,6 +12,7 @@ import '../../core/constants/assets_path.dart';
 import '../../core/utils/dialogs_utils.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/services/mcq_type_service.dart';
 import 'bloc/mcq_notes_list_bloc.dart';
 import 'bloc/mcq_notes_delete_bloc.dart';
 
@@ -25,14 +26,9 @@ class MyNotesListScreen extends StatefulWidget {
 class _MyNotesListScreenState extends State<MyNotesListScreen> {
   late McqNotesListBloc _mcqNotesListBloc;
   late McqNotesDeleteBloc _mcqNotesDeleteBloc;
+  final McqTypeService _mcqTypeService = McqTypeService();
 
-  String selectedFilter = "Practice MCQ";
-  final filters = [
-    "Practice MCQ",
-    "All India Test Series",
-    "Create Own Challenges",
-    "Expert Challenge"
-  ];
+  String selectedFilter = "Practice Mcq";
 
   @override
   void initState() {
@@ -133,8 +129,9 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
                     actionWidget: PopupMenuButton<String>(
                       onSelected: (value) => setState(() => selectedFilter = value),
                       itemBuilder: (context) {
-                        return filters
-                            .map((e) => PopupMenuItem(value: e, child: Text(e)))
+                        final mcqTypes = _mcqTypeService.mcqTypes;
+                        return mcqTypes
+                            .map((e) => PopupMenuItem(value: e.name, child: Text(e.name)))
                             .toList();
                       },
                       child: Container(
@@ -331,6 +328,7 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
                                   return MyNotesItem(
                                     title: note.mcqNotesTitle,
                                     noteType: note.type,
+                                    question: note.mcQuestion,
                                     notesDes: note.mcqNotesDescription,
                                     deleteClick: () {
                                       _showDeleteConfirmation(note.mcqId);

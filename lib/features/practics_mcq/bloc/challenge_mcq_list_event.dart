@@ -7,6 +7,15 @@ abstract class ChallengeMcqListEvent {
 class ChallengeMcqListRequested extends ChallengeMcqListEvent {
   final String crtChlId;
 
-  const ChallengeMcqListRequested({required this.crtChlId});
+  final String apiType;
+  final String? sampleTest;
+  final String? topicId;
+
+  const ChallengeMcqListRequested({
+    required this.crtChlId,
+    required this.apiType,
+     this.sampleTest,
+     this.topicId,
+  });
 }
 

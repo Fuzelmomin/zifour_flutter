@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/dialogs/add_note_dialog.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
+import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -12,6 +13,7 @@ import '../../core/utils/connectivity_helper.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_loading_widget.dart';
+import '../../core/widgets/info_row.dart';
 import '../challenger_zone/challenge_result_screen.dart';
 import 'bloc/challenge_mcq_list_bloc.dart';
 import 'bloc/submit_mcq_answer_bloc.dart';
@@ -22,12 +24,14 @@ class QuestionMcqScreen extends StatefulWidget {
   final String type;
   final String mcqType;
   final String? crtChlId;
+  final String? topicId;
 
   const QuestionMcqScreen({
     super.key,
     required this.type,
     required this.mcqType,
     this.crtChlId,
+    this.topicId,
   });
 
   @override
@@ -60,13 +64,29 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     _mcqListBloc = ChallengeMcqListBloc();
     _submitMcqAnswerBloc = SubmitMcqAnswerBloc();
     _mcqBookmarkBloc = McqBookmarkBloc();
-    if (widget.crtChlId != null && widget.crtChlId!.isNotEmpty) {
+
+    // if widget.mcqType = "1", Practice MCQ
+    // if widget.mcqType = "2", Expert Challenge MCQ Type
+    // if widget.mcqType = "3", Own Challenge MCQ Type
+    // if widget.mcqType = "4",
+
+    if(widget.mcqType == "1"){
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _mcqListBloc.add(
-          ChallengeMcqListRequested(crtChlId: widget.crtChlId!),
+          ChallengeMcqListRequested(crtChlId: "", apiType: widget.mcqType, sampleTest: "0", topicId: widget.topicId),
         );
       });
+    }else {
+      if (widget.crtChlId != null && widget.crtChlId!.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _mcqListBloc.add(
+            ChallengeMcqListRequested(crtChlId: widget.crtChlId!, apiType: widget.mcqType, sampleTest: "0", topicId: widget.topicId),
+          );
+        });
+      }
     }
+
+
   }
 
   @override
@@ -183,7 +203,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   }
   
   Future<void> _submitAnswers() async {
-    if (!_mcqListBloc.state.hasData || widget.crtChlId == null) return;
+    //if (!_mcqListBloc.state.hasData || widget.crtChlId == null) return;
     
     // Check internet connectivity
     final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -215,11 +235,17 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       });
     }
 
+    // if widget.mcqType = "1", Practice MCQ
+    // if widget.mcqType = "2", Expert Challenge MCQ Type
+    // if widget.mcqType = "3", Own Challenge MCQ Type
+    // if widget.mcqType = "4",
     // Call API
     _submitMcqAnswerBloc.add(
       SubmitMcqAnswerRequested(
-        crtChlId: int.parse(widget.crtChlId!),
+        crtChlId: widget.mcqType == "1" ? 0 : int.parse(widget.crtChlId!),
         mcqList: mcqListForApi,
+        apiType: widget.mcqType,
+        tpcId: widget.topicId
       ),
     );
   }
@@ -257,16 +283,33 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         child: BlocListener<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
         listener: (context, state) {
           if (state.status == SubmitMcqAnswerStatus.success) {
-            // Navigator.pushReplacement(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => ChallengeResultScreen(
-            //       title: 'Challenge Results',
-            //       crtChlId: "",
-            //     ),
-            //   ),
-            // );
-            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.data?.message ?? 'Submit answers.'),
+                backgroundColor: AppColors.success,
+              ),
+            );
+            if(widget.mcqType == "1"){
+              int count = 0;
+              Navigator.popUntil(context, (route) => count++ == 3);
+            }else {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DashboardScreen(),
+                ),
+                (route) => false,
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChallengeResultScreen(
+                    title: 'Challenge Results',
+                    crtChlId: widget.crtChlId ?? "",
+                  ),
+                ),
+              );
+            }
           } else if (state.status == SubmitMcqAnswerStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -426,6 +469,26 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            widget.mcqType == "1" ? Row(
+              spacing: 15.w,
+              children: [
+                Expanded(
+                  child: InfoRow(
+                    title: "Chapter",
+                    value: state.data?.chpName ?? "",
+                  ),
+                ),
+                Expanded(
+                  child: InfoRow(
+                    title: "Topic",
+                    value: state.data?.tpcName ?? "",
+                  ),
+                ),
+              ],
+            ) : Container(),
+            SizedBox(height: widget.mcqType == "1" ? 10.h : 0.0),
+
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(

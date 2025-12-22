@@ -293,8 +293,8 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
               ],
             ),
             const SizedBox(height: 15),
-            Container(height: 1, color: Colors.white24),
-            const SizedBox(height: 12),
+            type == "upcoming" ? Container() : Container(height: 1, color: Colors.white24),
+            SizedBox(height: type == "upcoming" ? 0 : 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -339,7 +339,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                 //         : Container(),
                 //   ],
                 // ),
-                GestureDetector(
+                type == "upcoming" ? Container() : GestureDetector(
                   onTap: () {
                     onTap();
                   },

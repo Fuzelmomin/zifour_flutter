@@ -20,6 +20,8 @@ class SubmitMcqAnswerRepository {
   Future<ApiResponse<SubmitMcqAnswerResponse>> submitMcqAnswer({
     required int crtChlId,
     required List<Map<String, String>> mcqList,
+    required String apiType,
+    String? tpcId,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -36,14 +38,28 @@ class SubmitMcqAnswerRepository {
         );
       }
 
-      final response = await _dioClient.getDio().post(
-        APIConstants.submitMcqAnswer,
-        queryParameters: {
-          'stu_id': user.stuId,
-          'crt_chl_id': crtChlId,
-          'mcq_list': jsonEncode(mcqList),
-        },
-      );
+      var response;
+      if(apiType == "1"){
+        response = await _dioClient.getDio().post(
+          APIConstants.submitPracticeMCQ,
+          queryParameters: {
+            'stu_id': user.stuId,
+            'tpc_id': tpcId,
+            'sample_test': "0",
+            'mcq_list': jsonEncode(mcqList),
+          },
+        );
+      }else {
+        response = await _dioClient.getDio().post(
+          APIConstants.submitMcqAnswer,
+          queryParameters: {
+            'stu_id': user.stuId,
+            'crt_chl_id': crtChlId,
+            'mcq_list': jsonEncode(mcqList),
+          },
+        );
+      }
+
 
       if (response.statusCode == 200) {
         final data = response.data;

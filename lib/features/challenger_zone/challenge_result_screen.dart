@@ -14,16 +14,19 @@ import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/info_row.dart';
 import '../../l10n/app_localizations.dart';
+import '../dashboard/video_player_screen.dart';
 import 'bloc/challenge_result_bloc.dart';
 
 class ChallengeResultScreen extends StatelessWidget {
   final String? title;
   final String crtChlId;
-  
+  final String? solution;
+
   const ChallengeResultScreen({
     super.key, 
     this.title,
     required this.crtChlId,
+    this.solution,
   });
 
   @override
@@ -36,6 +39,7 @@ class ChallengeResultScreen extends StatelessWidget {
       child: _ChallengeResultView(
         title: title,
         crtChlId: crtChlId,
+        solution: solution,
       ),
     );
   }
@@ -44,10 +48,12 @@ class ChallengeResultScreen extends StatelessWidget {
 class _ChallengeResultView extends StatefulWidget {
   final String? title;
   final String crtChlId;
-  
+  final String? solution;
+
   const _ChallengeResultView({
     this.title,
     required this.crtChlId,
+    this.solution,
   });
 
   @override
@@ -368,7 +374,20 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
               Expanded(
                 child: CustomGradientButton(
                   text: 'View Solutions',
-                  onPressed: () {},
+                  onPressed: () {
+                    print("View Solutions: ${widget.solution}");
+                    if(widget.solution != null && widget.solution!.isNotEmpty){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VideoPlayerScreen(
+                            videoId: widget.solution ?? '',
+                            videoTitle: "",
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
             ],

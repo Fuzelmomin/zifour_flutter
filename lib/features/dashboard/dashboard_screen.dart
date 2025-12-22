@@ -9,6 +9,7 @@ import '../courses/all_course_list_screen.dart';
 import '../mentor/mentor_list_screen.dart';
 import '../mentor/mentors_videos_list_screen.dart';
 import '../subject/bloc/subject_bloc.dart';
+import '../mcq_type/bloc/mcq_type_bloc.dart';
 import 'bloc/home_bloc.dart';
 import 'home_screen.dart';
 import 'mentors_screen.dart';
@@ -26,17 +27,21 @@ class DashboardScreenState extends State<DashboardScreen> {
   final BehaviorSubject<int> _currentIndex = BehaviorSubject<int>.seeded(0);
   late final HomeBloc _homeBloc;
   late final SubjectBloc _subjectBloc;
+  late final McqTypeBloc _mcqTypeBloc;
 
   @override
   void initState() {
     super.initState();
     _homeBloc = HomeBloc();
     _subjectBloc = SubjectBloc();
+    _mcqTypeBloc = McqTypeBloc();
     
     // Call subject API silently when dashboard loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       print('API Call Subject:');
       _subjectBloc.add(const SubjectRequested(silent: false));
+      print('API Call MCQ Types:');
+      _mcqTypeBloc.add(const McqTypeRequested(silent: false));
     });
   }
 
@@ -44,6 +49,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   void dispose() {
     _homeBloc.close();
     _subjectBloc.close();
+    _mcqTypeBloc.close();
     _currentIndex.close();
     super.dispose();
   }
@@ -78,6 +84,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       providers: [
         BlocProvider.value(value: _homeBloc),
         BlocProvider.value(value: _subjectBloc),
+        BlocProvider.value(value: _mcqTypeBloc),
       ],
       child: SafeArea(
         child: Scaffold(

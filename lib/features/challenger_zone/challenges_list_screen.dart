@@ -145,12 +145,15 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
           onTap: () {
 
             if(challenge.erFlag == "2"){
+              print('solution_video: ${challenge.solutionVideo}');
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChallengeResultScreen(
                     title: 'Challenge Result 🏆',
                     crtChlId: challenge.crtChlId,
+                    solution: challenge.solutionVideo,
+
                   ),
                 ),
               ).then((value){

@@ -112,9 +112,9 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
                           ],
                         ),
                         child: Row(
-                          children: const [
+                          children: [
                             Text(
-                              "Filter",
+                              selectedFilter ?? "All",
                               style: TextStyle(color: Colors.white),
                             ),
                             SizedBox(width: 6),

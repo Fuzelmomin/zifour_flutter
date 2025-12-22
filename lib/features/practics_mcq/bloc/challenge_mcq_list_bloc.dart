@@ -28,6 +28,9 @@ class ChallengeMcqListBloc
 
     final response = await _repository.fetchMcqList(
       crtChlId: event.crtChlId,
+    apiType: event.apiType,
+    sampleTest: event.sampleTest,
+    topicId: event.topicId,
     );
 
     if (response.status == ApiStatus.success && response.data != null) {
