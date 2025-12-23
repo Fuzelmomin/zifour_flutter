@@ -6,6 +6,7 @@ import '../../../core/api_client/dio_client.dart';
 import '../../../core/api_models/api_response.dart';
 import '../../../core/api_models/api_status.dart';
 import '../../../core/utils/connectivity_helper.dart';
+import '../../../core/utils/language_preference.dart';
 import '../../../core/utils/user_preference.dart';
 import '../model/walkthrough_model.dart';
 
@@ -26,12 +27,13 @@ class WalkthroughRepository {
         );
       }
 
-      String finalMedId = medId ?? '2';
-      
-      final user = await UserPreference.getUserData();
-      if (user != null && user.stuMedId.isNotEmpty && user.stuMedId != '0') {
-        finalMedId = user.stuMedId;
-      }
+      // String finalMedId = medId ?? '2';
+      //
+      // final user = await UserPreference.getUserData();
+      // if (user != null && user.stuMedId.isNotEmpty && user.stuMedId != '0') {
+      //   finalMedId = user.stuMedId;
+      // }
+      final finalMedId = await LanguagePreference.getSelectedMediumId() ?? '2';
 
       final response = await _dioClient.getDio().get(
         APIConstants.getWelcomeImages,

@@ -9,89 +9,89 @@ class AppLocalizationsGu extends AppLocalizations {
   AppLocalizationsGu([String locale = 'gu']) : super(locale);
 
   @override
-  String get chooseLanguage => 'તમારી ભાષા પસંદ કરો';
+  String get chooseLanguage => 'Choose your Language';
 
   @override
   String get selectLanguage =>
-      'પ્લેટફોર્મને સરળતાથી ઉપયોગ કરવા માટે તમે સૌથી વધુ આરામદાયક ભાષા પસંદ કરો.';
+      'Select the language you\'re most comfortable with to continue using the platform smoothly.';
 
   @override
-  String get language => 'ભાષા';
+  String get language => 'language';
 
   @override
-  String get continueText => 'ચાલુ રાખો';
+  String get continueText => 'Continue';
 
   @override
-  String get continueWith => 'સાથે ચાલુ રાખો';
+  String get continueWith => 'Continue With';
 
   @override
-  String get gujarati => 'ગુજરાતી';
+  String get gujarati => 'Gujarati';
 
   @override
-  String get english => 'અંગ્રેજી';
+  String get english => 'English';
 
   @override
-  String get next => 'આગળ';
+  String get next => 'Next';
 
   @override
-  String get getStarted => 'શરૂ કરો';
+  String get getStarted => 'Get Started';
 
   @override
-  String get signIn => 'સાઇન ઇન';
+  String get signIn => 'Sign in';
 
   @override
-  String get phoneNumber => 'ફોન નંબર';
+  String get phoneNumber => 'Phone Number';
 
   @override
-  String get password => 'પાસવર્ડ';
+  String get password => 'Password';
 
   @override
-  String get rememberMe => 'મને યાદ રાખો';
+  String get rememberMe => 'Remember Me';
 
   @override
-  String get forgotPassword => 'પાસવર્ડ ભૂલી ગયા છો?';
+  String get forgotPassword => 'Forgot Password?';
 
   @override
-  String get signInButton => 'સાઇન ઇન';
+  String get signInButton => 'Sign In';
 
   @override
-  String get dontHaveAccount => 'એકાઉન્ટ નથી? ';
+  String get dontHaveAccount => 'Don\'t have account? ';
 
   @override
-  String get signUp => 'સાઇન અપ';
+  String get signUp => 'Sign Up';
 
   @override
-  String get pleaseFillAllFields => 'કૃપા કરીને બધા ક્ષેત્રો ભરો';
+  String get pleaseFillAllFields => 'Please fill all fields';
 
   @override
-  String get loginSuccessful => 'લોગિન સફળ રહ્યું!';
+  String get loginSuccessful => 'Login successful!';
 
   @override
-  String get letsGetStarted => 'ચાલો તમને શરૂ કરીએ!';
+  String get letsGetStarted => 'Let\'s get your started!';
 
   @override
-  String get fullName => 'પૂર્ણ નામ';
+  String get fullName => 'Full Name';
 
   @override
-  String get male => 'પુરુષ';
+  String get male => 'Male';
 
   @override
-  String get female => 'સ્ત્રી';
+  String get female => 'Female';
 
   @override
-  String get other => 'અન્ય';
+  String get other => 'Other';
 
   @override
-  String get selectStandard => 'પ્રમાણભૂત પસંદ કરો';
+  String get selectStandard => 'Select Standard';
 
   @override
-  String get class11 => 'ક્લાસ 11';
+  String get class11 => 'Class 11';
 
   @override
-  String get class12 => 'ક્લાસ 12';
+  String get class12 => 'Class 12';
 
   @override
-  String get dropper => 'ડ્રોપર';
+  String get dropper => 'Dropper';
 
   @override
   String get neet => 'NEET';
@@ -100,105 +100,104 @@ class AppLocalizationsGu extends AppLocalizations {
   String get jee => 'JEE';
 
   @override
-  String get confirmPassword => 'પાસવર્ડની પુષ્ટિ કરો';
+  String get confirmPassword => 'Confirm Password';
 
   @override
-  String get mobileNumber => 'મોબાઇલ નંબર';
+  String get mobileNumber => 'Mobile Number';
 
   @override
-  String get sendOtp => 'OTP મોકલો';
+  String get sendOtp => 'Send OTP';
 
   @override
-  String get reSendCode => 'કોડ ફરીથી મોકલો';
+  String get reSendCode => 'Re-send Code';
 
   @override
-  String get reSendCodeIn => 'કોડ ફરીથી મોકલો ';
+  String get reSendCodeIn => 'Re-send Code in ';
 
   @override
-  String get resend => 'ફરીથી મોકલો';
+  String get resend => 'Resend';
 
   @override
-  String get mobileVerificationFailed => 'મોબાઇલ વેરિફિકેશન નિષ્ફળ';
+  String get mobileVerificationFailed => 'Mobile Verification Failed';
 
   @override
-  String get mobileVerifiedSuccessfully => 'મોબાઇલ સફળતાપૂર્વક ચકાસાયું';
+  String get mobileVerifiedSuccessfully => 'Mobile Verified Successfully';
 
   @override
-  String get yourDetailsAreSafe => 'તમારી વિગતો અમારી સાથે સુરક્ષિત છે';
+  String get yourDetailsAreSafe => 'Your Details are safe with us';
 
   @override
-  String get signUpNow => 'સાઇન અપ';
+  String get signUpNow => 'Sign Up';
 
   @override
-  String get signupNow => 'સાઇન અપ કરો!';
+  String get signupNow => 'Signup Now!';
 
   @override
-  String get beZiddi => 'ઝિદ્દી બનો. ટોપર બનો.';
+  String get beZiddi => 'Be Ziddi. Be a Topper.';
 
   @override
-  String get alreadyAMember => 'અગાઉથી સભ્ય છો? ';
+  String get alreadyAMember => 'Already a Member? ';
 
   @override
-  String get signUpButton => 'સાઇન અપ';
+  String get signUpButton => 'Sign Up';
 
   @override
-  String get signupSuccessful => 'સાઇનઅપ સફળ રહ્યું!';
+  String get signupSuccessful => 'Signup successful!';
 
   @override
   String get uploadMarksheet =>
-      'તમારું છેલ્લા વર્ષના માર્કશીટ અથવા 10મી પરીક્ષા રસીદ અપલોડ કરો';
+      'Upload your last year marksheet or 10th Exam Receipt (It is Optional)';
 
   @override
-  String get forgotPasswordTitle => 'પાસવર્ડ ભૂલી ગયા';
+  String get forgotPasswordTitle => 'Forgot Password';
 
   @override
-  String get send => 'મોકલો';
+  String get send => 'Send';
 
   @override
-  String get pleaseEnterPhoneNumber => 'કૃપા કરીને ફોન નંબર દાખલ કરો';
+  String get pleaseEnterPhoneNumber => 'Please enter phone number';
 
   @override
-  String get pleaseEnterValidPhoneNumber =>
-      'કૃપા કરીને માન્ય ફોન નંબર દાખલ કરો';
+  String get pleaseEnterValidPhoneNumber => 'Please enter valid phone number';
 
   @override
-  String get sendOtpOnNumber => 'આ નંબર પર OTP મોકલો!';
+  String get sendOtpOnNumber => 'Send OTP on your this number!';
 
   @override
-  String get otpVerificationCode => 'OTP વેરિફિકેશન કોડ';
+  String get otpVerificationCode => 'OTP Verification Code';
 
   @override
-  String get verify => 'ચકાસો';
+  String get verify => 'Verify';
 
   @override
-  String get verificationSuccessfully => 'વેરિફિકેશન સફળ રહ્યું!';
+  String get verificationSuccessfully => 'Verification Successfully!';
 
   @override
-  String get changePassword => 'પાસવર્ડ બદલો';
+  String get changePassword => 'Change Password';
 
   @override
-  String get submit => 'સબમિટ કરો';
+  String get submit => 'Submit';
 
   @override
-  String get passwordDoesNotMatch => 'પાસવર્ડ મેળ ખાતો નથી';
+  String get passwordDoesNotMatch => 'Password does not match';
 
   @override
-  String get changePasswordSuccessful => 'પાસવર્ડ બદલવાનું સફળ રહ્યું!';
+  String get changePasswordSuccessful => 'Change Password successful!';
 
   @override
-  String get welcome => 'સ્વાગત';
+  String get welcome => 'Welcome';
 
   @override
-  String get home => 'ઘર';
+  String get home => 'Home';
 
   @override
-  String get settings => 'સેટિંગ્સ';
+  String get settings => 'Settings';
 
   @override
-  String get profile => 'પ્રોફાઇલ';
+  String get profile => 'Profile';
 
   @override
-  String get logout => 'લોગઆઉટ';
+  String get logout => 'Logout';
 
   @override
   String get trendingCourse => 'Trending Courses';

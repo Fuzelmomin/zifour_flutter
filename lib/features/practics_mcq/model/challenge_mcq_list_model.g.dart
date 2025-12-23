@@ -14,12 +14,11 @@ ChallengeMcqListResponse _$ChallengeMcqListResponseFromJson(
       mcqList: (json['mcq_list'] as List<dynamic>)
           .map((e) => McqItem.fromJson(e as Map<String, dynamic>))
           .toList(),
-
       chpName: json['chp_name'] as String?,
       tpcName: json['tpc_name'] as String?,
       standard: json['standard'] as String?,
-      subject: json['subject'] as String?,
       medium: json['medium'] as String?,
+      subject: json['subject'] as String?,
     );
 
 Map<String, dynamic> _$ChallengeMcqListResponseToJson(
@@ -28,12 +27,11 @@ Map<String, dynamic> _$ChallengeMcqListResponseToJson(
       'status': instance.status,
       'message': instance.message,
       'mcq_list': instance.mcqList,
-
       'chp_name': instance.chpName,
       'tpc_name': instance.tpcName,
       'standard': instance.standard,
-      'subject': instance.subject,
       'medium': instance.medium,
+      'subject': instance.subject,
     };
 
 McqItem _$McqItemFromJson(Map<String, dynamic> json) => McqItem(

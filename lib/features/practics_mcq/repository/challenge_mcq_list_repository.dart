@@ -20,6 +20,8 @@ class ChallengeMcqListRepository {
     required String apiType,
     String? sampleTest,
     String? topicId,
+    String? pkId,
+    String? paperId,
 
   }) async {
     try {
@@ -47,7 +49,19 @@ class ChallengeMcqListRepository {
             'stu_id': user.stuId,
           },
         );
-      }else {
+      } else if(apiType == "4"){
+        response = await _dioClient.getDio().post(
+          APIConstants.getPracticeMCQ,
+          queryParameters: {
+            'sample_test': sampleTest,
+            'chp_id': "0",
+            'stu_id': user.stuId,
+            'g_pa_id': paperId,
+            'pk_id': pkId,
+          },
+        );
+      }
+      else {
         response = await _dioClient.getDio().post(
           APIConstants.getChallengeMcqList,
           queryParameters: {

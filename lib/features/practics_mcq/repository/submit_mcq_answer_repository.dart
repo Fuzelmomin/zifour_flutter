@@ -22,6 +22,8 @@ class SubmitMcqAnswerRepository {
     required List<Map<String, String>> mcqList,
     required String apiType,
     String? tpcId,
+    String? pkId,
+    String? paperId,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -49,7 +51,20 @@ class SubmitMcqAnswerRepository {
             'mcq_list': jsonEncode(mcqList),
           },
         );
-      }else {
+      } else if(apiType == "4"){
+        response = await _dioClient.getDio().post(
+          APIConstants.submitPracticeMCQ,
+          queryParameters: {
+            'stu_id': user.stuId,
+            'sample_test': "2",
+            'chp_id': "0",
+            'pk_id': pkId,
+            'g_pa_id': paperId,
+            'mcq_list': jsonEncode(mcqList),
+          },
+        );
+      }
+      else {
         response = await _dioClient.getDio().post(
           APIConstants.submitMcqAnswer,
           queryParameters: {

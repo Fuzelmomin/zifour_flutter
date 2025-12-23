@@ -31,6 +31,8 @@ class ChallengeMcqListBloc
     apiType: event.apiType,
     sampleTest: event.sampleTest,
     topicId: event.topicId,
+    pkId: event.pkId,
+    paperId: event.paperId,
     );
 
     if (response.status == ApiStatus.success && response.data != null) {

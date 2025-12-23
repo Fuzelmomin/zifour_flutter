@@ -25,15 +25,14 @@ Map<String, dynamic> _$SubjectResponseToJson(SubjectResponse instance) =>
 SubjectModel _$SubjectModelFromJson(Map<String, dynamic> json) => SubjectModel(
       subId: json['sub_id'] as String,
       name: json['name'] as String,
-
-      totalChapter: json['total_chapter'] as String,
-      totalLectures: json['total_lectures'] as String,
+      totalLectures: json['total_lectures'] as String?,
+      totalChapter: json['total_chapter'] as String?,
     );
 
 Map<String, dynamic> _$SubjectModelToJson(SubjectModel instance) =>
     <String, dynamic>{
       'sub_id': instance.subId,
       'name': instance.name,
-      'total_chapter': instance.totalChapter,
       'total_lectures': instance.totalLectures,
+      'total_chapter': instance.totalChapter,
     };

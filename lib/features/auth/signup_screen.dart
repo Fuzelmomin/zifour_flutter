@@ -194,6 +194,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   SizedBox(height: 10.h),
                                   _buildGenderSelection(state),
+                                  // Marksheet Upload - Only visible for Female gender
+                                  _buildMarksheetUploadSection(state),
                                 ],
                               ),
                             ),
@@ -211,9 +213,6 @@ class _SignupScreenState extends State<SignupScreen> {
                                   ),
                                   // Course Selection
                                   _buildCourseSelection(state),
-                                  
-                                  // Marksheet Upload - Only visible for Female gender
-                                  _buildMarksheetUploadSection(state),
                                 ],
                               ),
                             ),

@@ -57,5 +57,7 @@ class APIConstants {
   static const getMCQTypes = 'mcq_types.php';
   static const getPracticeMCQ = 'online_test.php';
   static const submitPracticeMCQ = 'mcq_answer.php';
-
+  static const getOnlineTestPaper = 'online_test_paper.php';
+  static const submitTestSeriesMCQ = 'online_test.php';
+  static const supportAndFAQ = 'support.php';
 }

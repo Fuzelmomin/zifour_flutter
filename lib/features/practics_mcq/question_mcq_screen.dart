@@ -25,6 +25,8 @@ class QuestionMcqScreen extends StatefulWidget {
   final String mcqType;
   final String? crtChlId;
   final String? topicId;
+  final String? pkId;
+  final String? paperId;
 
   const QuestionMcqScreen({
     super.key,
@@ -32,6 +34,8 @@ class QuestionMcqScreen extends StatefulWidget {
     required this.mcqType,
     this.crtChlId,
     this.topicId,
+    this.pkId,
+    this.paperId,
   });
 
   @override
@@ -68,7 +72,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     // if widget.mcqType = "1", Practice MCQ
     // if widget.mcqType = "2", Expert Challenge MCQ Type
     // if widget.mcqType = "3", Own Challenge MCQ Type
-    // if widget.mcqType = "4",
+    // if widget.mcqType = "4", All India Series Test
 
     if(widget.mcqType == "1"){
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -76,7 +80,13 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           ChallengeMcqListRequested(crtChlId: "", apiType: widget.mcqType, sampleTest: "0", topicId: widget.topicId),
         );
       });
-    }else {
+    }else if(widget.mcqType == "4"){
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _mcqListBloc.add(
+          ChallengeMcqListRequested(crtChlId: "", apiType: widget.mcqType, sampleTest: "2", pkId: widget.pkId, paperId: widget.paperId),
+        );
+      });
+    } else {
       if (widget.crtChlId != null && widget.crtChlId!.isNotEmpty) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _mcqListBloc.add(
@@ -242,10 +252,12 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     // Call API
     _submitMcqAnswerBloc.add(
       SubmitMcqAnswerRequested(
-        crtChlId: widget.mcqType == "1" ? 0 : int.parse(widget.crtChlId!),
+        crtChlId: widget.mcqType == "1" || widget.mcqType == "4" ? 0 : int.parse(widget.crtChlId!),
         mcqList: mcqListForApi,
         apiType: widget.mcqType,
-        tpcId: widget.topicId
+        tpcId: widget.topicId,
+        paperId: widget.paperId,
+        pkId: widget.pkId
       ),
     );
   }
@@ -292,7 +304,11 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
             if(widget.mcqType == "1"){
               int count = 0;
               Navigator.popUntil(context, (route) => count++ == 3);
-            }else {
+            } else if(widget.mcqType == "4"){
+              int count = 0;
+              Navigator.popUntil(context, (route) => count++ == 1);
+            }
+            else {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(

@@ -8,6 +8,8 @@ class SubmitMcqAnswerRequested extends SubmitMcqAnswerEvent {
   final int crtChlId;
   final String apiType;
   final String? tpcId;
+  final String? pkId;
+  final String? paperId;
   final List<Map<String, String>> mcqList;
 
   const SubmitMcqAnswerRequested({
@@ -15,6 +17,8 @@ class SubmitMcqAnswerRequested extends SubmitMcqAnswerEvent {
     required this.mcqList,
     required this.apiType,
     this.tpcId,
+    this.pkId,
+    this.paperId,
   });
 }
 

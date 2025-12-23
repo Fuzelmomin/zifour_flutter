@@ -31,6 +31,8 @@ class SubmitMcqAnswerBloc
       mcqList: event.mcqList,
       apiType: event.apiType,
       tpcId: event.tpcId,
+      pkId: event.pkId,
+      paperId: event.paperId,
     );
 
     if (response.status == ApiStatus.success && response.data != null) {
