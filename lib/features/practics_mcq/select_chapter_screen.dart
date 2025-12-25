@@ -11,6 +11,7 @@ import 'package:zifour_sourcecode/features/demo_ui.dart';
 import 'package:zifour_sourcecode/features/learning_course/learning_chapter_videos_screen.dart';
 import 'package:zifour_sourcecode/features/learning_course/select_course_topic_screen.dart';
 import 'package:zifour_sourcecode/features/mentor/mentors_videos_list_screen.dart';
+import 'package:zifour_sourcecode/features/module_list/module_list_screen.dart';
 import 'package:zifour_sourcecode/features/practics_mcq/select_topic_screen.dart';
 import 'package:zifour_sourcecode/features/reset_password/reset_password_screen.dart';
 import '../../core/constants/app_colors.dart';
@@ -55,7 +56,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
     super.initState();
     _chapterBloc = ChapterBloc();
     
-    if(widget.from == "course" || widget.from == "practice"){
+    if(widget.from == "course" || widget.from == "practice" || widget.from == "module"){
       // Load chapters from API if subjectId is provided
       if (widget.subjectId != null && widget.subjectId!.isNotEmpty) {
         _chapterBloc.add(ChapterRequested(subId: widget.subjectId!));
@@ -194,7 +195,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                       ),
                       SizedBox(height: 20.h),
                         // Dynamic chapter list based on from parameter
-                        if (widget.from == "course" || widget.from == "practice")
+                        if (widget.from == "course" || widget.from == "practice" || widget.from == "module")
                           BlocBuilder<ChapterBloc, ChapterState>(
                             builder: (context, state) {
                               if (state.isLoading) {
@@ -259,6 +260,16 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                               subjectName: widget.subjectName ?? '',
                                               chapterId: chapter.chpId,
                                               chapterName: chapter.name,
+                                            ),
+                                          ),
+                                        );
+                                      } else if(widget.from == "module"){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ModuleListScreen(
+                                              subId: widget.subjectId ?? '',
+                                              chapterId: chapter.chpId,
                                             ),
                                           ),
                                         );

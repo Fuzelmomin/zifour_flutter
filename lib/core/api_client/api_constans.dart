@@ -60,4 +60,6 @@ class APIConstants {
   static const getOnlineTestPaper = 'online_test_paper.php';
   static const submitTestSeriesMCQ = 'online_test.php';
   static const supportAndFAQ = 'support.php';
+  static const testSeriesResult = 'mcq_result_paper.php';
+  static const getModulesList = 'modules_list.php';
 }

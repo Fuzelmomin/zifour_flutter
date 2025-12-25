@@ -17,6 +17,9 @@ class ChallengeResultRepository {
 
   Future<ApiResponse<ChallengeResultResponse>> getChallengeResult({
     required String crtChlId,
+    required String apiType,
+    required String? pkId,
+    required String? paperId,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -33,13 +36,27 @@ class ChallengeResultRepository {
         );
       }
 
-      final response = await _dioClient.getDio().post(
-        APIConstants.createChallengeResult,
-        queryParameters: {
-          'stu_id': user.stuId,
-          'crt_chl_id': crtChlId,
-        },
-      );
+      var response;
+
+      // 1, 4 = TestSeries, 2, 3 = Challenge
+      if(apiType == "1" || apiType == "4"){
+        response = await _dioClient.getDio().post(
+          APIConstants.testSeriesResult,
+          queryParameters: {
+            'stu_id': user.stuId,
+            'pk_id': pkId,
+            'g_pa_id': paperId,
+          },
+        );
+      }else {
+        response = await _dioClient.getDio().post(
+          APIConstants.createChallengeResult,
+          queryParameters: {
+            'stu_id': user.stuId,
+            'crt_chl_id': crtChlId,
+          },
+        );
+      }
 
       if (response.statusCode == 200) {
         final data = response.data;

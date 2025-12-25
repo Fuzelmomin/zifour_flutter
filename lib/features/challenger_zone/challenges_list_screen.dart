@@ -153,6 +153,7 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
                     title: 'Challenge Result 🏆',
                     crtChlId: challenge.crtChlId,
                     solution: challenge.solutionVideo,
+                    screenType: "3", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
 
                   ),
                 ),

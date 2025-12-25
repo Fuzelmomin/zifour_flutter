@@ -217,6 +217,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
                     title: "Challenge Result 🏆",
                     crtChlId: challenge.crtChlId,
                     solution: challenge.solutionVideo,
+                    screenType: "2", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
                   ),
                 ),
               ).then((value) {

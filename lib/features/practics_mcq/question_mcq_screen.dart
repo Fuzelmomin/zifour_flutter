@@ -322,6 +322,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   builder: (context) => ChallengeResultScreen(
                     title: 'Challenge Results',
                     crtChlId: widget.crtChlId ?? "",
+                    screenType: widget.mcqType, // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
                   ),
                 ),
               );

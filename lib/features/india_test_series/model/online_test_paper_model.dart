@@ -28,9 +28,22 @@ class TestPaperModel {
   @JsonKey(name: 'g_pa_name')
   final String gPaName;
 
+  final String date;
+  final String time;
+
+  @JsonKey(name: 'solution_video')
+  final String solutionVideo;
+
+  @JsonKey(name: 'er_flag')
+  final String erFlag;
+
   TestPaperModel({
     required this.gPaId,
     required this.gPaName,
+    required this.date,
+    required this.time,
+    required this.solutionVideo,
+    required this.erFlag,
   });
 
   factory TestPaperModel.fromJson(Map<String, dynamic> json) =>

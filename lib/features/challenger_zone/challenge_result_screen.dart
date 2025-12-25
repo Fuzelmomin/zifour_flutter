@@ -22,11 +22,18 @@ class ChallengeResultScreen extends StatelessWidget {
   final String crtChlId;
   final String? solution;
 
+  final String screenType;
+  final String? pkId;
+  final String? paperId;
+
   const ChallengeResultScreen({
     super.key, 
     this.title,
     required this.crtChlId,
+    required this.screenType,
     this.solution,
+    this.pkId,
+    this.paperId,
   });
 
   @override
@@ -35,11 +42,17 @@ class ChallengeResultScreen extends StatelessWidget {
       create: (_) => ChallengeResultBloc()
         ..add(ChallengeResultRequested(
           crtChlId: crtChlId,
+          apiType: screenType,
+          paperId: paperId,
+          pkId: pkId
         )),
       child: _ChallengeResultView(
         title: title,
         crtChlId: crtChlId,
         solution: solution,
+        screenType: screenType,
+        pkId: pkId,
+        paperId: paperId,
       ),
     );
   }
@@ -50,10 +63,17 @@ class _ChallengeResultView extends StatefulWidget {
   final String crtChlId;
   final String? solution;
 
+  final String screenType;
+  final String? pkId;
+  final String? paperId;
+
   const _ChallengeResultView({
     this.title,
     required this.crtChlId,
+    required this.screenType,
     this.solution,
+    this.pkId,
+    this.paperId,
   });
 
   @override
@@ -171,7 +191,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "See how you performed in this challenge.",
+            widget.screenType == "1" ? "See how you performed in this test series." : "See how you performed in this challenge.",
             style: AppTypography.inter16Regular.copyWith(
               color: AppColors.white.withOpacity(0.6),
             ),
@@ -184,12 +204,12 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data.subject ?? "Challenge Result",
+                  data.subject ?? "${widget.screenType == "1" ? "Test series Result" : "Challenge Result"}",
                   style: AppTypography.inter16Medium,
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "Challenge Completed",
+                  widget.screenType == "1" ? "Test Series Completed" : "Challenge Completed",
                   style: AppTypography.inter12SemiBold.copyWith(
                     color: AppColors.orange,
                   ),
@@ -275,7 +295,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
 
           /// Graph Card (keeping the existing graph for now)
           Visibility(
-            visible: widget.title == "Challenge Result 🏆" ? false : true,
+            visible: widget.title == "Challenge Result 🏆" || widget.screenType == "1" ? false : true,
             child: _glassCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,7 +445,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                   right: 5.w,
                   child: CustomAppBar(
                     isBack: true,
-                    title: widget.title ?? 'Challenge Result 🏆',
+                    title: widget.title ?? "${widget.screenType == "1" ? "Test series Result" : 'Challenge Result 🏆'}",
                   )),
               // Main Content with BLoC
               Positioned(
@@ -441,11 +461,14 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                         return _buildShimmerLoader();
                       case ChallengeResultStatus.failure:
                         return _buildError(
-                          message: state.errorMessage ?? 'Unable to load challenge result.',
+                          message: state.errorMessage ?? 'Unable to load result.',
                           onRetry: () {
                             context.read<ChallengeResultBloc>().add(
                               ChallengeResultRequested(
                                 crtChlId: widget.crtChlId,
+                                apiType: widget.screenType,
+                                pkId: widget.pkId,
+                                paperId: widget.paperId
                               ),
                             );
                           },

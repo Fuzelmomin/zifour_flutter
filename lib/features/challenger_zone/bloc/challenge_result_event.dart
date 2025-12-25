@@ -6,8 +6,14 @@ abstract class ChallengeResultEvent {
 
 class ChallengeResultRequested extends ChallengeResultEvent {
   final String crtChlId;
+  final String apiType;
+  final String? pkId;
+  final String? paperId;
 
   const ChallengeResultRequested({
     required this.crtChlId,
+    required this.apiType,
+    this.pkId,
+    this.paperId,
   });
 }

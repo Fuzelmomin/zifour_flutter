@@ -61,7 +61,8 @@ class DashboardScreenState extends State<DashboardScreen> {
         child: const HomeScreen(),
       ),
       MentorsListScreen(),
-      const AllCoursesScreen(),
+      //const AllCoursesScreen(),
+      ModulesScreen(),
       const ProfileScreen(),
     ];
   }
@@ -148,7 +149,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                       currentIndex: currentIndex,
                       icon: AssetsPath.svgSelModules,
                       unselectedIcon: AssetsPath.svgUnSelModules,
-                      label: 'Course',
+                      label: 'Module',
                       onTap: () => _onItemTapped(2),
                     ),
                     _buildNavItem(

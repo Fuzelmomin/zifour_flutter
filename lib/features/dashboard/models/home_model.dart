@@ -6,6 +6,7 @@ class HomeResponse {
   final int notificationIcon;
   final int lectureReport;
   final bool isSoftBoxEnabled;
+  final String? pkId;
   final List<MentorVideo> mentorVideos;
   final List<HomeSlider> sliders;
   final List<CoursePackage> packages;
@@ -19,12 +20,14 @@ class HomeResponse {
     required this.mentorVideos,
     required this.sliders,
     required this.packages,
+    this.pkId,
   });
 
   factory HomeResponse.fromJson(Map<String, dynamic> json) {
     return HomeResponse(
       status: json['status'] == true,
       message: json['message']?.toString() ?? '',
+      pkId: json['pk_id']?.toString() ?? '',
       notificationIcon: _parseInt(json['ntf_icon']),
       lectureReport: _parseInt(json['lec_rept']),
       isSoftBoxEnabled: json['isSftBoxEnable'] == true,

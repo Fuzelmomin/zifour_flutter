@@ -28,10 +28,18 @@ TestPaperModel _$TestPaperModelFromJson(Map<String, dynamic> json) =>
     TestPaperModel(
       gPaId: json['g_pa_id'] as String,
       gPaName: json['g_pa_name'] as String,
+      date: json['date'] as String,
+      time: json['time'] as String,
+      solutionVideo: json['solution_video'] as String,
+      erFlag: json['er_flag'] as String,
     );
 
 Map<String, dynamic> _$TestPaperModelToJson(TestPaperModel instance) =>
     <String, dynamic>{
       'g_pa_id': instance.gPaId,
       'g_pa_name': instance.gPaName,
+      'date': instance.date,
+      'time': instance.time,
+      'solution_video': instance.solutionVideo,
+      'er_flag': instance.erFlag,
     };

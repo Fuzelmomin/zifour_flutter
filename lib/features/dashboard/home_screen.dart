@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Timer? _bannerTimer;
+  String? pkId;
 
   final List<Map<String, dynamic>> menuItems = [
     {
@@ -190,6 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: AppColors.darkBlue,
             child: BlocBuilder<HomeBloc, HomeState>(
               builder: (context, state) {
+                pkId = state.data?.pkId ?? '';
                 return RefreshIndicator(
                   onRefresh: _onRefresh,
                   color: AppColors.pinkColor,
@@ -604,7 +606,7 @@ class _HomeScreenState extends State<HomeScreen> {
             itemClick: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const LearningCourseScreen()),
+                MaterialPageRoute(builder: (context) => LearningCourseScreen()),
               );
             },
           ),
@@ -637,7 +639,10 @@ class _HomeScreenState extends State<HomeScreen> {
             itemClick: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AllIndiaTestSeriesScreen()),
+                MaterialPageRoute(builder: (context) => AllIndiaTestSeriesScreen(
+                  pkId: pkId,
+
+                )),
               );
             },
           ),
@@ -748,7 +753,9 @@ class _HomeScreenState extends State<HomeScreen> {
         }else if(index == 2){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const LearningCourseScreen()),
+            MaterialPageRoute(builder: (context) => LearningCourseScreen(
+              pkId: pkId,
+            )),
           );
         }else if(index == 3){
           Navigator.push(
@@ -763,7 +770,9 @@ class _HomeScreenState extends State<HomeScreen> {
         }else if(index == 5){
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AllIndiaTestSeriesScreen()),
+            MaterialPageRoute(builder: (context) => AllIndiaTestSeriesScreen(
+              pkId: pkId,
+            )),
           );
         }else if(index == 6){
           Navigator.push(

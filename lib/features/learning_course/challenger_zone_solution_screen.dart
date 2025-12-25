@@ -155,6 +155,7 @@ class _ChallengerZoneSolutionScreenState
                                   builder: (context) => ChallengeResultScreen(
                                     title: "Challenger Test Results 🏆",
                                     crtChlId: challenge.crtChlId,
+                                    screenType: "3", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
                                   ),
                                 ),
                               );

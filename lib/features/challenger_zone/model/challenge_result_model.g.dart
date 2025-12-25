@@ -19,6 +19,10 @@ ChallengeResultResponse _$ChallengeResultResponseFromJson(
       wrong: json['wrong'] as String?,
       marks: json['marks'] as String?,
       percentage: json['percentage'] as String?,
+      standard: json['standard'] as String?,
+      medium: json['medium'] as String?,
+      exam: json['exam'] as String?,
+      pkName: json['pk_name'] as String?,
     );
 
 Map<String, dynamic> _$ChallengeResultResponseToJson(
@@ -34,4 +38,8 @@ Map<String, dynamic> _$ChallengeResultResponseToJson(
       'wrong': instance.wrong,
       'marks': instance.marks,
       'percentage': instance.percentage,
+      'standard': instance.standard,
+      'medium': instance.medium,
+      'exam': instance.exam,
+      'pk_name': instance.pkName,
     };

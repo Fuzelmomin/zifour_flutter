@@ -31,6 +31,9 @@ class ChallengeResultBloc
     print('ChallengeResultBloc: Calling repository.getChallengeResult()');
     final response = await _repository.getChallengeResult(
       crtChlId: event.crtChlId,
+      apiType: event.apiType,
+      pkId: event.pkId,
+      paperId: event.paperId,
     );
     
     print('ChallengeResultBloc: Repository response status: ${response.status}');
@@ -44,7 +47,7 @@ class ChallengeResultBloc
     } else {
       emit(state.copyWith(
         status: ChallengeResultStatus.failure,
-        errorMessage: response.errorMsg ?? 'Unable to fetch challenge result.',
+        errorMessage: response.errorMsg ?? 'Unable to fetch result.',
       ));
     }
   }

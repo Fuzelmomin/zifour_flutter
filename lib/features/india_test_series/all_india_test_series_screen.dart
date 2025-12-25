@@ -11,11 +11,16 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
+import '../challenger_zone/challenge_result_screen.dart';
 import '../practics_mcq/question_mcq_screen.dart';
 import 'bloc/online_test_paper_bloc.dart';
 
 class AllIndiaTestSeriesScreen extends StatefulWidget {
-  const AllIndiaTestSeriesScreen({super.key});
+  String? pkId;
+  AllIndiaTestSeriesScreen({
+    super.key,
+    this.pkId
+  });
 
   @override
   State<AllIndiaTestSeriesScreen> createState() => _AllIndiaTestSeriesScreenState();
@@ -157,24 +162,40 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
                                   final paper = paperList[index];
                                   return testCard(
                                     title: paper.gPaName,
-                                    status: "Attempt Now", // Placeholder or from API if available
-                                    statusColor: Colors.orange,
-                                    icon: Icons.error,
-                                    iconColor: Colors.orange,
-                                    date: "Test ID: ${paper.gPaId}", // Adjust according to requirements
-                                    duration: "3 Hours", // Placeholder
+                                    status: paper.erFlag == "2" ? "Completed" : "Attempt Now", // Placeholder or from API if available
+                                    statusColor: paper.erFlag == "2" ? Colors.green : Colors.orange,
+                                    icon: paper.erFlag == "2" ? Icons.check_circle : Icons.error,
+                                    iconColor: paper.erFlag == "2" ? Colors.green : Colors.orange,
+                                    date: paper.date, // Adjust according to requirements
+                                    duration: paper.time, // Placeholder
                                     onItemClick: (){
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => QuestionMcqScreen(
-                                            type: "Start Exam",
-                                            mcqType: "4", // 4 = All India Test Series MCQ Type
-                                            pkId: "1",
+
+                                      if(paper.erFlag == "2"){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ChallengeResultScreen(
+                                            title: "Test Series Results 🏆",
+                                            crtChlId: "",
+                                            screenType: "1", // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
+                                            pkId: widget.pkId,
                                             paperId: paper.gPaId,
+                                            solution: paper.solutionVideo,
+                                          )),
+                                        );
+                                      }else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => QuestionMcqScreen(
+                                              type: "Start Exam",
+                                              mcqType: "4", // 4 = All India Test Series MCQ Type
+                                              pkId: "1",
+                                              paperId: paper.gPaId,
+                                            ),
                                           ),
-                                        ),
-                                      );
+                                        );
+                                      }
+
                                     },
                                   );
                                 },
@@ -186,15 +207,15 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
                         ),
                       ),
 
-                      CustomGradientButton(
-                        text: 'View Past Test Result',
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const TestAnalysisScreen()),
-                          );
-                        },
-                      ),
+                      // CustomGradientButton(
+                      //   text: 'View Past Test Result',
+                      //   onPressed: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(builder: (context) => const TestAnalysisScreen()),
+                      //     );
+                      //   },
+                      // ),
                       const SizedBox(height: 20),
                     ],
                   ),

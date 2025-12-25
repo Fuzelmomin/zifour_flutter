@@ -15,6 +15,12 @@ class ChallengeResultResponse {
   final String? marks;
   final String? percentage;
 
+  final String? standard;
+  final String? medium;
+  final String? exam;
+  @JsonKey(name: 'pk_name')
+  final String? pkName;
+
   ChallengeResultResponse({
     required this.status,
     required this.message,
@@ -26,6 +32,11 @@ class ChallengeResultResponse {
     this.wrong,
     this.marks,
     this.percentage,
+
+    this.standard,
+    this.medium,
+    this.exam,
+    this.pkName,
   });
 
   factory ChallengeResultResponse.fromJson(Map<String, dynamic> json) =>
