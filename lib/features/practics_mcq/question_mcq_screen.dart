@@ -27,6 +27,7 @@ class QuestionMcqScreen extends StatefulWidget {
   final String? topicId;
   final String? pkId;
   final String? paperId;
+  final String? paperSolution;
 
   const QuestionMcqScreen({
     super.key,
@@ -36,6 +37,7 @@ class QuestionMcqScreen extends StatefulWidget {
     this.topicId,
     this.pkId,
     this.paperId,
+    this.paperSolution,
   });
 
   @override
@@ -301,13 +303,31 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 backgroundColor: AppColors.success,
               ),
             );
-            if(widget.mcqType == "1"){
-              int count = 0;
-              Navigator.popUntil(context, (route) => count++ == 3);
-            } else if(widget.mcqType == "4"){
+            if(widget.mcqType == "1" || widget.mcqType == "4"){
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DashboardScreen(),
+                ),
+                    (route) => false,
+              );
+              print('Paper MCQ Test Id PKID: ${widget.pkId}');
+              print('Paper MCQ Test Id PaperId: ${widget.paperId}');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChallengeResultScreen(
+                  title: "Test Series Results 🏆",
+                  crtChlId: "",
+                  screenType: "1", // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
+                  pkId: widget.pkId,
+                  paperId: widget.paperId,
+                  solution: widget.paperSolution,
+                )),
+              );
+            } /*else if(widget.mcqType == "4"){
               int count = 0;
               Navigator.popUntil(context, (route) => count++ == 1);
-            }
+            }*/
             else {
               Navigator.pushAndRemoveUntil(
                 context,
@@ -506,7 +526,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
             ) : Container(),
             SizedBox(height: widget.mcqType == "1" ? 10.h : 0.0),
 
-            Container(
+            /*Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
@@ -521,7 +541,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 14),*/
 
             Row(
               children: [

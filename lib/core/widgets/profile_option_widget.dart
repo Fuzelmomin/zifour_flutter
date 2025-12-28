@@ -26,10 +26,13 @@ class ProfileOptionWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                title ?? '',
-                style: AppTypography.inter16Medium.copyWith(
-                  color: AppColors.white.withOpacity(0.8)
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width - 100.w,
+                child: Text(
+                  title ?? '',
+                  style: AppTypography.inter16Medium.copyWith(
+                    color: AppColors.white.withOpacity(0.8)
+                  ),
                 ),
               ),
 

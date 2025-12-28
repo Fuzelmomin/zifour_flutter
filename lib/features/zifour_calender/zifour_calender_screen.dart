@@ -22,6 +22,7 @@ import '../../core/widgets/signup_field_box.dart';
 import '../../core/widgets/text_field_container.dart';
 import '../../l10n/app_localizations.dart';
 import 'bloc/calendar_event_bloc.dart';
+import 'bloc/delete_calendar_event_bloc.dart';
 import 'bloc/get_calender_events_bloc.dart';
 import 'model/calendar_events_list_model.dart';
 
@@ -165,6 +166,7 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
       }
 
       return {
+        "id": event.calevtId ?? '',
         "time": displayTime,
         "date": displayDate,
         "title": event.name ?? '',
@@ -187,6 +189,7 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
       providers: [
         BlocProvider(create: (context) => CalendarEventBloc()),
         BlocProvider(create: (context) => GetCalenderEventsBloc()),
+        BlocProvider(create: (context) => DeleteCalendarEventBloc()),
       ],
       child: Builder(
         builder: (context) {
@@ -196,7 +199,7 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
               _loadEvents(context);
             });
           }
-          
+
           return BlocListener<GetCalenderEventsBloc, GetCalenderEventsState>(
             listener: (context, state) {
               if (state is GetCalenderEventsSuccess) {
@@ -212,109 +215,137 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
                 );
               }
             },
-          child: BlocListener<CalendarEventBloc, CalendarEventState>(
-            listener: (context, state) {
-              if (state is CalendarEventSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-                // Clear form and close bottom sheet
-                nameController.clear();
-                noteController.clear();
-                setState(() {
-                  selectedDate = null;
-                  selectedTime = null;
-                });
-                Navigator.pop(context);
-                // Reload events after creating new event
-                _eventsLoaded = false;
-                _loadEvents(context);
-              } else if (state is CalendarEventError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: AppColors.error,
-                  ),
-                );
-              }
-            },
-            child: Scaffold(
-              body: Container(
-                width: double.infinity,
-                height: double.infinity,
-                color: AppColors.darkBlue,
-                child: SafeArea(
-                  child: Stack(
-                    children: [
-                      // Background Decoration set
-
-                      Positioned.fill(
-                        child: Image.asset(
-                          AssetsPath.signupBgImg,
-                          fit: BoxFit.cover,
-                        ),
+            child: BlocListener<CalendarEventBloc, CalendarEventState>(
+              listener: (context, state) {
+                if (state is CalendarEventSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  // Clear form and close bottom sheet
+                  nameController.clear();
+                  noteController.clear();
+                  setState(() {
+                    selectedDate = null;
+                    selectedTime = null;
+                  });
+                  Navigator.pop(context);
+                  // Reload events after creating new event
+                  _eventsLoaded = false;
+                  _loadEvents(context);
+                } else if (state is CalendarEventError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                }
+              },
+              child: BlocListener<DeleteCalendarEventBloc,
+                  DeleteCalendarEventState>(
+                listener: (context, state) {
+                  if (state is DeleteCalendarEventSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                        backgroundColor: Colors.green,
                       ),
+                    );
+                    // Close the bottom sheet so the SnackBar is visible on the main screen
+                    Navigator.pop(context);
 
-                      // App Bar
-                      Positioned(
-                          top: 20.h,
-                          left: 15.w,
-                          right: 5.w,
-                          child: CustomAppBar(
-                            isBack: true,
-                            title:
-                                '${AppLocalizations.of(context)?.zifour_calender}',
-                            isActionWidget: true,
-                            actionWidget: SvgPicture.asset(
-                              AssetsPath.svgAdd,
-                              width: 55.w,
-                              height: 55.h,
+                    // Remove item from local list
+                    final currentEvents =
+                        List<Map<String, String>>.from(_events.value);
+                    currentEvents.removeWhere((e) => e['id'] == state.eventId);
+                    _events.add(currentEvents);
+                  } else if (state is DeleteCalendarEventError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                },
+                child: Scaffold(
+                  body: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: AppColors.darkBlue,
+                    child: SafeArea(
+                      child: Stack(
+                        children: [
+                          // Background Decoration set
+
+                          Positioned.fill(
+                            child: Image.asset(
+                              AssetsPath.signupBgImg,
+                              fit: BoxFit.cover,
                             ),
-                            actionClick: () {
-                              final calendarEventBloc =
-                                  context.read<CalendarEventBloc>();
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                elevation: 1.0,
-                                barrierColor: Colors.transparent,
-                                builder: (bottomSheetContext) {
-                                  return BlocProvider.value(
-                                    value: calendarEventBloc,
-                                    child: _buildAddEventBottomSheet(
-                                        bottomSheetContext),
+                          ),
+
+                          // App Bar
+                          Positioned(
+                              top: 20.h,
+                              left: 15.w,
+                              right: 5.w,
+                              child: CustomAppBar(
+                                isBack: true,
+                                title:
+                                    '${AppLocalizations.of(context)?.zifour_calender}',
+                                isActionWidget: true,
+                                actionWidget: SvgPicture.asset(
+                                  AssetsPath.svgAdd,
+                                  width: 55.w,
+                                  height: 55.h,
+                                ),
+                                actionClick: () {
+                                  final calendarEventBloc =
+                                      context.read<CalendarEventBloc>();
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 1.0,
+                                    barrierColor: Colors.transparent,
+                                    builder: (bottomSheetContext) {
+                                      return BlocProvider.value(
+                                        value: calendarEventBloc,
+                                        child: _buildAddEventBottomSheet(
+                                            bottomSheetContext),
+                                      );
+                                    },
                                   );
                                 },
-                              );
-                            },
-                          )),
+                              )),
 
-                      // Main Content with BLoC
-                      Positioned(
-                        top: 90.h,
-                        left: 20.w,
-                        right: 20.w,
-                        bottom: 0,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildHeader(),
-                            _buildCalendar(),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
+                          // Main Content with BLoC
+                          Positioned(
+                            top: 90.h,
+                            left: 20.w,
+                            right: 20.w,
+                            bottom: 0,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildHeader(),
+                                _buildCalendar(),
+                                const SizedBox(height: 10),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                 ),
-               ),
-             ),
-           ),
+                ),
+              ),
+            ),
           );
         },
       ),
@@ -497,69 +528,78 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
           builder: (context, s2) {
             final selectedDate = s1.data ?? DateTime.now();
             final focusedDate = s2.data ?? DateTime.now();
-            
-            return TableCalendar(
-              focusedDay: focusedDate,
-              firstDay: DateTime.utc(2020, 1, 1),
-              lastDay: DateTime.utc(2030, 12, 31),
-              headerVisible: false,
-              selectedDayPredicate: (day) =>
-                  day.year == selectedDate.year &&
-                  day.month == selectedDate.month &&
-                  day.day == selectedDate.day,
-              onDaySelected: (selected, focused) {
-                _selectedDay.add(selected);
-                _focusedDay.add(focused);
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  elevation: 1.0,
-                  barrierColor: Colors.transparent,
-                  builder: (context) {
-                    return Container(
-                        padding: EdgeInsets.symmetric(horizontal: 15.w),
-                        child: _buildEventsBottomSheet());
+
+            return StreamBuilder<List<Map<String, String>>>(
+              stream: _events.stream,
+              builder: (context, s3) {
+                return TableCalendar(
+                  focusedDay: focusedDate,
+                  firstDay: DateTime.utc(2020, 1, 1),
+                  lastDay: DateTime.utc(2030, 12, 31),
+                  headerVisible: false,
+                  selectedDayPredicate: (day) =>
+                      day.year == selectedDate.year &&
+                      day.month == selectedDate.month &&
+                      day.day == selectedDate.day,
+                  onDaySelected: (selected, focused) {
+                    _selectedDay.add(selected);
+                    _focusedDay.add(focused);
+                    final deleteBloc = context.read<DeleteCalendarEventBloc>();
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      elevation: 1.0,
+                      barrierColor: Colors.transparent,
+                      builder: (bottomSheetContext) {
+                        return BlocProvider.value(
+                          value: deleteBloc,
+                          child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15.w),
+                              child: _buildEventsBottomSheet()),
+                        );
+                      },
+                    );
                   },
+                  calendarStyle: CalendarStyle(
+                    todayDecoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF21D4FD), Color(0xFFB721FF)],
+                      ),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    selectedDecoration: BoxDecoration(
+                      color: Colors.purple,
+                      shape: BoxShape.circle,
+                    ),
+                    defaultTextStyle: const TextStyle(color: Colors.white),
+                    weekendTextStyle: const TextStyle(color: Colors.white),
+                    markerDecoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  eventLoader: (day) => hasEvent(day) ? [1] : [],
+                  calendarBuilders: CalendarBuilders(
+                    markerBuilder: (context, date, events) {
+                      if (events.isNotEmpty) {
+                        return Positioned(
+                          bottom: 1,
+                          child: Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: Colors.pinkAccent,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        );
+                      }
+                      return null;
+                    },
+                  ),
                 );
               },
-              calendarStyle: CalendarStyle(
-                todayDecoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF21D4FD), Color(0xFFB721FF)],
-                  ),
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                selectedDecoration: BoxDecoration(
-                  color: Colors.purple,
-                  shape: BoxShape.circle,
-                ),
-                defaultTextStyle: const TextStyle(color: Colors.white),
-                weekendTextStyle: const TextStyle(color: Colors.white),
-                markerDecoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              eventLoader: (day) => hasEvent(day) ? [1] : [],
-              calendarBuilders: CalendarBuilders(
-                markerBuilder: (context, date, events) {
-                  if (events.isNotEmpty) {
-                    return Positioned(
-                      bottom: 1,
-                      child: Container(
-                        width: 6,
-                        height: 6,
-                        decoration: const BoxDecoration(
-                          color: Colors.pinkAccent,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    );
-                  }
-                  return null;
-                },
-              ),
             );
           },
         );
@@ -574,65 +614,107 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
       child: StreamBuilder<DateTime>(
         stream: _selectedDay.stream,
         builder: (context, snapshot) {
-          var selected = snapshot.data ?? DateTime.now();
-          var todaysEvents = eventsForDay(selected);
+          return StreamBuilder<List<Map<String, String>>>(
+            stream: _events.stream,
+            builder: (context, eventSnapshot) {
+              var selected = snapshot.data ?? DateTime.now();
+              var todaysEvents = eventsForDay(selected);
 
-          return ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                  border: Border.all(color: Colors.white12),
+              return ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Events List",
-                            style: const TextStyle(
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w600)),
-                        GestureDetector(
-                          onTap: () {},
-                          child: SvgPicture.asset(
-                            AssetsPath.svgCloseCircle,
-                            width: 30.w,
-                            height: 30.h,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                  child: BlocBuilder<DeleteCalendarEventBloc,
+                      DeleteCalendarEventState>(
+                    builder: (context, deleteState) {
+                      return Stack(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                              border: Border.all(color: Colors.white12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Events List",
+                                        style: const TextStyle(
+                                            color: Colors.white70,
+                                            fontWeight: FontWeight.w600)),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: SvgPicture.asset(
+                                        AssetsPath.svgCloseCircle,
+                                        width: 30.w,
+                                        height: 30.h,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: todaysEvents.length,
+                                    itemBuilder: (context, index) {
+                                      var e = todaysEvents[index];
+                                      return EventItem(
+                                        time: e['time'],
+                                        date: e['date'],
+                                        eventName: e['title'],
+                                        eventDescription: e['subtitle'],
+                                        deleteClick: () async {
+                                          final userData =
+                                              await UserPreference.getUserData();
+                                          if (userData != null &&
+                                              context.mounted) {
+                                            context
+                                                .read<DeleteCalendarEventBloc>()
+                                                .add(
+                                                  PerformDeleteCalendarEvent(
+                                                    studentId: userData.stuId,
+                                                    eventId: e['id'] ?? '',
+                                                  ),
+                                                );
+                                          }
+                                        },
+                                      );
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: todaysEvents.length,
-                        itemBuilder: (context, index) {
-                          var e = todaysEvents[index];
-                          return EventItem(
-                            time: e['time'],
-                            date: e['date'],
-                            eventName: e['title'],
-                            eventDescription: e['subtitle'],
-                          );
-                        },
-                      ),
-                    )
-                  ],
+                          if (deleteState is DeleteCalendarEventLoading)
+                            Positioned.fill(
+                              child: Container(
+                                color: Colors.black26,
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.purpleAccent,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),
@@ -643,11 +725,12 @@ class _ZifourCalenderScreenState extends State<ZifourCalenderScreen> {
   Widget _buildAddEventBottomSheet(BuildContext bottomSheetContext) {
     final keyboardHeight = MediaQuery.of(bottomSheetContext).viewInsets.bottom;
     final screenHeight = MediaQuery.of(bottomSheetContext).size.height;
-    
+
     return Padding(
       padding: EdgeInsets.only(bottom: keyboardHeight),
       child: SizedBox(
-        height: screenHeight * 0.5 + (keyboardHeight > 0 ? keyboardHeight * 0.3 : 0),
+        height: screenHeight * 0.5 +
+            (keyboardHeight > 0 ? keyboardHeight * 0.3 : 0),
         child: StatefulBuilder(
           builder: (context, setModalState) {
             return StreamBuilder<DateTime>(

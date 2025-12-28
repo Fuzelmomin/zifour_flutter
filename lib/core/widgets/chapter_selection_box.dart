@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../constants/app_colors.dart';
 
@@ -47,11 +48,14 @@ class ChapterSelectionBox extends StatelessWidget {
                     onTap();
                   },
                 ),
-                Text(
-                  title ?? '',
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15),
+                SizedBox(
+                  width: MediaQuery.sizeOf(context).width - 220.w,
+                  child: Text(
+                    title ?? '',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 15),
+                  ),
                 ),
               ],
             ),

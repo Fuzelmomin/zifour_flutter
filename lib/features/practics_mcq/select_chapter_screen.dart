@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
+import 'package:zifour_sourcecode/core/widgets/subject_header_widget.dart';
 import 'package:zifour_sourcecode/features/auth/edit_profile_screen.dart';
 import 'package:zifour_sourcecode/features/courses/my_courses_screen.dart';
 import 'package:zifour_sourcecode/features/demo_ui.dart';
@@ -124,76 +125,12 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 15.h,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          height: 160.h,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                top: 40.h,
-                                left: 0.0,
-                                right: 0.0,
-                                child: Container(
-                                  height: 110.h,
-                                  width: double.infinity,
-                                  child: SignupFieldBox(
-                                    boxBgColor: AppColors.pinkColor3.withOpacity(0.1),
-                                    child: Container(
-                                      margin: EdgeInsets.only(top: 15.h),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-
-                                          Text(
-                                            widget.subjectName ?? 'Physics',
-                                            style: AppTypography.inter24Medium,
-                                          ),
-                                          SizedBox(height: 5.h,),
-                                          Text(
-                                            'Select a Chapter',
-                                            style: AppTypography.inter14Medium.copyWith(
-                                                color: Color(0xffC55492)
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            Positioned(
-                              top: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 70.w,
-                                    height: 70.w,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: AppColors.pinkColor3.withOpacity(0.2)
-                                    ),
-                                    child: Center(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(30.r),
-                                        child: Image.asset(
-                                          AssetsPath.icPhysics,
-                                          width: 60.0,
-                                          height: 60.0,
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
+                        SubjectHeaderWidget(
+                          title: widget.subjectName ?? 'Physics',
+                          subtitle: 'Select a Chapter',
+                          iconPath: AssetsPath.icPhysics,
                         ),
-                      ),
-                      SizedBox(height: 20.h),
+                        SizedBox(height: 20.h),
                         // Dynamic chapter list based on from parameter
                         if (widget.from == "course" || widget.from == "practice" || widget.from == "module")
                           BlocBuilder<ChapterBloc, ChapterState>(

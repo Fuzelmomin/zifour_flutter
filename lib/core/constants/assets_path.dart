@@ -47,6 +47,7 @@ class AssetsPath {
   static const String icCup = "assets/icons/ic_cup.png";
   static const String icPlayCircle = "assets/icons/ic_play_circle.png";
   static const String icPaytm = "assets/icons/ic_paytm.png";
+  static const String icPdf = "assets/icons/ic_pdf.png";
 
 
 
@@ -92,4 +93,5 @@ class AssetsPath {
   static const String BannerImg = "assets/images/bennar_img.png";
   static const String trendingCourseImg = "assets/images/trending_course_img.png";
   static const String homeImgBg = "assets/images/home_img_bg.png";
+
 }

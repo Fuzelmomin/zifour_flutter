@@ -45,7 +45,8 @@ class LecturesRepository {
       final queryParams = <String, dynamic>{
         'chp_id': chpId ?? '0',
         'tpc_id': tpcId ?? '0',
-        'sub_id': subId ?? user.stuSubId ?? '1',
+        //'sub_id': subId ?? user.stuSubId ?? '1',
+        'sub_id': '0',
         'stu_id': stuId ?? user.stuId,
         'med_id': medId ?? user.stuMedId,
         'exm_id': exmId ?? user.stuExmId ?? '1',

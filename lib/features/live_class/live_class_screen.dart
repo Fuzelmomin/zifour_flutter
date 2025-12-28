@@ -69,15 +69,14 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Text(
                       "Zifour Live Classes – Learn Smarter,\nAchieve Greater.",
-                      style: AppTypography.inter16Regular.copyWith(
-                          color: AppColors.white.withOpacity(0.6)
-                      ),
+                      style: AppTypography.inter16Regular
+                          .copyWith(color: AppColors.white.withOpacity(0.6)),
                     ),
 
                     SizedBox(height: 15.h),
+
                     /// Tabs: Today & Upcoming
                     Container(
                       padding: const EdgeInsets.all(4),
@@ -94,6 +93,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                     ),
 
                     const SizedBox(height: 15),
+
                     /// Class Cards List
                     subjects.isEmpty
                         ? Expanded(
@@ -108,7 +108,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                           )
                         : selectedTab == 0
                             ? Expanded(
-                                child: ListView.separated(
+                                /*child: ListView.separated(
                                   itemCount: subjects.length,
                                   separatorBuilder: (context, index) =>
                                       const SizedBox(height: 14),
@@ -125,7 +125,8 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => LiveClassDetailsScreen(
+                                            builder: (context) =>
+                                                LiveClassDetailsScreen(
                                               subjectName: subject.name,
                                               subId: subject.subId,
                                               lvCls: "1",
@@ -135,10 +136,14 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                                       },
                                     );
                                   },
+                                ),*/
+
+                                child: LiveClassDetailsScreen(
+                                  lvCls: "1",
                                 ),
                               )
                             : Expanded(
-                                child: ListView.separated(
+                                /*child: ListView.separated(
                                   itemCount: subjects.length,
                                   separatorBuilder: (context, index) =>
                                       const SizedBox(height: 14),
@@ -161,6 +166,10 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                                       },
                                     );
                                   },
+                                ),*/
+
+                                child: LiveClassDetailsScreen(
+                                  lvCls: "2",
                                 ),
                               )
                   ],
@@ -173,7 +182,6 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
     );
   }
 
-
   /// Tab Button Widget
   Widget _tabButton(String text, int index) {
     bool active = selectedTab == index;
@@ -185,7 +193,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
           decoration: BoxDecoration(
             gradient: active
                 ? const LinearGradient(
-                colors: [Color(0xFFFD2D7B), Color(0xFF6B2CF5)])
+                    colors: [Color(0xFFFD2D7B), Color(0xFF6B2CF5)])
                 : null,
             color: active ? null : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
@@ -293,7 +301,9 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
               ],
             ),
             const SizedBox(height: 15),
-            type == "upcoming" ? Container() : Container(height: 1, color: Colors.white24),
+            type == "upcoming"
+                ? Container()
+                : Container(height: 1, color: Colors.white24),
             SizedBox(height: type == "upcoming" ? 0 : 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -339,40 +349,42 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                 //         : Container(),
                 //   ],
                 // ),
-                type == "upcoming" ? Container() : GestureDetector(
-                  onTap: () {
-                    onTap();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFFD2D7B), Color(0xFF6B2CF5)],
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          btnName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
+                type == "upcoming"
+                    ? Container()
+                    : GestureDetector(
+                        onTap: () {
+                          onTap();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFFD2D7B), Color(0xFF6B2CF5)],
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                btnName,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              const Icon(
+                                Icons.arrow_forward,
+                                size: 16,
+                                color: Colors.white,
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 6),
-                        const Icon(
-                          Icons.arrow_forward,
-                          size: 16,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                )
+                      )
               ],
             )
           ],
@@ -380,5 +392,4 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
       ),
     );
   }
-
 }

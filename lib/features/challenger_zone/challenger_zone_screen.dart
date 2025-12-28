@@ -85,7 +85,7 @@ class _ChallengerZoneScreenState extends State<ChallengerZoneScreen> {
                       title: '${AppLocalizations.of(context)?.createOwnChallenge}',
                       subtitle: '${AppLocalizations.of(context)?.selectYourSubject}',
                       iconPath: AssetsPath.svgOwnChallenger,
-                      buttonText: '${AppLocalizations.of(context)?.createOwnChallenge}',
+                      buttonText: 'Create My Own Challenge',
                       onTap: (){
                         Navigator.push(
                           context,
@@ -106,7 +106,7 @@ class _ChallengerZoneScreenState extends State<ChallengerZoneScreen> {
                     SizedBox(height: 25.h,),
                     ChallengeOptionBox(
                       title: '${AppLocalizations.of(context)?.expertsChallenge}',
-                      subtitle: '${AppLocalizations.of(context)?.selectYourSubject}',
+                      subtitle: 'Practice Real Exam-Level Challenges Crafted by our Expert Faculty',
                       iconPath: AssetsPath.svgExpertChallenger,
                       buttonText: '${AppLocalizations.of(context)?.expertChallenge}',
                       onTap: (){

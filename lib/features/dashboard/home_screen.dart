@@ -54,13 +54,13 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Map<String, dynamic>> menuItems = [
     {
       "title": "Start Your Free Trial",
-      "subtitle": "",
+      "subtitle": "Free 7-Day Access to Excellence",
       "icon": AssetsPath.svgFreeTrial,
       "color": const Color(0xFF6857F9),
     },
     {
       "title": "Live Classes",
-      "subtitle": "",
+      "subtitle": "Learn Live With Experts",
       "icon": AssetsPath.svgLiveClass,
       "color": const Color(0xFF7C2C6A),
     },
@@ -787,7 +787,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       },
       child: Container(
-        height: 200.h,
+        height: 208.h,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18),
           gradient: LinearGradient(
@@ -799,7 +799,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -813,14 +813,14 @@ class _HomeScreenState extends State<HomeScreen> {
             // ),
             SvgPicture.asset(
               item['icon'] ?? AssetsPath.svgFreeTrial,
-              width: 55.h,
-              height: 55.h,
+              width: 53.h,
+              height: 53.h,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 7),
             Text(
               item['title'],
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 17,
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
               ),
@@ -830,7 +830,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if (item["subtitle"] != "")
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 8),
+                  padding: const EdgeInsets.only(top: 6),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(

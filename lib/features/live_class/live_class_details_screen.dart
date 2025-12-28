@@ -54,24 +54,23 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
               }
             });
           }
-          return Scaffold(
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: AppColors.darkBlue,
-          child: SafeArea(
-            child: Stack(
-              children: [
-                // Background Decoration set
-                Positioned.fill(
+          return Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.transparent,
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  // Background Decoration set
+                  /*Positioned.fill(
                   child: Image.asset(
                     AssetsPath.signupBgImg,
                     fit: BoxFit.cover,
                   ),
-                ),
+                ),*/
 
-                // App Bar
-                Positioned(
+                  // App Bar
+                  /*Positioned(
                   top: 20.h,
                   left: 15.w,
                   right: 20.w,
@@ -79,93 +78,92 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
                     isBack: true,
                     title: widget.subjectName ?? 'Live Classes',
                   ),
-                ),
+                ),*/
 
-                // Main Content with BLoC
-                Positioned(
-                  top: 90.h,
-                  left: 20.w,
-                  right: 20.w,
-                  bottom: 20.h,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
+                  // Main Content with BLoC
+                  Positioned(
+                    top: 90.h,
+                    left: 20.w,
+                    right: 20.w,
+                    bottom: 20.h,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        /*Text(
                         "Explore ${widget.subjectName ?? 'Live'} Concepts Live – Grow Smarter With Zifour.",
                         style: AppTypography.inter16Regular.copyWith(
                           color: AppColors.white.withOpacity(0.6),
                         ),
                       ),
-                      SizedBox(height: 15.h),
-                      Expanded(
-                        child: BlocBuilder<LecturesBloc, LecturesState>(
-                          builder: (blocContext, state) {
-                            if (state is LecturesLoading) {
-                              return _buildShimmerLoading();
-                            }
+                      SizedBox(height: 15.h),*/
+                        Expanded(
+                          child: BlocBuilder<LecturesBloc, LecturesState>(
+                            builder: (blocContext, state) {
+                              if (state is LecturesLoading) {
+                                return _buildShimmerLoading();
+                              }
 
-                            if (state is LecturesError) {
-                              return Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      state.message,
-                                      textAlign: TextAlign.center,
-                                      style: AppTypography.inter14Regular.copyWith(
-                                        color: AppColors.white.withOpacity(0.6),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20.h),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _checkConnectivityAndLoad(blocContext);
-                                      },
-                                      child: const Text('Retry'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-
-                            if (state is LecturesSuccess) {
-                              final lectures = state.lectures;
-                              if (lectures.isEmpty) {
+                              if (state is LecturesError) {
                                 return Center(
-                                  child: Text(
-                                    'No live lectures available',
-                                    style: AppTypography.inter14Regular.copyWith(
-                                      color: AppColors.white.withOpacity(0.6),
-                                    ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        state.message,
+                                        textAlign: TextAlign.center,
+                                        style: AppTypography.inter14Regular.copyWith(
+                                          color: AppColors.white.withOpacity(0.6),
+                                        ),
+                                      ),
+                                      SizedBox(height: 20.h),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          _checkConnectivityAndLoad(blocContext);
+                                        },
+                                        child: const Text('Retry'),
+                                      ),
+                                    ],
                                   ),
                                 );
                               }
 
-                              return ListView.separated(
-                                physics: const BouncingScrollPhysics(),
-                                itemCount: lectures.length,
-                                itemBuilder: (context, index) {
-                                  final lecture = lectures[index];
-                                  return _buildLectureCard(lecture);
-                                },
-                                separatorBuilder: (context, index) {
-                                  return SizedBox(height: 15.h);
-                                },
-                              );
-                            }
+                              if (state is LecturesSuccess) {
+                                final lectures = state.lectures;
+                                if (lectures.isEmpty) {
+                                  return Center(
+                                    child: Text(
+                                      'No live lectures available',
+                                      style: AppTypography.inter14Regular.copyWith(
+                                        color: AppColors.white.withOpacity(0.6),
+                                      ),
+                                    ),
+                                  );
+                                }
 
-                            return const SizedBox.shrink();
-                          },
+                                return ListView.separated(
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: lectures.length,
+                                  itemBuilder: (context, index) {
+                                    final lecture = lectures[index];
+                                    return _buildLectureCard(lecture);
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return SizedBox(height: 15.h);
+                                  },
+                                );
+                              }
+
+                              return const SizedBox.shrink();
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ),
           );
         },
       ),

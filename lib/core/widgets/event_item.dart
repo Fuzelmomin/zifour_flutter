@@ -56,9 +56,7 @@ class EventItem extends StatelessWidget {
                 ),
 
                 GestureDetector(
-                  onTap: (){
-
-                  },
+                  onTap: deleteClick,
                   child: SvgPicture.asset(
                     AssetsPath.svgCloseCircle,
                     width: 20.w,

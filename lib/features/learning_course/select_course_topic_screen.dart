@@ -17,6 +17,7 @@ import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/profile_option_widget.dart';
+import '../../core/widgets/subject_header_widget.dart';
 import '../../l10n/app_localizations.dart';
 import '../challenger_zone/bloc/topic_bloc.dart';
 import 'learning_chapter_videos_screen.dart';
@@ -103,7 +104,14 @@ class _SelectCourseTopicScreenState extends State<SelectCourseTopicScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
 
                       children: [
-                        Container(
+
+                        SubjectHeaderWidget(
+                          title: '${widget.subjectName} - ${widget.chapterName}',
+                          subtitle: 'Select a Topic',
+                          iconPath: AssetsPath.icPhysics,
+                        ),
+
+                        /*Container(
                           width: double.infinity,
                           height: 160.h,
                           child: Stack(
@@ -172,7 +180,7 @@ class _SelectCourseTopicScreenState extends State<SelectCourseTopicScreen> {
                             )
                           ],
                         ),
-                      ),
+                      ),*/
                       SizedBox(height: 20.h),
                       BlocBuilder<TopicBloc, TopicState>(
                         builder: (context, state) {

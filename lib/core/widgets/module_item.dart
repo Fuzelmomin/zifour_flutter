@@ -31,7 +31,7 @@ class ModuleItem extends StatelessWidget {
           duration: const Duration(milliseconds: 2500),
           margin: const EdgeInsets.symmetric(vertical: 6),
           padding: const EdgeInsets.symmetric(
-              horizontal: 12, vertical: 14),
+              horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
               color: Color(0xFF1B193D),
               borderRadius: BorderRadius.circular(12.r),
@@ -40,53 +40,83 @@ class ModuleItem extends StatelessWidget {
                   width: 1.0
               )
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 15.0,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 9,
-                    child: Text(
+              Expanded(
+                flex: 2,
+                child: Image.asset(
+                    AssetsPath.icPdf,
+                  width: 100.0,
+                  height: 100.0,
+                ),
+              ),
+
+              Expanded(
+                flex: 8,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       title ?? '',
                       style: AppTypography.inter14Medium,
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 7.h,),
-              Text(
-                'Author:',
-                style: AppTypography.inter10Medium.copyWith(
-                    color: const Color(0xFFF58D30)
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width - 100.0,
-                child: Text(
-                  author ?? '',
-                  style: AppTypography.inter14Medium,
-                ),
-              ),
-              /*SizedBox(height: 7.h,),
-              Text(
-                'Notes:',
-                style: AppTypography.inter10Medium.copyWith(
-                    color: const Color(0xFFF58D30)
-                ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      notesDes ?? '',
+                    SizedBox(height: 7.h,),
+                    Text(
+                      'Author:',
                       style: AppTypography.inter10Medium.copyWith(
-                          color: AppColors.skyColor
+                          color: const Color(0xFFF58D30)
                       ),
                     ),
-                  ),
-                ],
-              )*/
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width - 100.0,
+                      child: Text(
+                        author ?? '',
+                        style: AppTypography.inter14Medium,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        itemClick();
+                      },
+                      child: Text(
+                        'View Doc ->',
+                        style: AppTypography.inter14Medium
+                            .copyWith(
+                            color: const Color(0xFFF58D30),
+                          decoration: TextDecoration.underline,
+                          decorationThickness: 1.0,
+                          decorationColor: const Color(0xFFF58D30),
+                        ),
+                      ),
+                    ),
+                    /*SizedBox(height: 7.h,),
+                    Text(
+                      'Notes:',
+                      style: AppTypography.inter10Medium.copyWith(
+                          color: const Color(0xFFF58D30)
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            notesDes ?? '',
+                            style: AppTypography.inter10Medium.copyWith(
+                                color: AppColors.skyColor
+                            ),
+                          ),
+                        ),
+                      ],
+                    )*/
+                  ],
+                ),
+              ),
             ],
           )
       ),

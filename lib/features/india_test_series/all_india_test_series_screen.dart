@@ -12,6 +12,7 @@ import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../challenger_zone/challenge_result_screen.dart';
+import '../dashboard/video_player_screen.dart';
 import '../practics_mcq/question_mcq_screen.dart';
 import 'bloc/online_test_paper_bloc.dart';
 
@@ -168,19 +169,21 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
                                     iconColor: paper.erFlag == "2" ? Colors.green : Colors.orange,
                                     date: paper.date, // Adjust according to requirements
                                     duration: paper.time, // Placeholder
+                                    erFlag: paper.erFlag,
                                     onItemClick: (){
 
+                                    },
+                                    onExamClick: (){
                                       if(paper.erFlag == "2"){
+
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => ChallengeResultScreen(
-                                            title: "Test Series Results 🏆",
-                                            crtChlId: "",
-                                            screenType: "1", // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
-                                            pkId: widget.pkId,
-                                            paperId: paper.gPaId,
-                                            solution: paper.solutionVideo,
-                                          )),
+                                          MaterialPageRoute(
+                                            builder: (context) => VideoPlayerScreen(
+                                              videoId: paper.solutionVideo ?? '',
+                                              videoTitle: "",
+                                            ),
+                                          ),
                                         );
                                       }else {
                                         Navigator.push(
@@ -191,12 +194,25 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
                                               mcqType: "4", // 4 = All India Test Series MCQ Type
                                               pkId: "1",
                                               paperId: paper.gPaId,
+                                              paperSolution: paper.solutionVideo,
                                             ),
                                           ),
                                         );
                                       }
-
                                     },
+                                    onPerformanceClick: (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => ChallengeResultScreen(
+                                          title: "Test Series Results 🏆",
+                                          crtChlId: "",
+                                          screenType: "1", // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
+                                          pkId: widget.pkId,
+                                          paperId: paper.gPaId,
+                                          solution: paper.solutionVideo,
+                                        )),
+                                      );
+                                    }
                                   );
                                 },
                               );
@@ -256,7 +272,10 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
     required Color iconColor,
     required String date,
     required String duration,
+    required String erFlag,
     required Function() onItemClick,
+    required Function() onPerformanceClick,
+    required Function() onExamClick,
   }) {
     return InkWell(
       onTap: (){
@@ -328,7 +347,35 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
                   ),
                 ],
               ),
-            )
+            ),
+            SizedBox(height: 10.h,),
+            Row(
+              spacing: erFlag == "2" ? 15.w : 0.0,
+              children: [
+                erFlag == "2" ? Expanded(
+                  child: CustomGradientButton(
+                    height: 40.h,
+                    text: 'My Performance',
+                    onPressed: onPerformanceClick,
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    customDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.2),
+                      ),
+                      color: Color(0xFF464375),
+                    ),
+                  ),
+                ) : Container(),
+                Expanded(
+                  child: CustomGradientButton(
+                    height: 40.h,
+                    text: erFlag == "2" ? 'View Solutions' : "Start Exam",
+                    onPressed: onExamClick,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),

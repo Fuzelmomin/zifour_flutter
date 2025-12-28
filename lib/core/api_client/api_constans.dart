@@ -26,6 +26,7 @@ class APIConstants {
   static const getPackageDetails = 'package_detail.php';
   static const createCalenderEvent = 'calender_event_create.php';
   static const getCalenderEvents = 'calender_event_list.php';
+  static const deleteCalenderEvents = 'calender_event_delete.php';
   static const getMentors = 'mentors.php';
   static const getMentorVideos = 'mentor_video.php';
   static const getSubject = 'subject.php';
