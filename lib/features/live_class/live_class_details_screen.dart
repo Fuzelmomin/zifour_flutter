@@ -82,10 +82,10 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
 
                   // Main Content with BLoC
                   Positioned(
-                    top: 90.h,
-                    left: 20.w,
-                    right: 20.w,
-                    bottom: 20.h,
+                    // top: 10.h,
+                    // left: 20.w,
+                    // right: 20.w,
+                    // bottom: 20.h,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,24 +193,7 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         // Live Tag
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          margin: EdgeInsets.only(right: 25.w),
-          decoration: BoxDecoration(
-            color: Colors.redAccent,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(6.r),
-              topRight: Radius.circular(6.r),
-            ),
-          ),
-          child: const Text(
-            "LIVE",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        _buildLiveTag(lecture.lecStart),
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(18),
@@ -232,7 +215,7 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
             children: [
               const SizedBox(height: 6),
               Text(
-                lecture.chpName ?? lecture.name ?? 'Lecture',
+                lecture.name ?? 'Lecture',
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -240,6 +223,14 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "${lecture.standard ?? ''}ˢᵗ  ●  ${lecture.exam ?? ''}  ●  ${lecture.subject}",
+                style: const TextStyle(
+                  color: Colors.orange,
+                  fontSize: 13,
+                ),
               ),
               const SizedBox(height: 6),
               Text(
@@ -368,6 +359,54 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
         ),
       ],
     );
+  }
+
+  Widget _buildLiveTag(String? lecStartStr) {
+    if (lecStartStr == null || lecStartStr.isEmpty) return const SizedBox.shrink();
+
+    try {
+      final lecStart = DateTime.parse(lecStartStr);
+      final now = DateTime.now();
+      final oneHourAfter = lecStart.add(const Duration(hours: 1));
+
+      String tagText = '';
+      Color tagColor = Colors.transparent;
+      bool isVisible = false;
+
+      if (now.isBefore(lecStart)) {
+        tagText = "UPCOMING";
+        tagColor = Colors.orange;
+        isVisible = true;
+      } else if ((now.isAtSameMomentAs(lecStart) || now.isAfter(lecStart)) &&
+          now.isBefore(oneHourAfter)) {
+        tagText = "LIVE";
+        tagColor = Colors.redAccent;
+        isVisible = true;
+      }
+
+      if (!isVisible) return const SizedBox.shrink();
+
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        margin: EdgeInsets.only(right: 25.w),
+        decoration: BoxDecoration(
+          color: tagColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(6.r),
+            topRight: Radius.circular(6.r),
+          ),
+        ),
+        child: Text(
+          tagText,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+    } catch (e) {
+      return const SizedBox.shrink();
+    }
   }
 
   Widget _buildShimmerLoading() {

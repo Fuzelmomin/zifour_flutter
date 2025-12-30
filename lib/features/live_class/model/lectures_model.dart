@@ -54,6 +54,7 @@ class LectureItem {
     this.lecTime,
     this.lecDate,
     this.teacherName,
+    this.lecStart,
   });
 
   final String? lecId;
@@ -69,6 +70,7 @@ class LectureItem {
   final String? lecTime;
   final String? lecDate;
   final String? teacherName;
+  final String? lecStart;
 
   factory LectureItem.fromJson(Map<String, dynamic> json) {
     return LectureItem(
@@ -85,6 +87,8 @@ class LectureItem {
       lecTime: json['lec_time']?.toString(),
       lecDate: json['lec_date']?.toString(),
       teacherName: json['teacher_name']?.toString(),
+      lecStart: json['lec_start']?.toString(),
+     //lecStart: "2025-12-31 00:01:00",
     );
   }
 
@@ -108,6 +112,7 @@ class LectureItem {
       'lec_time': lecTime,
       'lec_date': lecDate,
       'teacher_name': teacherName,
+      'lec_start': lecStart,
     };
   }
 }

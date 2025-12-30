@@ -30,14 +30,16 @@ class SubjectBloc extends Bloc<SubjectEvent, SubjectState> {
       ));
     }
 
-    final response = await _repository.fetchSubjects();
+    final response = await _repository.fetchSubjects(exmId: event.exmId);
 
     if (response.status == ApiStatus.success && response.data != null) {
       final subjectResponse = response.data!;
       final _logger = Logger();
 
       _logger.d(subjectResponse);
-      _subjectService.updateSubjects(subjectResponse.subjectList);
+      if (event.updateService) {
+        _subjectService.updateSubjects(subjectResponse.subjectList);
+      }
       
       emit(state.copyWith(
         status: SubjectStatus.success,

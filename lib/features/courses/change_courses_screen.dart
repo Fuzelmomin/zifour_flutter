@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,6 +43,7 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
 
   final SubjectService _subjectService = SubjectService();
   bool _hasInitialized = false;
+  StreamSubscription<String?>? _examSubscription;
 
   Future<void> _checkConnectivityAndLoad(BuildContext blocContext) async {
     final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -51,18 +53,20 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
         final user = UserPreference.userNotifier.value;
         if (user != null) {
           blocContext.read<ProfileBloc>().add(FetchProfile(stuId: user.stuId));
-          // Load subjects if not already loaded
-          if (!_subjectService.hasSubjects) {
-            blocContext.read<SubjectBloc>().add(const SubjectRequested(silent: true));
-          }
+          // Load subjects if not already loaded (initial load can update service if needed, 
+          // but better to keep it consistent and update only on save)
+          blocContext.read<SubjectBloc>().add(SubjectRequested(
+                exmId: user.stuExmId,
+                updateService: false,
+              ));
         } else {
           UserPreference.getUserData().then((userData) {
             if (userData != null && mounted) {
               blocContext.read<ProfileBloc>().add(FetchProfile(stuId: userData.stuId));
-              // Load subjects if not already loaded
-              if (!_subjectService.hasSubjects) {
-                blocContext.read<SubjectBloc>().add(const SubjectRequested(silent: true));
-              }
+              blocContext.read<SubjectBloc>().add(SubjectRequested(
+                    exmId: userData.stuExmId,
+                    updateService: false,
+                  ));
             }
           });
         }
@@ -78,6 +82,7 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
     _selectedExmId.close();
     _selectedMedId.close();
     _selectedSubIds.close();
+    _examSubscription?.cancel();
     super.dispose();
   }
 
@@ -91,6 +96,18 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
       ],
       child: Builder(
         builder: (blocContext) {
+          // Initialize exam subscription once blocs are available
+          if (_examSubscription == null) {
+            _examSubscription = _selectedExmId.stream.listen((exmId) {
+              if (exmId != null && _hasInitialized && mounted) {
+                blocContext.read<SubjectBloc>().add(SubjectRequested(
+                      exmId: exmId,
+                      updateService: false,
+                    ));
+              }
+            });
+          }
+
           // Initialize after providers are available
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
@@ -101,6 +118,12 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
           return BlocListener<ChangeCourseBloc, ChangeCourseState>(
             listener: (context, state) {
               if (state is ChangeCourseSuccess) {
+                // Update SubjectService with the current subjects in SubjectBloc
+                final subjectBloc = context.read<SubjectBloc>();
+                if (subjectBloc.state.data != null) {
+                  _subjectService.updateSubjects(subjectBloc.state.data!.subjectList);
+                }
+
                 _updateUserDataInSharedPreferences();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -229,7 +252,6 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
   }
 
   Widget _buildContent(ProfileLoaded profileState) {
-    final subjects = _subjectService.subjects;
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
@@ -359,40 +381,56 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
                 ),
                 const SizedBox(height: 15),
 
-                StreamBuilder<List<String>>(
-                  stream: _selectedSubIds.stream,
-                  builder: (context, snapshot) {
-                    final selectedList = snapshot.data ?? [];
-                    if (subjects.isEmpty) {
+                BlocBuilder<SubjectBloc, SubjectState>(
+                  builder: (context, subjectState) {
+                    final subjects = subjectState.data?.subjectList ?? [];
+                    final isLoading = subjectState.status == SubjectStatus.loading;
+
+                    if (isLoading) {
                       return const Center(
                         child: Padding(
                           padding: EdgeInsets.all(20.0),
-                          child: Text(
-                            'No subjects available',
-                            style: TextStyle(color: Colors.white70),
-                          ),
+                          child: CircularProgressIndicator(color: Colors.white),
                         ),
                       );
                     }
-                    return Column(
-                      children: subjects.map((subject) {
-                        final isSelected = selectedList.contains(subject.subId);
-                        return ChapterSelectionBox(
-                          onTap: () {
-                            // Only one subject can be selected at a time
-                            if (isSelected) {
-                              // If already selected, deselect it
-                              _selectedSubIds.add([]);
-                            } else {
-                              // Select only this subject (replace previous selection)
-                              _selectedSubIds.add([subject.subId]);
-                            }
-                          },
-                          title: subject.name,
-                          isButton: true,
-                          isSelected: isSelected,
+
+                    return StreamBuilder<List<String>>(
+                      stream: _selectedSubIds.stream,
+                      builder: (context, snapshot) {
+                        final selectedList = snapshot.data ?? [];
+                        if (subjects.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Text(
+                                'No subjects available',
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                            ),
+                          );
+                        }
+                        return Column(
+                          children: subjects.map((subject) {
+                            final isSelected = selectedList.contains(subject.subId);
+                            return ChapterSelectionBox(
+                              onTap: () {
+                                // Only one subject can be selected at a time
+                                if (isSelected) {
+                                  // If already selected, deselect it
+                                  _selectedSubIds.add([]);
+                                } else {
+                                  // Select only this subject (replace previous selection)
+                                  _selectedSubIds.add([subject.subId]);
+                                }
+                              },
+                              title: subject.name,
+                              isButton: true,
+                              isSelected: isSelected,
+                            );
+                          }).toList(),
                         );
-                      }).toList(),
+                      },
                     );
                   },
                 ),

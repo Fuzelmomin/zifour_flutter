@@ -139,6 +139,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                                 ),*/
 
                                 child: LiveClassDetailsScreen(
+                                  key: const ValueKey('today'),
                                   lvCls: "1",
                                 ),
                               )
@@ -169,6 +170,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                                 ),*/
 
                                 child: LiveClassDetailsScreen(
+                                  key: const ValueKey('upcoming'),
                                   lvCls: "2",
                                 ),
                               )

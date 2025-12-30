@@ -6,7 +6,13 @@ abstract class SubjectEvent {
 
 class SubjectRequested extends SubjectEvent {
   final bool silent;
-  
-  const SubjectRequested({this.silent = false});
+  final String? exmId;
+  final bool updateService;
+
+  const SubjectRequested({
+    this.silent = false,
+    this.exmId,
+    this.updateService = true,
+  });
 }
 

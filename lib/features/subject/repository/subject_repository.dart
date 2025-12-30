@@ -15,7 +15,7 @@ class SubjectRepository {
 
   final DioClient _dioClient;
 
-  Future<ApiResponse<SubjectResponse>> fetchSubjects() async {
+  Future<ApiResponse<SubjectResponse>> fetchSubjects({String? exmId}) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
       if (!isConnected) {
@@ -31,7 +31,7 @@ class SubjectRepository {
         );
       }
 
-      final exmId = _getExamId(user);
+      final finalExmId = exmId ?? _getExamId(user);
       // if (exmId == null || exmId.isEmpty) {
       //   return ApiResponse.error(
       //     errorMsg: 'Exam ID not found. Please update your profile.',
@@ -41,7 +41,7 @@ class SubjectRepository {
       final response = await _dioClient.getDio().get(
         APIConstants.getSubject,
         queryParameters: {
-          'exm_id': exmId ?? '1',
+          'exm_id': finalExmId ?? '1',
         },
       );
       print('Exam Id: ${response.realUri}');
