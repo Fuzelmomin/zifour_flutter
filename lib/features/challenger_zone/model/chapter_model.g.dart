@@ -28,6 +28,7 @@ ChapterModel _$ChapterModelFromJson(Map<String, dynamic> json) => ChapterModel(
       standard: json['standard'] as String,
       medium: json['medium'] as String,
       exam: json['exam'] as String,
+      subId: json['sub_id']?.toString(),
     );
 
 Map<String, dynamic> _$ChapterModelToJson(ChapterModel instance) =>
@@ -37,4 +38,5 @@ Map<String, dynamic> _$ChapterModelToJson(ChapterModel instance) =>
       'standard': instance.standard,
       'medium': instance.medium,
       'exam': instance.exam,
+      'sub_id': instance.subId,
     };

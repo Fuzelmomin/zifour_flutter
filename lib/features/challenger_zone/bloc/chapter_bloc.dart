@@ -12,6 +12,7 @@ class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
       : _repository = repository ?? ChapterRepository(),
         super(ChapterState.initial()) {
     on<ChapterRequested>(_onRequested);
+    on<ChapterRemoveRequested>(_onRemoveRequested);
   }
 
   final ChapterRepository _repository;
@@ -20,6 +21,9 @@ class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
     ChapterRequested event,
     Emitter<ChapterState> emit,
   ) async {
+    // Keep current chapters if they exist
+    final currentChapters = state.data?.chapterList ?? [];
+
     emit(state.copyWith(
       status: ChapterStatus.loading,
       clearError: true,
@@ -28,15 +32,43 @@ class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
     final response = await _repository.fetchChapters(subId: event.subId);
 
     if (response.status == ApiStatus.success && response.data != null) {
+      // Append new chapters to existing list
+      final newChapters = response.data!.chapterList;
+      final mergedChapters = [...currentChapters, ...newChapters];
+
       emit(state.copyWith(
         status: ChapterStatus.success,
-        data: response.data,
+        data: ChapterResponse(
+          status: true,
+          message: response.data!.message,
+          chapterList: mergedChapters,
+        ),
         clearError: true,
       ));
     } else {
       emit(state.copyWith(
         status: ChapterStatus.failure,
         errorMessage: response.errorMsg ?? 'Unable to load chapters.',
+      ));
+    }
+  }
+
+  void _onRemoveRequested(
+    ChapterRemoveRequested event,
+    Emitter<ChapterState> emit,
+  ) {
+    if (state.data != null) {
+      final filteredChapters = state.data!.chapterList
+          .where((chapter) => chapter.subId != event.subId)
+          .toList();
+
+      emit(state.copyWith(
+        status: ChapterStatus.success,
+        data: ChapterResponse(
+          status: true,
+          message: state.data!.message,
+          chapterList: filteredChapters,
+        ),
       ));
     }
   }

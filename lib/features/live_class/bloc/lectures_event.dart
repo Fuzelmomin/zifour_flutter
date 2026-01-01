@@ -26,3 +26,9 @@ class FetchLectures extends LecturesEvent {
   final String? lecRept;
 }
 
+class UpdateLectureReminder extends LecturesEvent {
+  UpdateLectureReminder({required this.lecId});
+
+  final String lecId;
+}
+

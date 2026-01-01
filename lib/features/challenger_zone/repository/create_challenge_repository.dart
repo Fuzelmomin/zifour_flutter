@@ -18,7 +18,7 @@ class CreateChallengeRepository {
   Future<ApiResponse<CreateChallengeResponse>> createChallenge({
     required List<String> chapterIds,
     required List<String> topicIds,
-    required String subId,
+    required List<String> subIds,
     required String challengeType,
   }) async {
     try {
@@ -38,6 +38,7 @@ class CreateChallengeRepository {
 
       final chaptersParam = _encodeIdList(chapterIds);
       final topicsParam = _encodeIdList(topicIds);
+      final subIdsParam = _encodeIdList(subIds);
 
       final response = await _dioClient.getDio().post(
         APIConstants.createChallenge,
@@ -45,7 +46,7 @@ class CreateChallengeRepository {
           'stu_id': user.stuId,
           'chapters': chaptersParam,
           'topics': topicsParam,
-          'sub_id': subId,
+          'sub_id': subIdsParam,
           'oe_challenge': challengeType,
         },
       );

@@ -55,6 +55,7 @@ class LectureItem {
     this.lecDate,
     this.teacherName,
     this.lecStart,
+    this.remeberFlag,
   });
 
   final String? lecId;
@@ -71,6 +72,43 @@ class LectureItem {
   final String? lecDate;
   final String? teacherName;
   final String? lecStart;
+  final String? remeberFlag;
+
+  LectureItem copyWith({
+    String? lecId,
+    String? chpName,
+    String? name,
+    String? standard,
+    String? medium,
+    String? subject,
+    String? exam,
+    String? youtubeVideo,
+    String? videoLength,
+    String? viewAt,
+    String? lecTime,
+    String? lecDate,
+    String? teacherName,
+    String? lecStart,
+    String? remeberFlag,
+  }) {
+    return LectureItem(
+      lecId: lecId ?? this.lecId,
+      chpName: chpName ?? this.chpName,
+      name: name ?? this.name,
+      standard: standard ?? this.standard,
+      medium: medium ?? this.medium,
+      subject: subject ?? this.subject,
+      exam: exam ?? this.exam,
+      youtubeVideo: youtubeVideo ?? this.youtubeVideo,
+      videoLength: videoLength ?? this.videoLength,
+      viewAt: viewAt ?? this.viewAt,
+      lecTime: lecTime ?? this.lecTime,
+      lecDate: lecDate ?? this.lecDate,
+      teacherName: teacherName ?? this.teacherName,
+      lecStart: lecStart ?? this.lecStart,
+      remeberFlag: remeberFlag ?? this.remeberFlag,
+    );
+  }
 
   factory LectureItem.fromJson(Map<String, dynamic> json) {
     return LectureItem(
@@ -88,6 +126,7 @@ class LectureItem {
       lecDate: json['lec_date']?.toString(),
       teacherName: json['teacher_name']?.toString(),
       lecStart: json['lec_start']?.toString(),
+      remeberFlag: json['remeber_flag']?.toString(),
      //lecStart: "2025-12-31 00:01:00",
     );
   }
@@ -113,6 +152,7 @@ class LectureItem {
       'lec_date': lecDate,
       'teacher_name': teacherName,
       'lec_start': lecStart,
+      'remeber_flag': remeberFlag,
     };
   }
 }

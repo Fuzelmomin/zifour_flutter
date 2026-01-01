@@ -36,7 +36,7 @@ class CreateOwnChallengerScreen extends StatefulWidget {
 
 class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
   final SubjectService _subjectService = SubjectService();
-  String? _selectedSubjectId;
+  List<String> _selectedSubjectIds = [];
   late final ChapterBloc _chapterBloc;
   late final TopicBloc _topicBloc;
   late final CreateChallengeBloc _createChallengeBloc;
@@ -179,7 +179,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                       final subject =
                                           _subjectService.subjects[index];
                                       final isSelected =
-                                          _selectedSubjectId == subject.subId;
+                                          _selectedSubjectIds.contains(subject.subId);
                                       return Padding(
                                         padding: EdgeInsets.only(right: 10.w),
                                         child: subjectContainer(
@@ -187,17 +187,28 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                           isSelected: isSelected,
                                           onTap: () {
                                             setState(() {
-                                              _selectedSubjectId = isSelected
-                                                  ? null
-                                                  : subject.subId;
-                                            });
+                                              if (isSelected) {
+                                                _selectedSubjectIds.remove(subject.subId);
+                                                
+                                                // Remove chapters of this subject from selection
+                                                final chaptersOfSubject = _chapterBloc.state.data?.chapterList
+                                                    .where((c) => c.subId == subject.subId)
+                                                    .map((c) => c.chpId)
+                                                    .toList() ?? [];
+                                                
+                                                final currentChapters = List<String>.from(_selectedChapters.value);
+                                                currentChapters.removeWhere((id) => chaptersOfSubject.contains(id));
+                                                _selectedChapters.add(currentChapters);
 
-                                            // Trigger API call when subject is selected
-                                            if (!isSelected &&
-                                                subject.subId.isNotEmpty) {
-                                              _chapterBloc.add(ChapterRequested(
-                                                  subId: subject.subId));
-                                            }
+                                                // Update topics selection too
+                                                _selectedTopics.add([]);
+                                                
+                                                _chapterBloc.add(ChapterRemoveRequested(subId: subject.subId));
+                                              } else {
+                                                _selectedSubjectIds.add(subject.subId);
+                                                _chapterBloc.add(ChapterRequested(subId: subject.subId));
+                                              }
+                                            });
                                           },
                                         ),
                                       );
@@ -247,7 +258,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                           padding: EdgeInsets.symmetric(
                                               vertical: 20.h),
                                           child: Text(
-                                            _selectedSubjectId == null
+                                            _selectedSubjectIds.isEmpty
                                                 ? 'Please select a subject first'
                                                 : 'No chapters found',
                                             style: AppTypography.inter12Regular
@@ -402,11 +413,10 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                             text:
                                 '${AppLocalizations.of(context)?.generateMyChallenge}',
                             onPressed: () {
-                              if (_selectedSubjectId == null ||
-                                  _selectedSubjectId!.isEmpty) {
+                              if (_selectedSubjectIds.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('Please select a subject.'),
+                                    content: Text('Please select at least one subject.'),
                                     backgroundColor: AppColors.error,
                                   ),
                                 );
@@ -435,12 +445,28 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                 return;
                               }
 
+                              // Filter subject IDs: only include those whose chapters are selected
+                              final List<ChapterModel> allChaptersInState = _chapterBloc.state.data?.chapterList ?? [];
+                              final List<String> selectedChapterIds = _selectedChapters.value;
+                              
+                              final Set<String> filteredSubIds = {};
+                              for (var chapterId in selectedChapterIds) {
+                                try {
+                                  final chapter = allChaptersInState.firstWhere((c) => c.chpId == chapterId);
+                                  if (chapter.subId != null) {
+                                    filteredSubIds.add(chapter.subId!);
+                                  }
+                                } catch (_) {
+                                  // Chapter not found in state or subId missing, skip filtering for this one
+                                }
+                              }
+
                               // Call create challenge API
                               _createChallengeBloc.add(
                                 CreateChallengeRequested(
                                   chapterIds: _selectedChapters.value,
                                   topicIds: _selectedTopics.value,
-                                  subId: _selectedSubjectId!,
+                                  subIds: filteredSubIds.toList(),
                                   challengeType: "1",
                                 ),
                               );

@@ -20,6 +20,7 @@ class ReminderDialog extends StatefulWidget {
   final String? message;
   final String? btnName;
   final String? dateTime;
+  final VoidCallback? onSuccess;
   final Function()? onTap;
 
   ReminderDialog({
@@ -29,6 +30,7 @@ class ReminderDialog extends StatefulWidget {
     this.message,
     this.btnName,
     this.dateTime,
+    this.onSuccess,
     this.onTap,
   });
 
@@ -76,6 +78,9 @@ class _ReminderDialogState extends State<ReminderDialog>
         listener: (context, state) {
           if (state is LectureReminderSuccess) {
             Navigator.pop(context);
+            if (widget.onSuccess != null) {
+              widget.onSuccess!();
+            }
             // Show snackbar after dialog is closed
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(

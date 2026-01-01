@@ -10,3 +10,9 @@ class ChapterRequested extends ChapterEvent {
   const ChapterRequested({required this.subId});
 }
 
+class ChapterRemoveRequested extends ChapterEvent {
+  final String subId;
+
+  const ChapterRemoveRequested({required this.subId});
+}
+

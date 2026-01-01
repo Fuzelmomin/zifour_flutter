@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
@@ -15,6 +17,7 @@ import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_loading_widget.dart';
 import '../../core/widgets/info_row.dart';
 import '../challenger_zone/challenge_result_screen.dart';
+import '../dashboard/video_player_screen.dart';
 import 'bloc/challenge_mcq_list_bloc.dart';
 import 'bloc/submit_mcq_answer_bloc.dart';
 import 'bloc/mcq_bookmark_bloc.dart';
@@ -64,6 +67,14 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     "Mark as Bookmark"
   ];
 
+  final BehaviorSubject<String> takeTime =
+  BehaviorSubject<String>.seeded("00:00");
+  
+  Timer? _timer;
+  int _currentQuestionSeconds = 0;
+  // Map to store cumulative time spent on each question (mcId -> total seconds)
+  final Map<String, int> _questionTimeMap = {};
+
   @override
   void initState() {
     super.initState();
@@ -103,11 +114,41 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
 
   @override
   void dispose() {
+    _stopTimer();
     selectedOption.close();
     _mcqListBloc.close();
     _submitMcqAnswerBloc.close();
     _mcqBookmarkBloc.close();
+    takeTime.close();
     super.dispose();
+  }
+
+  void _startTimer() {
+    _stopTimer();
+    _currentQuestionSeconds = 0;
+    takeTime.add("00:00");
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _currentQuestionSeconds++;
+      final minutes = (_currentQuestionSeconds ~/ 60).toString().padLeft(2, '0');
+      final seconds = (_currentQuestionSeconds % 60).toString().padLeft(2, '0');
+      takeTime.add("$minutes:$seconds");
+    });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  void _saveCurrentTime() {
+    if (_mcqListBloc.state.hasData) {
+      final mcqList = _mcqListBloc.state.data!.mcqList;
+      if (_currentQuestionIndex < mcqList.length) {
+        final currentMcq = mcqList[_currentQuestionIndex];
+        _questionTimeMap[currentMcq.mcId] = 
+            (_questionTimeMap[currentMcq.mcId] ?? 0) + _currentQuestionSeconds;
+      }
+    }
   }
 
   void _goToNextQuestion() async {
@@ -123,6 +164,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     
     // Save current answer
     _allAnswers[currentMcq.mcId] = currentSelected ?? "";
+
+    // Save time spent on this question before moving
+    _saveCurrentTime();
     
     // Check if this is the last question
     if (_currentQuestionIndex == totalQuestions - 1) {
@@ -141,6 +185,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       
       // Restore saved answer for next question if exists
       selectedOption.add(savedAnswer);
+
+      // Reset timer for next question
+      _startTimer();
     }
   }
 
@@ -154,6 +201,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       if (currentSelected != null) {
         _allAnswers[currentMcq.mcId] = currentSelected;
       }
+
+      // Save time spent on this question before moving
+      _saveCurrentTime();
       
       final previousIndex = _currentQuestionIndex - 1;
       final previousMcq = mcqList[previousIndex];
@@ -166,6 +216,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       
       // Restore saved answer for previous question
       selectedOption.add(savedAnswer);
+
+      // Reset timer for previous question
+      _startTimer();
     }
   }
 
@@ -229,6 +282,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       return;
     }
     
+    // Save time for the current question before submission
+    _saveCurrentTime();
+    
     final mcqList = _mcqListBloc.state.data!.mcqList;
     final optionLabels = ['A', 'B', 'C', 'D'];
     
@@ -244,8 +300,11 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         'mc_id': mcq.mcId,
         'mc_answer_stu': selectedOption == "" ? "" : studentAnswerIndex >= 0 ? (studentAnswerIndex+1).toString() : '1',
         'mc_answer': mcq.mcAnswer,
+        'mc_timer': (_questionTimeMap[mcq.mcId] ?? 0).toString(),
       });
     }
+
+    print("QuestionAnswer: ${mcqListForApi}");
 
     // if widget.mcqType = "1", Practice MCQ
     // if widget.mcqType = "2", Expert Challenge MCQ Type
@@ -272,31 +331,43 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         BlocProvider.value(value: _submitMcqAnswerBloc),
         BlocProvider.value(value: _mcqBookmarkBloc),
       ],
-      child: BlocListener<McqBookmarkBloc, McqBookmarkState>(
-        listener: (context, bookmarkState) {
-          if (bookmarkState.status == McqBookmarkStatus.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  bookmarkState.data?.message ?? 'Bookmark added successfully.',
-                ),
-                backgroundColor: AppColors.success,
-              ),
-            );
-          } else if (bookmarkState.status == McqBookmarkStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  bookmarkState.errorMessage ?? 'Unable to add bookmark.',
-                ),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          }
-        },
-        child: BlocListener<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
-        listener: (context, state) {
-          if (state.status == SubmitMcqAnswerStatus.success) {
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<ChallengeMcqListBloc, ChallengeMcqListState>(
+              listener: (context, state) {
+                if (state.status == ChallengeMcqListStatus.success && _timer == null) {
+                  _startTimer();
+                }
+              },
+            ),
+            BlocListener<McqBookmarkBloc, McqBookmarkState>(
+              listener: (context, bookmarkState) {
+                if (bookmarkState.status == McqBookmarkStatus.success) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        bookmarkState.data?.message ?? 'Bookmark added successfully.',
+                      ),
+                      backgroundColor: AppColors.success,
+                    ),
+                  );
+                } else if (bookmarkState.status == McqBookmarkStatus.failure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        bookmarkState.errorMessage ?? 'Unable to add bookmark.',
+                      ),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+          child: BlocListener<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
+            listener: (context, state) {
+              if (state.status == SubmitMcqAnswerStatus.success) {
+                _stopTimer();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.data?.message ?? 'Submit answers.'),
@@ -554,6 +625,28 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   style: TextStyle(color: Colors.pinkAccent, fontSize: 14),
                 ),
                 const Spacer(),
+
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white.withOpacity(0.15),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.timer, color: Colors.orange, size: 16),
+                      SizedBox(width: 5),
+                      StreamBuilder<String>(
+                        stream: takeTime,
+                        builder: (context, asyncSnapshot) {
+                          return Text(asyncSnapshot.data ?? "00:00",
+                              style: TextStyle(color: Colors.white, fontSize: 13));
+                        }
+                      ),
+                    ],
+                  ),
+                )
+
               ],
             ),
             const SizedBox(height: 18),
@@ -617,49 +710,6 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
 
             SizedBox(height: 50.h),
 
-            // Row(
-            //   spacing: 10.0,
-            //   children: [
-            //     Expanded(
-            //       child: CustomGradientButton(
-            //         text: 'Video Solution',
-            //         onPressed: () {},
-            //         customDecoration: widget.type == "Start Exam"
-            //             ? BoxDecoration(
-            //             borderRadius: BorderRadius.circular(12.r),
-            //             border: Border.all(
-            //               color: Colors.black.withOpacity(0.2),
-            //             ),
-            //             color: Colors.grey.withOpacity(0.3))
-            //             : null,
-            //         textStyle: widget.type == "Start Exam"
-            //             ? AppTypography.inter14Bold
-            //             .copyWith(color: Colors.white.withOpacity(0.2))
-            //             : null,
-            //       ),
-            //     ),
-            //     Expanded(
-            //       child: CustomGradientButton(
-            //         text: 'Text Solution',
-            //         onPressed: () {
-            //           _showSolutionDialog(currentMcq);
-            //         },
-            //         customDecoration: widget.type == "Start Exam"
-            //             ? BoxDecoration(
-            //             borderRadius: BorderRadius.circular(12.r),
-            //             border: Border.all(
-            //               color: Colors.black.withOpacity(0.2),
-            //             ),
-            //             color: Colors.grey.withOpacity(0.3))
-            //             : null,
-            //         textStyle: widget.type == "Start Exam"
-            //             ? AppTypography.inter14Bold
-            //             .copyWith(color: Colors.white.withOpacity(0.2))
-            //             : null,
-            //       ),
-            //     ),
-            //   ],
-            // ),
             //
             // SizedBox(height: 20.h),
 
@@ -690,6 +740,40 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 ),
               ],
             ),
+            SizedBox(height: 20.h,),
+
+            widget.mcqType == "1" ? Row(
+              spacing: 10.0,
+              children: [
+                Expanded(
+                  child: Container(),
+                ),
+                Expanded(
+                  child: CustomGradientButton(
+                    text: 'Solution',
+                    onPressed: (){
+                      if (_currentQuestionIndex >= 0 && _mcqListBloc.state.hasData) {
+                        final mcqList = _mcqListBloc.state.data!.mcqList;
+                        final currentMcq = mcqList[_currentQuestionIndex];
+                        if(currentMcq.textSolution != null && currentMcq.textSolution.isNotEmpty){
+                          _showSolutionDialog(currentMcq.textSolution);
+                        }else if(currentMcq.videoSolution != null && currentMcq.videoSolution.isNotEmpty){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VideoPlayerScreen(
+                                videoId: currentMcq.videoSolution,
+                                videoTitle: "",
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ) : Container(),
 
             SizedBox(height: 50.h),
           ],
@@ -765,25 +849,45 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     );
   }
 
-  void _showSolutionDialog(McqItem mcq) {
+  void _showSolutionDialog(String solution) {
     showDialog(
       context: context,
+
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.darkBlue,
+        backgroundColor: AppColors.hintTextColor,
+        // 🔥 makes dialog wider
+        insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 24).copyWith(left: 0.0),
+
+        // 🔥 removes default padding around content
+        contentPadding: EdgeInsets.zero,
         title: const Text(
           'Solution',
           style: TextStyle(color: Colors.white),
         ),
-        content: SingleChildScrollView(
-          child: Text(
-            mcq.mcSolution.replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
-            style: const TextStyle(color: Colors.white70, fontSize: 14),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Html(
+              data: solution,
+
+              style: {
+                "strong": Style(
+                  fontWeight: FontWeight.bold,
+                  fontSize: FontSize(16),
+                  color: Colors.white
+                ),
+                "body": Style(
+                  color: Colors.white,
+                  fontSize: FontSize(16),
+                ),
+              },
+            ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text('Close', style: AppTypography.inter14Medium.copyWith(color: AppColors.darkBlue),),
           ),
         ],
       ),

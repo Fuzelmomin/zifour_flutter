@@ -29,6 +29,8 @@ class ChapterModel {
   final String standard;
   final String medium;
   final String exam;
+  @JsonKey(name: 'sub_id')
+  final String? subId;
 
   ChapterModel({
     required this.chpId,
@@ -36,7 +38,26 @@ class ChapterModel {
     required this.standard,
     required this.medium,
     required this.exam,
+    this.subId,
   });
+
+  ChapterModel copyWith({
+    String? chpId,
+    String? name,
+    String? standard,
+    String? medium,
+    String? exam,
+    String? subId,
+  }) {
+    return ChapterModel(
+      chpId: chpId ?? this.chpId,
+      name: name ?? this.name,
+      standard: standard ?? this.standard,
+      medium: medium ?? this.medium,
+      exam: exam ?? this.exam,
+      subId: subId ?? this.subId,
+    );
+  }
 
   factory ChapterModel.fromJson(Map<String, dynamic> json) =>
       _$ChapterModelFromJson(json);

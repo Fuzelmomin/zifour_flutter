@@ -146,7 +146,7 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
                                   itemCount: lectures.length,
                                   itemBuilder: (context, index) {
                                     final lecture = lectures[index];
-                                    return _buildLectureCard(lecture);
+                                    return _buildLectureCard(context, lecture);
                                   },
                                   separatorBuilder: (context, index) {
                                     return SizedBox(height: 15.h);
@@ -188,7 +188,7 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
     }
   }
 
-  Widget _buildLectureCard(LectureItem lecture) {
+  Widget _buildLectureCard(BuildContext context, LectureItem lecture) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -290,19 +290,41 @@ class _LiveClassDetailsScreenState extends State<LiveClassDetailsScreen> {
                   // Remind Me
                   GestureDetector(
                     onTap: () {
+                      if (lecture.remeberFlag == "1") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Reminder already set for this lecture"),
+                            backgroundColor: AppColors.pinkColor,
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                        return;
+                      }
                       showDialog(
                         context: context,
                         barrierDismissible: true,
                         builder: (_) => CreateReminderDialog(
                           lecture: lecture,
+                          onSuccess: () {
+                            // Update the local state via Bloc
+                            if (lecture.lecId != null) {
+                              context.read<LecturesBloc>().add(
+                                    UpdateLectureReminder(lecId: lecture.lecId!),
+                                  );
+                            }
+                          },
                         ),
                       );
                     },
                     child: Text(
                       "Remind Me",
                       style: AppTypography.inter14Bold.copyWith(
-                        color: AppColors.pinkColor,
-                        decoration: TextDecoration.underline,
+                        color: lecture.remeberFlag == "1"
+                            ? Colors.grey
+                            : AppColors.pinkColor,
+                        decoration: lecture.remeberFlag == "1"
+                            ? TextDecoration.none
+                            : TextDecoration.underline,
                         decorationColor: AppColors.pinkColor,
                       ),
                     ),

@@ -30,7 +30,7 @@ class UpdateChallengeBloc
       crtChlId: event.crtChlId,
       chapterIds: event.chapterIds,
       topicIds: event.topicIds,
-      subId: event.subId,
+      subIds: event.subIds,
     );
 
     if (response.status == ApiStatus.success && response.data != null) {

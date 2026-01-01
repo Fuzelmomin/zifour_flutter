@@ -55,7 +55,11 @@ class McqItem {
   @JsonKey(name: 'mc_answer')
   final String mcAnswer;
   @JsonKey(name: 'mc_solution')
-  final String mcSolution;
+  final String? mcSolution;
+  @JsonKey(name: 'text_solution')
+  final String textSolution;
+  @JsonKey(name: 'video_solution')
+  final String videoSolution;
 
   McqItem({
     required this.mcId,
@@ -66,7 +70,9 @@ class McqItem {
     required this.mcOption3,
     required this.mcOption4,
     required this.mcAnswer,
-    required this.mcSolution,
+    this.mcSolution,
+    required this.textSolution,
+    required this.videoSolution,
   });
 
   factory McqItem.fromJson(Map<String, dynamic> json) =>

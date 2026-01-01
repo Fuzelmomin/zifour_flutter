@@ -21,7 +21,7 @@ class CreateChallengeBloc
     CreateChallengeRequested event,
     Emitter<CreateChallengeState> emit,
   ) async {
-    print('CreateChallengeBloc: Event received - chapters: ${event.chapterIds}, topics: ${event.topicIds}, subId: ${event.subId}');
+    print('CreateChallengeBloc: Event received - chapters: ${event.chapterIds}, topics: ${event.topicIds}, subIds: ${event.subIds}');
     
     emit(state.copyWith(
       status: CreateChallengeStatus.loading,
@@ -32,7 +32,7 @@ class CreateChallengeBloc
     final response = await _repository.createChallenge(
       chapterIds: event.chapterIds,
       topicIds: event.topicIds,
-      subId: event.subId,
+      subIds: event.subIds,
       challengeType: event.challengeType,
     );
     

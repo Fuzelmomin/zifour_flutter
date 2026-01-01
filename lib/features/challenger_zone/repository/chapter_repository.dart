@@ -45,8 +45,19 @@ class ChapterRepository {
       if (response.statusCode == 200) {
         final data = response.data;
         if (data['status'] == true) {
-          final model = ChapterResponse.fromJson(data as Map<String, dynamic>);
-          return ApiResponse.success(data: model);
+          final List<dynamic> chapterListJson = data['chapter_list'] ?? [];
+          final chapters = chapterListJson.map((json) {
+            final chapter = ChapterModel.fromJson(json as Map<String, dynamic>);
+            return chapter.copyWith(subId: subId);
+          }).toList();
+
+          return ApiResponse.success(
+            data: ChapterResponse(
+              status: true,
+              message: data['message']?.toString() ?? 'Success',
+              chapterList: chapters,
+            ),
+          );
         }
         return ApiResponse.error(
           errorMsg: data['message']?.toString() ?? 'No chapters found.',

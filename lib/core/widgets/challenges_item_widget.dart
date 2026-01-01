@@ -44,7 +44,13 @@ class ChallengesItemWidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10.h,),
-          Row(
+          if (challenge?.subjects != null && challenge!.subjects.isNotEmpty)
+          _customContainer(
+            '${AppLocalizations.of(context)?.subject}',
+            challenge!.subjects,
+          ),
+          SizedBox(height: 10.h,),
+          /*Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 12.w,
@@ -66,7 +72,13 @@ class ChallengesItemWidget extends StatelessWidget {
                   ),
                 ),
             ],
+          ),*/
+          if (challenge?.chapters != null && challenge!.chapters.isNotEmpty)
+          _customContainer(
+            '${AppLocalizations.of(context)?.chapter}',
+            challenge!.chapters,
           ),
+
           if (challenge?.topics != null && challenge!.topics.isNotEmpty) ...[
             SizedBox(height: 12.h,),
             _customContainer(

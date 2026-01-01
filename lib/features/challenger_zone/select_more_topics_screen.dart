@@ -356,14 +356,14 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
     print('CreateChallengeBloc: \n${widget.chapterIds} \n $selectedTopics \n ${widget.subId} ');
 
     // Use the bloc instance directly instead of context.read
-    _createChallengeBloc.add(
-      CreateChallengeRequested(
-        chapterIds: widget.chapterIds,
-        topicIds: selectedTopics,
-        subId: widget.subId,
-        challengeType: widget.challengeType,
-      ),
-    );
+    // _createChallengeBloc.add(
+    //   CreateChallengeRequested(
+    //     chapterIds: widget.chapterIds,
+    //     topicIds: selectedTopics,
+    //     subId: widget.subId,
+    //     challengeType: widget.challengeType,
+    //   ),
+    // );
   }
 
   Widget _buildTopicsShimmer() {

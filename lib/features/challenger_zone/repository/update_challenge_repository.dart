@@ -19,7 +19,7 @@ class UpdateChallengeRepository {
     required int crtChlId,
     required List<String> chapterIds,
     required List<String> topicIds,
-    required String subId,
+    required List<String> subIds,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -38,6 +38,7 @@ class UpdateChallengeRepository {
 
       final chaptersParam = _encodeIdList(chapterIds);
       final topicsParam = _encodeIdList(topicIds);
+      final subIdsParam = _encodeIdList(subIds);
 
       final response = await _dioClient.getDio().post(
         APIConstants.updateChallenge,
@@ -46,7 +47,7 @@ class UpdateChallengeRepository {
           'stu_id': user.stuId,
           'chapters': chaptersParam,
           'topics': topicsParam,
-          'sub_id': subId,
+          'sub_id': subIdsParam,
         },
       );
 

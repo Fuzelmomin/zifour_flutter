@@ -12,10 +12,12 @@ import '../widgets/custom_gradient_button.dart';
 
 class CreateReminderDialog extends StatefulWidget {
   final LectureItem? lecture;
+  final VoidCallback? onSuccess;
 
   const CreateReminderDialog({
     super.key,
     this.lecture,
+    this.onSuccess,
   });
 
   @override
@@ -114,6 +116,7 @@ class _CreateReminderDialogState extends State<CreateReminderDialog>
                       builder: (_) => ReminderDialog(
                         lecture: widget.lecture,
                         dateTime: _formatDateTime(widget.lecture?.lecDate, widget.lecture?.lecTime),
+                        onSuccess: widget.onSuccess,
                       ),
                     );
                   },

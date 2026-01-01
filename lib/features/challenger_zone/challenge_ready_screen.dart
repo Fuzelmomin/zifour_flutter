@@ -28,6 +28,7 @@ import 'bloc/chapter_bloc.dart';
 import 'bloc/topic_bloc.dart';
 import 'bloc/update_challenge_bloc.dart';
 import 'model/challenge_details_model.dart';
+import 'model/chapter_model.dart';
 
 class ChallengeReadyScreen extends StatefulWidget {
   ChallengeReadyScreen({
@@ -51,7 +52,7 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
 
   BehaviorSubject<bool> isEdit = BehaviorSubject<bool>.seeded(false);
   final SubjectService _subjectService = SubjectService();
-  String? _selectedSubjectId;
+  List<String> _selectedSubjectIds = [];
   late final ChapterBloc _chapterBloc;
   late final TopicBloc _topicBloc;
   late final UpdateChallengeBloc _updateChallengeBloc;
@@ -113,15 +114,16 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
   void _prefillSelectionsFromDetails(ChallengeDetails details) {
     _isInitializingFromDetails = true;
 
-    // Prefill subject (use first subject if multiple) and rebuild UI
+    // Prefill subjects
     if (details.subjects.isNotEmpty) {
-      final firstSubId = details.subjects.first.id;
-      if (_selectedSubjectId != firstSubId) {
-        setState(() {
-          _selectedSubjectId = firstSubId;
-        });
+      final subIds = details.subjects.map((e) => e.id).toList();
+      setState(() {
+        _selectedSubjectIds = subIds;
+      });
+      // Request chapters for each subject
+      for (var subId in subIds) {
+        _chapterBloc.add(ChapterRequested(subId: subId));
       }
-      _chapterBloc.add(ChapterRequested(subId: firstSubId));
     }
 
     // Prefill chapters
@@ -136,7 +138,7 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
 
   Future<void> _handleUpdateChallenge() async {
     // Validation: Check if subject, chapters, and topics are selected
-    if (_selectedSubjectId == null || _selectedSubjectId!.isEmpty) {
+    if (_selectedSubjectIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('${AppLocalizations.of(context)?.pleaseSelectSubject ?? "Please select a subject"}'),
@@ -178,12 +180,28 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
       return;
     }
 
+    // Filter subject IDs: only include those whose chapters are selected
+    final List<ChapterModel> allChaptersInState = _chapterBloc.state.data?.chapterList ?? [];
+    final List<String> selectedChapterIds = _selectedChapters.value;
+    
+    final Set<String> filteredSubIds = {};
+    for (var chapterId in selectedChapterIds) {
+      try {
+        final chapter = allChaptersInState.firstWhere((c) => c.chpId == chapterId);
+        if (chapter.subId != null) {
+          filteredSubIds.add(chapter.subId!);
+        }
+      } catch (_) {
+        // Chapter not found or subId missing
+      }
+    }
+
     // Trigger update challenge API
     _updateChallengeBloc.add(UpdateChallengeRequested(
       crtChlId: widget.crtChlId,
       chapterIds: _selectedChapters.value,
       topicIds: _selectedTopics.value,
-      subId: _selectedSubjectId!,
+      subIds: filteredSubIds.toList(),
     ));
   }
 
@@ -236,7 +254,7 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                 current.status == ChallengeDetailsStatus.success && current.hasData,
             listener: (context, state) {
               if ((widget.from == "edit" || isEdit.value) &&
-                  _selectedSubjectId == null &&
+                  _selectedSubjectIds.isEmpty &&
                   _selectedChapters.value.isEmpty &&
                   _selectedTopics.value.isEmpty) {
                 _prefillSelectionsFromDetails(state.data!.challenge);
@@ -307,15 +325,15 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                         ),
                       ),
                       actionClick: (){
-                        if(isEdit.value){
-                          isEdit.add(false);
-                        }else {
-                          isEdit.add(true);
-                          final state = _detailsBloc.state;
-                          if (state.hasData &&
-                              _selectedSubjectId == null &&
-                              _selectedChapters.value.isEmpty &&
-                              _selectedTopics.value.isEmpty) {
+                          if (isEdit.value) {
+                            isEdit.add(false);
+                          } else {
+                            isEdit.add(true);
+                            final state = _detailsBloc.state;
+                            if (state.hasData &&
+                                _selectedSubjectIds.isEmpty &&
+                                _selectedChapters.value.isEmpty &&
+                                _selectedTopics.value.isEmpty) {
                             _prefillSelectionsFromDetails(state.data!.challenge);
                           }
                         }
@@ -353,29 +371,42 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                         scrollDirection: Axis.horizontal,
                                         itemCount: _subjectService.subjects.length,
                                         itemBuilder: (context, index) {
-                                          final subject = _subjectService.subjects[index];
-                                          final isSelected =
-                                              _selectedSubjectId == subject.subId;
-                                          return Padding(
-                                            padding: EdgeInsets.only(right: 10.w),
-                                            child: subjectContainer(
-                                              subject: subject,
-                                              isSelected: isSelected,
-                                              onTap: () {
-                                                setState(() {
-                                                  _selectedSubjectId =
-                                                  isSelected ? null : subject.subId;
-                                                });
+                                          final subject =
+                                              _subjectService.subjects[index];
+                                          final isSelected = _selectedSubjectIds
+                                              .contains(subject.subId);
+                                      return Padding(
+                                        padding: EdgeInsets.only(right: 10.w),
+                                        child: subjectContainer(
+                                          subject: subject,
+                                          isSelected: isSelected,
+                                          onTap: () {
+                                            setState(() {
+                                              if (isSelected) {
+                                                _selectedSubjectIds.remove(subject.subId);
+                                                
+                                                // Remove chapters of this subject from selection
+                                                final chaptersOfSubject = _chapterBloc.state.data?.chapterList
+                                                    .where((c) => c.subId == subject.subId)
+                                                    .map((c) => c.chpId)
+                                                    .toList() ?? [];
+                                                
+                                                final currentChapters = List<String>.from(_selectedChapters.value);
+                                                currentChapters.removeWhere((id) => chaptersOfSubject.contains(id));
+                                                _selectedChapters.add(currentChapters);
 
-                                                // Trigger API call when subject is selected
-                                                if (!isSelected &&
-                                                    subject.subId.isNotEmpty) {
-                                                  _chapterBloc.add(ChapterRequested(
-                                                      subId: subject.subId));
-                                                }
-                                              },
-                                            ),
-                                          );
+                                                // Update topics selection too
+                                                _selectedTopics.add([]);
+                                                
+                                                _chapterBloc.add(ChapterRemoveRequested(subId: subject.subId));
+                                              } else {
+                                                _selectedSubjectIds.add(subject.subId);
+                                                _chapterBloc.add(ChapterRequested(subId: subject.subId));
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      );
                                         },
                                       ),
                                     )
@@ -420,7 +451,7 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                               padding:
                                               EdgeInsets.symmetric(vertical: 20.h),
                                               child: Text(
-                                                _selectedSubjectId == null
+                                                _selectedSubjectIds.isEmpty
                                                     ? 'Please select a subject first'
                                                     : 'No chapters found',
                                                 style:
