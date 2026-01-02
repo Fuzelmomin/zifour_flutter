@@ -43,9 +43,9 @@ McqItem _$McqItemFromJson(Map<String, dynamic> json) => McqItem(
       mcOption3: json['mc_option3'] as String,
       mcOption4: json['mc_option4'] as String,
       mcAnswer: json['mc_answer'] as String,
-      mcSolution: json['mc_solution'] ?? "" ?? "",
-      videoSolution: json['video_solution'] as String,
-      textSolution: json['text_solution'] as String,
+      mcSolution: json['mc_solution'] as String?,
+      textSolution: json['text_solution'] as String?,
+      videoSolution: json['video_solution'] as String?,
     );
 
 Map<String, dynamic> _$McqItemToJson(McqItem instance) => <String, dynamic>{

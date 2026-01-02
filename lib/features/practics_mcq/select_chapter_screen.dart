@@ -20,6 +20,7 @@ import '../../core/constants/assets_path.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
+import '../../core/widgets/pdf_viewer_screen.dart';
 import '../../core/widgets/profile_option_widget.dart';
 import '../../l10n/app_localizations.dart';
 import '../challenger_zone/bloc/chapter_bloc.dart';
@@ -201,15 +202,36 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                           ),
                                         );
                                       } else if(widget.from == "module"){
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => ModuleListScreen(
-                                              subId: widget.subjectId ?? '',
-                                              chapterId: chapter.chpId,
+                                        // Navigator.push(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) => ModuleListScreen(
+                                        //       subId: widget.subjectId ?? '',
+                                        //       chapterId: chapter.chpId,
+                                        //     ),
+                                        //   ),
+                                        // );
+
+                                        if (chapter.chpPdf != null && chapter.chpPdf!.isNotEmpty) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => PdfViewerScreen(
+                                                pdfUrl: chapter.chpPdf!,
+                                                title: chapter.name,
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Study material for ${chapter.name} is not available yet.'),
+                                              backgroundColor: AppColors.hintTextColor,
+                                              behavior: SnackBarBehavior.floating,
+                                            ),
+                                          );
+                                        }
+
                                       }
                                     },
                                   );

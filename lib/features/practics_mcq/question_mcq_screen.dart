@@ -147,6 +147,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         final currentMcq = mcqList[_currentQuestionIndex];
         _questionTimeMap[currentMcq.mcId] = 
             (_questionTimeMap[currentMcq.mcId] ?? 0) + _currentQuestionSeconds;
+        _currentQuestionSeconds = 0;
       }
     }
   }
@@ -755,14 +756,21 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                       if (_currentQuestionIndex >= 0 && _mcqListBloc.state.hasData) {
                         final mcqList = _mcqListBloc.state.data!.mcqList;
                         final currentMcq = mcqList[_currentQuestionIndex];
-                        if(currentMcq.textSolution != null && currentMcq.textSolution.isNotEmpty){
-                          _showSolutionDialog(currentMcq.textSolution);
-                        }else if(currentMcq.videoSolution != null && currentMcq.videoSolution.isNotEmpty){
+
+                        final solution = (currentMcq.textSolution != null && currentMcq.textSolution!.isNotEmpty)
+                            ? currentMcq.textSolution
+                            : (currentMcq.mcSolution != null && currentMcq.mcSolution!.isNotEmpty)
+                            ? currentMcq.mcSolution
+                            : null;
+
+                        if(solution != null){
+                          _showSolutionDialog(solution);
+                        }else if(currentMcq.videoSolution != null && currentMcq.videoSolution!.isNotEmpty){
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => VideoPlayerScreen(
-                                videoId: currentMcq.videoSolution,
+                                videoId: currentMcq.videoSolution!,
                                 videoTitle: "",
                               ),
                             ),
@@ -869,7 +877,6 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           child: SingleChildScrollView(
             child: Html(
               data: solution,
-
               style: {
                 "strong": Style(
                   fontWeight: FontWeight.bold,

@@ -3,8 +3,9 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_app_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:screen_protector/screen_protector.dart';
 
-class PdfViewerScreen extends StatelessWidget {
+class PdfViewerScreen extends StatefulWidget {
   final String pdfUrl;
   final String title;
 
@@ -13,6 +14,52 @@ class PdfViewerScreen extends StatelessWidget {
     required this.pdfUrl,
     required this.title,
   });
+
+  @override
+  State<PdfViewerScreen> createState() => _PdfViewerScreenState();
+}
+
+class _PdfViewerScreenState extends State<PdfViewerScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _preventScreenshot();
+  }
+
+  @override
+  void dispose() {
+    _allowScreenshot();
+    super.dispose();
+  }
+
+  void _preventScreenshot() async {
+    await ScreenProtector.preventScreenshotOn();
+    // Listening for screenshot and screen recording attempts
+    ScreenProtector.addListener((bool isScreenshot) {
+      if (mounted) {
+        _showProtectedMessage();
+      }
+    } as void Function()?, (bool isRecording) {
+      if (mounted) {
+        _showProtectedMessage();
+      }
+    });
+  }
+
+  void _showProtectedMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Screen recording and screenshots are not allowed on this screen."),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.error,
+      ),
+    );
+  }
+
+  void _allowScreenshot() async {
+    await ScreenProtector.preventScreenshotOff();
+    ScreenProtector.removeListener();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +75,8 @@ class PdfViewerScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 15.w),
                   child: CustomAppBar(
                     isBack: true,
-                    title: title,
+                    title: widget.title,
+                    isLongText: true,
                     isActionWidget: false,
                   ),
                 ),
@@ -44,7 +92,7 @@ class PdfViewerScreen extends StatelessWidget {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: SfPdfViewer.network(
-                      pdfUrl,
+                      widget.pdfUrl,
                     ),
                   ),
                 ),
