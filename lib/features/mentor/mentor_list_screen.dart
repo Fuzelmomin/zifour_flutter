@@ -188,6 +188,7 @@ class _MentorsListScreenState extends State<MentorsListScreen> {
                                               MentorsVideosListScreen(
                                             mentorId: mentor.mtrId ?? '',
                                             mentorName: mentor.name,
+                                                isBack: true,
                                           ),
                                         ),
                                       );

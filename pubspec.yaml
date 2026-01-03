@@ -57,6 +57,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/images/
+    - assets/json/success.json
 
 # ✅ Launcher Icon Config (MUST be outside dependencies!)
 icons_launcher:

@@ -20,6 +20,7 @@ import 'package:zifour_sourcecode/features/help_support/help_support_screen.dart
 import 'package:zifour_sourcecode/features/multimedia_library/multimedia_library_screen.dart';
 import 'package:zifour_sourcecode/features/my_performance/my_performance_screen.dart';
 import 'package:zifour_sourcecode/features/reset_password/reset_password_screen.dart';
+import 'package:zifour_sourcecode/features/revision/revision_list_screen.dart';
 import 'package:zifour_sourcecode/features/zifour_calender/zifour_calender_screen.dart';
 
 import '../../features/demo_ui.dart';
@@ -159,8 +160,12 @@ class CustomDrawer extends StatelessWidget {
                     _drawerItem(AssetsPath.svgRefresh, "Reset Password", (){
                       _closeDrawerAndPush(context, (_) => ResetPasswordScreen());
                     }),
-                    _drawerItem(AssetsPath.svgPlayCircle, "Multimedia Library", (){
-                      _closeDrawerAndPush(context, (_) => MultimediaLibraryScreen());
+                    // _drawerItem(AssetsPath.svgPlayCircle, "Multimedia Library", (){
+                    //   _closeDrawerAndPush(context, (_) => MultimediaLibraryScreen());
+                    // }),
+
+                    _drawerItem(AssetsPath.svgCalendar, "Revision", (){
+                      _closeDrawerAndPush(context, (_) => RevisionListScreen());
                     }),
                     _drawerItem(AssetsPath.svgLogout, "Logout", (){
                       //Navigator.pop(context);

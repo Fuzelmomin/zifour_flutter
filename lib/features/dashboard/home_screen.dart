@@ -9,6 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/utils/user_preference.dart';
+import 'package:zifour_sourcecode/core/widgets/subscription_dialogs.dart';
 import 'package:zifour_sourcecode/features/doubts/my_doubts_list_screen.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -31,6 +32,7 @@ import '../india_test_series/all_india_test_series_screen.dart';
 import '../learning_course/learning_course_screen.dart';
 import '../live_class/live_class_screen.dart';
 import '../mentor/mentor_list_screen.dart';
+import '../mentor/mentors_videos_list_screen.dart';
 import '../practics_mcq/practice_subject_screen.dart';
 import 'bloc/home_bloc.dart';
 import 'models/home_model.dart';
@@ -523,7 +525,8 @@ class _HomeScreenState extends State<HomeScreen> {
             itemClick: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MentorsListScreen()),
+                //MaterialPageRoute(builder: (context) => MentorsListScreen()),
+                MaterialPageRoute(builder: (context) => MentorsVideosListScreen(mentorId: '', isBack: true)),
               );
             },
           ),
@@ -742,44 +745,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _widgetOption(Map item, int index) {
     return InkWell(
-      onTap: (){
-        if(index == 0){
+      onTap: () {
+        final homeState = context.read<HomeBloc>().state;
+        final stuTrialDayStr = homeState.data?.stuTrialDay ?? '0';
+        final int stuTrialDay = int.tryParse(stuTrialDayStr) ?? 0;
 
-        }else if(index == 1){
+        // Restriction Check for index 1 to 7 if trial is finished
+        if (index != 0 && stuTrialDay == 0) {
+          SubscriptionDialogs.showTrialExpiredDialog(context);
+          return;
+        }
+
+        if (index == 0) {
+          SubscriptionDialogs.showSubscriptionPlanDialog(context);
+        } else if (index == 1) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const LiveClassScreen()),
           );
-        }else if(index == 2){
+        } else if (index == 2) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => LearningCourseScreen(
               pkId: pkId,
             )),
           );
-        }else if(index == 3){
+        } else if (index == 3) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const PracticeSubjectScreen()),
           );
-        }else if(index == 4){
+        } else if (index == 4) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ChallengerZoneScreen()),
           );
-        }else if(index == 5){
+        } else if (index == 5) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AllIndiaTestSeriesScreen(
               pkId: pkId,
             )),
           );
-        }else if(index == 6){
+        } else if (index == 6) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const MyDoubtsListScreen()),
           );
-        }else if(index == 7){
+        } else if (index == 7) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AiBasedPerformanceScreen()),
@@ -834,7 +847,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      item["subtitle"],
+                      index == 0 ? _getTrialMessage(context) : item["subtitle"],
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.85),
                         fontSize: 13,
@@ -849,5 +862,20 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  String _getTrialMessage(BuildContext context) {
+    final homeState = context.read<HomeBloc>().state;
+    final stuTrialDayStr = homeState.data?.stuTrialDay ?? '0';
+    final int stuTrialDay = int.tryParse(stuTrialDayStr) ?? 0;
+    
+    if (stuTrialDay > 0) {
+      if (stuTrialDay == 1) {
+        return "Last Day of Trial!\nUnlock Full Access Now";
+      }
+      return "$stuTrialDay Days Left in Trial\nUpgrade for Unlimited Fun";
+    }
+    
+    return "Free 7-Day Access\nto Excellence";
   }
 }

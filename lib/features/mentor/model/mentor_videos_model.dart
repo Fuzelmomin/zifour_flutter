@@ -36,17 +36,23 @@ class MentorVideoItem {
     this.mvidId,
     this.name,
     this.youtubeCode,
+    this.category,
+    this.mentor,
   });
 
   final String? mvidId;
   final String? name;
   final String? youtubeCode;
+  final String? category;
+  final String? mentor;
 
   factory MentorVideoItem.fromJson(Map<String, dynamic> json) {
     return MentorVideoItem(
       mvidId: json['mvid_id']?.toString(),
       name: json['name']?.toString(),
       youtubeCode: json['youtube_code']?.toString(),
+      category: json['category']?.toString(),
+      mentor: json['mentor']?.toString(),
     );
   }
 
@@ -59,6 +65,8 @@ class MentorVideoItem {
       'mvid_id': mvidId,
       'name': name,
       'youtube_code': youtubeCode,
+      'category': category,
+      'mentor': mentor,
     };
   }
 }

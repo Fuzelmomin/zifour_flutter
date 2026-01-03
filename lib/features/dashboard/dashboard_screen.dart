@@ -10,6 +10,7 @@ import '../mentor/mentor_list_screen.dart';
 import '../mentor/mentors_videos_list_screen.dart';
 import '../subject/bloc/subject_bloc.dart';
 import '../mcq_type/bloc/mcq_type_bloc.dart';
+import 'package:zifour_sourcecode/features/mentor/bloc/mentor_category_bloc.dart';
 import 'bloc/home_bloc.dart';
 import 'home_screen.dart';
 import 'mentors_screen.dart';
@@ -28,6 +29,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   late final HomeBloc _homeBloc;
   late final SubjectBloc _subjectBloc;
   late final McqTypeBloc _mcqTypeBloc;
+  late final MentorCategoryBloc _mentorCategoryBloc;
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     _homeBloc = HomeBloc();
     _subjectBloc = SubjectBloc();
     _mcqTypeBloc = McqTypeBloc();
+    _mentorCategoryBloc = MentorCategoryBloc();
     
     // Call subject API silently when dashboard loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -42,6 +45,8 @@ class DashboardScreenState extends State<DashboardScreen> {
       _subjectBloc.add(const SubjectRequested(silent: false));
       print('API Call MCQ Types:');
       _mcqTypeBloc.add(const McqTypeRequested(silent: false));
+      print('API Call Mentor Category:');
+      _mentorCategoryBloc.add(const MentorCategoryRequested(silent: true));
     });
   }
 
@@ -50,6 +55,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     _homeBloc.close();
     _subjectBloc.close();
     _mcqTypeBloc.close();
+    _mentorCategoryBloc.close();
     _currentIndex.close();
     super.dispose();
   }
@@ -60,8 +66,9 @@ class DashboardScreenState extends State<DashboardScreen> {
         value: _homeBloc,
         child: const HomeScreen(),
       ),
-      MentorsListScreen(),
+     // MentorsListScreen(),
       //const AllCoursesScreen(),
+      MentorsVideosListScreen(mentorId: '', isBack: false,),
       ModulesScreen(),
       const ProfileScreen(),
     ];
@@ -86,6 +93,7 @@ class DashboardScreenState extends State<DashboardScreen> {
         BlocProvider.value(value: _homeBloc),
         BlocProvider.value(value: _subjectBloc),
         BlocProvider.value(value: _mcqTypeBloc),
+        BlocProvider.value(value: _mentorCategoryBloc),
       ],
       child: SafeArea(
         child: Scaffold(

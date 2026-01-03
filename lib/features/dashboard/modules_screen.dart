@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zifour_sourcecode/core/widgets/custom_gradient_button.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/services/subject_service.dart';
 import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_app_bar.dart';
+import '../module_list/module_order_form_screen.dart';
 import '../practics_mcq/select_chapter_screen.dart';
 
 class ModulesScreen extends StatefulWidget {
@@ -61,7 +63,7 @@ class _ModulesScreenState extends State<ModulesScreen> {
                 top: 100.h,
                 left: 20.w,
                 right: 20.w,
-                bottom: 0,
+                bottom: 60.h,
                 child: _subjectService.hasSubjects
                     ? SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
@@ -102,6 +104,18 @@ class _ModulesScreenState extends State<ModulesScreen> {
                   ),
                 ),
               ),
+
+              Positioned(
+                left: 20.w,
+                right: 20.w,
+                bottom: 0,
+                child: CustomGradientButton(
+                  text: "Buy Modules",
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleOrderFormScreen(mdlId: "1",),));
+                  },
+                ),
+              )
             ],
           ),
         ),

@@ -63,4 +63,9 @@ class APIConstants {
   static const supportAndFAQ = 'support.php';
   static const testSeriesResult = 'mcq_result_paper.php';
   static const getModulesList = 'modules_list.php';
+  static const moduleOrderContact = 'modules_order_contact.php';
+  static const mentorCategory = 'mentor_category.php';
+  static const createPlannerSubmit = 'planner_submit.php';
+  static const getPlannerList = 'planner_get.php';
+  static const deletePlanner = 'planner_delete.php';
 }

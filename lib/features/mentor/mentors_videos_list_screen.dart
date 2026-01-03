@@ -11,15 +11,19 @@ import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/mentors_videos_item.dart';
 import '../../l10n/app_localizations.dart';
+import '../../core/services/mentor_category_service.dart';
+import '../../core/widgets/signup_field_box.dart';
 
 class MentorsVideosListScreen extends StatefulWidget {
   final String mentorId;
   final String? mentorName;
+  final bool? isBack;
 
   MentorsVideosListScreen({
     super.key,
     required this.mentorId,
     this.mentorName,
+    this.isBack,
   });
 
   @override
@@ -30,6 +34,8 @@ class MentorsVideosListScreen extends StatefulWidget {
 class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
   bool _videosLoaded = false;
   late GetMentorVideosBloc _videosBloc;
+  final MentorCategoryService _categoryService = MentorCategoryService();
+  String selectedFilter = "All";
 
   @override
   void initState() {
@@ -51,7 +57,8 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
     _videosLoaded = true;
 
     if (mounted) {
-      _videosBloc.add(FetchMentorVideos(mentorId: widget.mentorId));
+      //_videosBloc.add(FetchMentorVideos(mentorId: widget.mentorId));
+      _videosBloc.add(FetchMentorVideos(mentorId: ""));
     }
   }
 
@@ -80,9 +87,54 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
                       left: 15.w,
                       right: 20.w,
                       child: CustomAppBar(
-                        isBack: true,
+                        isBack: widget.isBack,
                         title: widget.mentorName ??
                             '${AppLocalizations.of(context)?.mentors}',
+                        isActionWidget: true,
+                        actionWidget: PopupMenuButton<String>(
+                          onSelected: (value) => setState(() => selectedFilter = value),
+                          itemBuilder: (context) {
+                            final categories = _categoryService.mentorCategories;
+                            List<PopupMenuEntry<String>> items = [];
+                            
+                            // Add "All" option
+                            items.add(
+                              const PopupMenuItem(value: "All", child: Text("All")),
+                            );
+                            
+                            // Add other categories
+                            items.addAll(
+                              categories.map((e) => PopupMenuItem(value: e.name, child: Text(e.name))).toList()
+                            );
+                            
+                            return items;
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.r),
+                              gradient: const LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  Color(0xFFCF078A), // Pink
+                                  Color(0xFF5E00D8)
+                                ],
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  selectedFilter,
+                                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.keyboard_arrow_down, color: Colors.white, size: 16),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     Positioned(
@@ -125,23 +177,27 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
 
                           if (state is GetMentorVideosSuccess) {
                             final videos = state.videos;
-                            if (videos.isEmpty) {
-                              return const Center(
+                            final filteredVideos = videos.where((video) {
+                              if (selectedFilter == "All") return true;
+                              return video.category?.toLowerCase() == selectedFilter.toLowerCase();
+                            }).toList();
+
+                            if (filteredVideos.isEmpty) {
+                              return Center(
                                 child: Text(
-                                  'No videos available',
-                                  style: TextStyle(color: Colors.white),
+                                  'No videos available for "$selectedFilter"',
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               );
                             }
 
-                            return SizedBox(
-                              height: 200.h,
+                            return SignupFieldBox(
                               child: ListView.separated(
                                 scrollDirection: Axis.vertical,
                                 physics: const BouncingScrollPhysics(),
-                                itemCount: videos.length,
+                                itemCount: filteredVideos.length,
                                 itemBuilder: (context, index) {
-                                  final video = videos[index];
+                                  final video = filteredVideos[index];
                                   return MentorVideosItem(
                                     videoName: video.name,
                                     thumbnailUrl: video.thumbnailUrl,
@@ -159,8 +215,8 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
                                     },
                                   );
                                 },
-                                separatorBuilder: (context, index){
-                                  return SizedBox(height: 20.h,);
+                                separatorBuilder: (context, index) {
+                                  return SizedBox(height: 20.h);
                                 },
                               ),
                             );

@@ -27,9 +27,9 @@ class GetMentorVideosRepository {
 
       final response = await _dioClient.getDio().get(
         APIConstants.getMentorVideos,
-        queryParameters: {
-          'mtr_id': mentorId,
-        },
+        // queryParameters: {
+        //   'mtr_id': mentorId,
+        // },
       );
 
       if (response.statusCode == 200) {

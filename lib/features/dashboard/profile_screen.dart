@@ -363,7 +363,8 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                       itemClick: (){
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => MentorsListScreen()),
+                          //MaterialPageRoute(builder: (context) => MentorsListScreen()),
+                          MaterialPageRoute(builder: (context) => MentorsVideosListScreen(mentorId: '', isBack: true,)),
                         );
                       },
                     ),

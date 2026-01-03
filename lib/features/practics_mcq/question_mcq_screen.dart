@@ -224,6 +224,11 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   }
 
   void onOptionSelect(String option) {
+    // If mcqType is "1" (Practice), prevent changing the option once selected
+    if (widget.mcqType == "1" && selectedOption.value != null && selectedOption.value != "") {
+      return;
+    }
+
     selectedOption.sink.add(option);
     // Save answer immediately when selected
     if (_mcqListBloc.state.hasData) {
@@ -743,44 +748,55 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
             ),
             SizedBox(height: 20.h,),
 
-            widget.mcqType == "1" ? Row(
-              spacing: 10.0,
-              children: [
-                Expanded(
-                  child: Container(),
-                ),
-                Expanded(
-                  child: CustomGradientButton(
-                    text: 'Solution',
-                    onPressed: (){
-                      if (_currentQuestionIndex >= 0 && _mcqListBloc.state.hasData) {
-                        final mcqList = _mcqListBloc.state.data!.mcqList;
-                        final currentMcq = mcqList[_currentQuestionIndex];
+            widget.mcqType == "1" ? StreamBuilder<String?>(
+              stream: selectedOption.stream,
+              builder: (context, snapshot) {
+                final selected = snapshot.data;
+                // Only show solution button if an option is selected in Practice mode
+                if (selected == null || selected == "") {
+                  return Container();
+                }
 
-                        final solution = (currentMcq.textSolution != null && currentMcq.textSolution!.isNotEmpty)
-                            ? currentMcq.textSolution
-                            : (currentMcq.mcSolution != null && currentMcq.mcSolution!.isNotEmpty)
-                            ? currentMcq.mcSolution
-                            : null;
+                return Row(
+                  spacing: 10.0,
+                  children: [
+                    Expanded(
+                      child: Container(),
+                    ),
+                    Expanded(
+                      child: CustomGradientButton(
+                        text: 'Solution',
+                        onPressed: (){
+                          if (_currentQuestionIndex >= 0 && _mcqListBloc.state.hasData) {
+                            final mcqList = _mcqListBloc.state.data!.mcqList;
+                            final currentMcq = mcqList[_currentQuestionIndex];
 
-                        if(solution != null){
-                          _showSolutionDialog(solution);
-                        }else if(currentMcq.videoSolution != null && currentMcq.videoSolution!.isNotEmpty){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VideoPlayerScreen(
-                                videoId: currentMcq.videoSolution!,
-                                videoTitle: "",
-                              ),
-                            ),
-                          );
-                        }
-                      }
-                    },
-                  ),
-                ),
-              ],
+                            final solution = (currentMcq.textSolution != null && currentMcq.textSolution!.isNotEmpty)
+                                ? currentMcq.textSolution
+                                : (currentMcq.mcSolution != null && currentMcq.mcSolution!.isNotEmpty)
+                                ? currentMcq.mcSolution
+                                : null;
+
+                            if(solution != null){
+                              _showSolutionDialog(solution);
+                            }else if(currentMcq.videoSolution != null && currentMcq.videoSolution!.isNotEmpty){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VideoPlayerScreen(
+                                    videoId: currentMcq.videoSolution!,
+                                    videoTitle: "",
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
             ) : Container(),
 
             SizedBox(height: 50.h),
