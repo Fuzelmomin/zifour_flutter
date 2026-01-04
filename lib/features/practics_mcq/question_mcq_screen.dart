@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/dialogs/add_note_dialog.dart';
+import 'package:zifour_sourcecode/features/practics_mcq/mcq_feedback_dialog.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
 
@@ -16,6 +18,7 @@ import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_loading_widget.dart';
 import '../../core/widgets/info_row.dart';
+import '../../core/widgets/signup_field_box.dart';
 import '../challenger_zone/challenge_result_screen.dart';
 import '../dashboard/video_player_screen.dart';
 import 'bloc/challenge_mcq_list_bloc.dart';
@@ -64,7 +67,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   String selectedFilter = "";
   final options = [
     "Add Note",
-    "Mark as Bookmark"
+    "Mark as Bookmark",
+    "MCQ Feedback"
   ];
 
   final BehaviorSubject<String> takeTime =
@@ -253,6 +257,18 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           context: context,
           barrierDismissible: true,
           builder: (_) => AddNoteDialog(mcqId: currentMcq.mcId, mcqType: widget.mcqType,),
+        );
+      }
+    } else if(value == "MCQ Feedback"){
+      if (!_mcqListBloc.state.hasData) return;
+      
+      final mcqList = _mcqListBloc.state.data!.mcqList;
+      if (_currentQuestionIndex < mcqList.length) {
+        final currentMcq = mcqList[_currentQuestionIndex];
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => McqFeedbackDialog(mcqId: currentMcq.mcId, mcqType: widget.mcqType,),
         );
       }
     }
@@ -716,8 +732,57 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
 
             SizedBox(height: 50.h),
 
-            //
-            // SizedBox(height: 20.h),
+            widget.mcqType == "1" ? StreamBuilder<String?>(
+                stream: selectedOption.stream,
+                builder: (context, snapshot) {
+                  final selected = snapshot.data;
+                  // Only show solution button if an option is selected in Practice mode
+                  if (selected == null || selected == "") {
+                    return Container();
+                  }
+
+                  return Row(
+                    spacing: 10.0,
+                    children: [
+                      Expanded(
+                        child: Container(),
+                      ),
+                      Expanded(
+                        child: CustomGradientButton(
+                          text: 'Solution',
+                          onPressed: (){
+                            if (_currentQuestionIndex >= 0 && _mcqListBloc.state.hasData) {
+                              final mcqList = _mcqListBloc.state.data!.mcqList;
+                              final currentMcq = mcqList[_currentQuestionIndex];
+
+                              final solution = (currentMcq.textSolution != null && currentMcq.textSolution!.isNotEmpty)
+                                  ? currentMcq.textSolution
+                                  : (currentMcq.mcSolution != null && currentMcq.mcSolution!.isNotEmpty)
+                                  ? currentMcq.mcSolution
+                                  : null;
+
+                              if(solution != null){
+                                _showSolutionDialog(solution);
+                              }else if(currentMcq.videoSolution != null && currentMcq.videoSolution!.isNotEmpty){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VideoPlayerScreen(
+                                      videoId: currentMcq.videoSolution!,
+                                      videoTitle: "",
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }
+            ) : Container(),
+            SizedBox(height: 20.h),
 
             Row(
               spacing: 10.0,
@@ -746,58 +811,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20.h,),
 
-            widget.mcqType == "1" ? StreamBuilder<String?>(
-              stream: selectedOption.stream,
-              builder: (context, snapshot) {
-                final selected = snapshot.data;
-                // Only show solution button if an option is selected in Practice mode
-                if (selected == null || selected == "") {
-                  return Container();
-                }
-
-                return Row(
-                  spacing: 10.0,
-                  children: [
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Expanded(
-                      child: CustomGradientButton(
-                        text: 'Solution',
-                        onPressed: (){
-                          if (_currentQuestionIndex >= 0 && _mcqListBloc.state.hasData) {
-                            final mcqList = _mcqListBloc.state.data!.mcqList;
-                            final currentMcq = mcqList[_currentQuestionIndex];
-
-                            final solution = (currentMcq.textSolution != null && currentMcq.textSolution!.isNotEmpty)
-                                ? currentMcq.textSolution
-                                : (currentMcq.mcSolution != null && currentMcq.mcSolution!.isNotEmpty)
-                                ? currentMcq.mcSolution
-                                : null;
-
-                            if(solution != null){
-                              _showSolutionDialog(solution);
-                            }else if(currentMcq.videoSolution != null && currentMcq.videoSolution!.isNotEmpty){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => VideoPlayerScreen(
-                                    videoId: currentMcq.videoSolution!,
-                                    videoTitle: "",
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              }
-            ) : Container(),
 
             SizedBox(height: 50.h),
           ],
@@ -876,44 +890,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   void _showSolutionDialog(String solution) {
     showDialog(
       context: context,
-
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.hintTextColor,
-        // 🔥 makes dialog wider
-        insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 24).copyWith(left: 0.0),
-
-        // 🔥 removes default padding around content
-        contentPadding: EdgeInsets.zero,
-        title: const Text(
-          'Solution',
-          style: TextStyle(color: Colors.white),
-        ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Html(
-              data: solution,
-              style: {
-                "strong": Style(
-                  fontWeight: FontWeight.bold,
-                  fontSize: FontSize(16),
-                  color: Colors.white
-                ),
-                "body": Style(
-                  color: Colors.white,
-                  fontSize: FontSize(16),
-                ),
-              },
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Close', style: AppTypography.inter14Medium.copyWith(color: AppColors.darkBlue),),
-          ),
-        ],
-      ),
+      barrierDismissible: true,
+      builder: (context) => SolutionDialog(solution: solution),
     );
   }
 
@@ -1011,4 +989,123 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   //   );
   // }
 
+}
+
+class SolutionDialog extends StatefulWidget {
+  final String solution;
+
+  const SolutionDialog({
+    super.key,
+    required this.solution,
+  });
+
+  @override
+  State<SolutionDialog> createState() => _SolutionDialogState();
+}
+
+class _SolutionDialogState extends State<SolutionDialog>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 450),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.6), // Bottom
+      end: Offset.zero, // Center
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+    ));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+      child: Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(20.w),
+        child: SlideTransition(
+          position: _offsetAnimation,
+          child: SignupFieldBox(
+            padding: EdgeInsets.symmetric(
+                vertical: 30.h, horizontal: 20.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Solution Icon Box
+                // SvgPicture.asset(
+                //   AssetsPath.svgChallengerSolution,
+                //   width: 48.h,
+                //   height: 48.h,
+                // ),
+                // SizedBox(height: 10.h),
+
+                const Text(
+                  "Solution",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+
+                const SizedBox(height: 15),
+
+                Flexible(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.4,
+                    ),
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Html(
+                        data: widget.solution,
+                        style: {
+                          "body": Style(
+                            color: Colors.white.withOpacity(0.9),
+                            fontSize: FontSize(14.sp),
+                            margin: Margins.zero,
+                            padding: HtmlPaddings.zero,
+                          ),
+                          "strong": Style(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 20.h),
+
+                CustomGradientButton(
+                  text: 'Close',
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

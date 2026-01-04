@@ -68,4 +68,5 @@ class APIConstants {
   static const createPlannerSubmit = 'planner_submit.php';
   static const getPlannerList = 'planner_get.php';
   static const deletePlanner = 'planner_delete.php';
+  static const addMcqFeedback = 'mcq_feedback_add.php';
 }

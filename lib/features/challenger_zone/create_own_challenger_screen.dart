@@ -58,8 +58,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
     // Listen to chapter selection changes and trigger topic API after 3 seconds
     _selectedChapters.listen((chapters) {
       _topicTimer?.cancel();
-      // Clear selected topics when chapters change
-      _selectedTopics.add([]);
+      // _selectedTopics.add([]); // Removed: Do not clear all topics when chapters change
       if (chapters.isNotEmpty) {
         _topicTimer = Timer(const Duration(seconds: 3), () {
           if (mounted && chapters.isNotEmpty) {
@@ -189,19 +188,26 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                             setState(() {
                                               if (isSelected) {
                                                 _selectedSubjectIds.remove(subject.subId);
-                                                
-                                                // Remove chapters of this subject from selection
-                                                final chaptersOfSubject = _chapterBloc.state.data?.chapterList
+                                                // targeted removal of chapters and topics
+                                                final chaptersToRemove = _chapterBloc.state.data?.chapterList
                                                     .where((c) => c.subId == subject.subId)
                                                     .map((c) => c.chpId)
                                                     .toList() ?? [];
                                                 
                                                 final currentChapters = List<String>.from(_selectedChapters.value);
-                                                currentChapters.removeWhere((id) => chaptersOfSubject.contains(id));
+                                                currentChapters.removeWhere((id) => chaptersToRemove.contains(id));
                                                 _selectedChapters.add(currentChapters);
 
-                                                // Update topics selection too
-                                                _selectedTopics.add([]);
+                                                // Filter topics belonging to removed chapters
+                                                final currentTopics = List<String>.from(_selectedTopics.value);
+                                                final allTopics = _topicBloc.state.data?.topicList ?? [];
+                                                final topicsToRemove = allTopics
+                                                    .where((t) => chaptersToRemove.contains(t.chapter))
+                                                    .map((t) => t.tpcId)
+                                                    .toList();
+                                                
+                                                currentTopics.removeWhere((id) => topicsToRemove.contains(id));
+                                                _selectedTopics.add(currentTopics);
                                                 
                                                 _chapterBloc.add(ChapterRemoveRequested(subId: subject.subId));
                                               } else {
@@ -289,6 +295,16 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                                         selectedList);
                                                 if (isSelected) {
                                                   newList.remove(chapter.chpId);
+                                                  
+                                                  // Remove topics belonging to this chapter
+                                                  final currentTopics = List<String>.from(_selectedTopics.value);
+                                                  final topicsToRemove = _topicBloc.state.data?.topicList
+                                                      .where((t) => t.chapter == chapter.chpId)
+                                                      .map((t) => t.tpcId)
+                                                      .toList() ?? [];
+                                                  
+                                                  currentTopics.removeWhere((id) => topicsToRemove.contains(id));
+                                                  _selectedTopics.add(currentTopics);
                                                 } else {
                                                   newList.add(chapter.chpId);
                                                 }

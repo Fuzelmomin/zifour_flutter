@@ -164,7 +164,7 @@ class CustomDrawer extends StatelessWidget {
                     //   _closeDrawerAndPush(context, (_) => MultimediaLibraryScreen());
                     // }),
 
-                    _drawerItem(AssetsPath.svgCalendar, "Revision", (){
+                    _drawerItem(AssetsPath.svgCalendar, "Revision Planner", (){
                       _closeDrawerAndPush(context, (_) => RevisionListScreen());
                     }),
                     _drawerItem(AssetsPath.svgLogout, "Logout", (){

@@ -36,7 +36,7 @@ class ModuleOrderRepository {
               'mdls_tr_name': name,
               'mdls_tr_mobile': mobile,
               'mdls_pincode': pincode,
-              'mdls_tr_address': address,
+              'mdls_tr_addess': address,
             },
           );
 
