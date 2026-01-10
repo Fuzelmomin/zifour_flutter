@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
 import 'package:zifour_sourcecode/features/faq/faq_screen.dart';
 import 'features/chatbot/chatbot_screen.dart';
@@ -18,10 +23,25 @@ import 'features/splash/splash_screen.dart';
 import 'core/bloc/language_bloc.dart';
 import 'core/bloc/welcome_bloc.dart';
 import 'core/bloc/signup_bloc.dart';
+import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
+import 'notificaiton/notification.dart';
 
-void main() {
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await PushNotificationService().initialize();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  requestNotificationPermissions();
+
   // Configure status bar globally to be visible with light icons
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -34,6 +54,25 @@ void main() {
   );
   runApp(const MyApp());
 }
+
+Future<void> requestNotificationPermissions() async {
+  final PermissionStatus status = await Permission.notification.request();
+  if (status.isGranted) {
+    print('NOTIFICATION PERMISSION GRANTED');
+    // Notification permissions granted
+  } else if (status.isDenied) {
+    // Notification permissions denied
+    print('NOTIFICATION PERMISSION DENIYE');
+  } else if (status.isPermanentlyDenied) {
+    print('NOTIFICATION PERMISSION OPEN SETTING');
+    // Notification permissions permanently denied, open app settings
+
+    if (Platform.isAndroid) {
+      await openAppSettings();
+    }
+  }
+}
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

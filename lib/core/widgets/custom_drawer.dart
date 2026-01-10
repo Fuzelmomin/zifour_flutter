@@ -151,6 +151,9 @@ class CustomDrawer extends StatelessWidget {
                     _drawerItem(AssetsPath.svgBarChart, "My Performance", (){
                       _closeDrawerAndPush(context, (_) => MyPerformanceScreen());
                     }),
+                    _drawerItem(AssetsPath.svgCalendar, "Revision Planner", (){
+                      _closeDrawerAndPush(context, (_) => RevisionListScreen());
+                    }),
                     _drawerItem(AssetsPath.svgStar, "Feedback", (){
                       _closeDrawerAndPush(context, (_) => const GiveFeedbackScreen());
                     }),
@@ -163,10 +166,6 @@ class CustomDrawer extends StatelessWidget {
                     // _drawerItem(AssetsPath.svgPlayCircle, "Multimedia Library", (){
                     //   _closeDrawerAndPush(context, (_) => MultimediaLibraryScreen());
                     // }),
-
-                    _drawerItem(AssetsPath.svgCalendar, "Revision Planner", (){
-                      _closeDrawerAndPush(context, (_) => RevisionListScreen());
-                    }),
                     _drawerItem(AssetsPath.svgLogout, "Logout", (){
                       //Navigator.pop(context);
                       DialogsUtils.confirmDialog(

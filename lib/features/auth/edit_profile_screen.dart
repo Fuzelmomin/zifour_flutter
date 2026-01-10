@@ -352,12 +352,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 labelWidget('${AppLocalizations.of(context)?.gender?.toUpperCase() ?? 'GENDER'}'),
                                 // SizedBox(height: 7.h),
                                 _buildGenderSelection(context, profileState),
-                                SizedBox(height: 7.h),
-                                labelWidget('${AppLocalizations.of(context)?.selectCourse?.toUpperCase() ?? 'SELECT COURSE'}'),
-                                SizedBox(height: 7.h),
-                                _buildCourseSelection(context, profileState),
-                                SizedBox(height: 7.h),
-                                _buildMediumSelection(context, profileState),
+                                // SizedBox(height: 7.h),
+                                // labelWidget('${AppLocalizations.of(context)?.selectCourse?.toUpperCase() ?? 'SELECT COURSE'}'),
+                                // SizedBox(height: 7.h),
+                                // _buildCourseSelection(context, profileState),
+                                // SizedBox(height: 7.h),
+                                // _buildMediumSelection(context, profileState),
 
                                 SizedBox(height: 25.h,),
                                 BlocBuilder<ProfileBloc, ProfileState>(
@@ -707,10 +707,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         Expanded(
           child: _buildGenderOption(blocContext, 2, selectedGender == 2),
         ),
-        SizedBox(width: 15.w),
-        Expanded(
-          child: _buildGenderOption(blocContext, 3, selectedGender == 3),
-        ),
+        // SizedBox(width: 15.w),
+        // Expanded(
+        //   child: _buildGenderOption(blocContext, 3, selectedGender == 3),
+        // ),
       ],
     );
   }

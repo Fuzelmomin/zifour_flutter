@@ -745,11 +745,33 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                     spacing: 10.0,
                     children: [
                       Expanded(
-                        child: Container(),
+                        child: CustomGradientButton(
+                          text: 'Video Solution',
+                          onPressed: (){
+                            if(currentMcq.videoSolution != null && currentMcq.videoSolution!.isNotEmpty){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => VideoPlayerScreen(
+                                    videoId: currentMcq.videoSolution!,
+                                    videoTitle: "",
+                                  ),
+                                ),
+                              );
+                            }else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Video solution not available for this question.'),
+                                  backgroundColor: AppColors.error,
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ),
                       Expanded(
                         child: CustomGradientButton(
-                          text: 'Solution',
+                          text: 'Text Solution',
                           onPressed: (){
                             if (_currentQuestionIndex >= 0 && _mcqListBloc.state.hasData) {
                               final mcqList = _mcqListBloc.state.data!.mcqList;
@@ -763,14 +785,11 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
 
                               if(solution != null){
                                 _showSolutionDialog(solution);
-                              }else if(currentMcq.videoSolution != null && currentMcq.videoSolution!.isNotEmpty){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => VideoPlayerScreen(
-                                      videoId: currentMcq.videoSolution!,
-                                      videoTitle: "",
-                                    ),
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Text solution not available for this question.'),
+                                    backgroundColor: AppColors.error,
                                   ),
                                 );
                               }

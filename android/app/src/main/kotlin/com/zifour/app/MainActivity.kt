@@ -1,4 +1,4 @@
-package com.zifour.app.zifour_sourcecode
+package com.zifour.app
 
 import io.flutter.embedding.android.FlutterActivity
 

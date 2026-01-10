@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "241245014928",
+    "project_id": "zifour",
+    "storage_bucket": "zifour.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241245014928:android:93ca7ea26e38f379e9c115",
+        "android_client_info": {
+          "package_name": "com.zifour.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDshjIGkHutqH2Ygv0-r9NqDAp-x2Nqxzs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

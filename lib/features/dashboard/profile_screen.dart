@@ -358,16 +358,16 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                         );
                       },
                     ),
-                    ProfileOptionWidget(
-                      title: '${AppLocalizations.of(context)?.mentors}',
-                      itemClick: (){
-                        Navigator.push(
-                          context,
-                          //MaterialPageRoute(builder: (context) => MentorsListScreen()),
-                          MaterialPageRoute(builder: (context) => MentorsVideosListScreen(mentorId: '', isBack: true,)),
-                        );
-                      },
-                    ),
+                    // ProfileOptionWidget(
+                    //   title: '${AppLocalizations.of(context)?.mentors}',
+                    //   itemClick: (){
+                    //     Navigator.push(
+                    //       context,
+                    //       //MaterialPageRoute(builder: (context) => MentorsListScreen()),
+                    //       MaterialPageRoute(builder: (context) => MentorsVideosListScreen(mentorId: '', isBack: true,)),
+                    //     );
+                    //   },
+                    // ),
                     ProfileOptionWidget(
                       title: '${AppLocalizations.of(context)?.myCourse}',
                       itemClick: (){
@@ -377,18 +377,18 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                         );
                       },
                     ),
-                    ProfileOptionWidget(
-                      title: '${AppLocalizations.of(context)?.recentActivities}',
-                    ),
-                    ProfileOptionWidget(
-                      title: '${AppLocalizations.of(context)?.resetPassword}',
-                      itemClick: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
-                        );
-                      },
-                    ),
+                    // ProfileOptionWidget(
+                    //   title: '${AppLocalizations.of(context)?.recentActivities}',
+                    // ),
+                    // ProfileOptionWidget(
+                    //   title: '${AppLocalizations.of(context)?.resetPassword}',
+                    //   itemClick: (){
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context) => const ResetPasswordScreen()),
+                    //     );
+                    //   },
+                    // ),
                   ],
                 ),
               ),

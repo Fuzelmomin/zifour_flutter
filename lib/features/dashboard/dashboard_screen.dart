@@ -8,6 +8,7 @@ import '../../core/constants/assets_path.dart';
 import '../courses/all_course_list_screen.dart';
 import '../mentor/mentor_list_screen.dart';
 import '../mentor/mentors_videos_list_screen.dart';
+import '../mentor/mentors_videos_list_tab_screen.dart';
 import '../subject/bloc/subject_bloc.dart';
 import '../mcq_type/bloc/mcq_type_bloc.dart';
 import 'package:zifour_sourcecode/features/mentor/bloc/mentor_category_bloc.dart';
@@ -68,7 +69,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       ),
      // MentorsListScreen(),
       //const AllCoursesScreen(),
-      MentorsVideosListScreen(mentorId: '', isBack: false,),
+      MentorsVideosListTabScreen(mentorId: '', isBack: true,),
       ModulesScreen(),
       const ProfileScreen(),
     ];
