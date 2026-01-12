@@ -8,6 +8,7 @@ import '../../../core/api_models/api_status.dart';
 import '../../../core/api_models/login_model.dart';
 import '../../../core/utils/connectivity_helper.dart';
 import '../../../core/utils/user_preference.dart';
+import '../../../core/utils/app_global.dart';
 import '../models/home_model.dart';
 
 class HomeRepository {
@@ -40,6 +41,11 @@ class HomeRepository {
         final data = response.data;
         if (data['status'] == true) {
           final model = HomeResponse.fromJson(data as Map<String, dynamic>);
+          
+          // Set global parameters
+          AppGlobal.lecRept = model.lectureReport.toString();
+          AppGlobal.lecCrsh = model.lectureCrash.toString();
+
           return ApiResponse.success(data: model);
         }
         return ApiResponse.error(

@@ -25,6 +25,7 @@ import 'bloc/challenge_mcq_list_bloc.dart';
 import 'bloc/submit_mcq_answer_bloc.dart';
 import 'bloc/mcq_bookmark_bloc.dart';
 import 'model/challenge_mcq_list_model.dart';
+import '../../core/utils/mcq_preference.dart';
 
 class QuestionMcqScreen extends StatefulWidget {
   final String type;
@@ -112,8 +113,43 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         });
       }
     }
+  }
 
+  Future<void> _loadSavedProgress() async {
+    if (widget.mcqType != "1" || widget.topicId == null) return;
 
+    final progress = await McqPreference.getProgress(widget.topicId!);
+    if (progress != null) {
+      final savedIndex = progress['lastIndex'] as int;
+      final savedAnswers = progress['answers'] as Map<String, String>;
+      final savedTimes = progress['times'] as Map<String, int>;
+
+      if (mounted) {
+        setState(() {
+          _allAnswers.addAll(savedAnswers);
+          _questionTimeMap.addAll(savedTimes);
+          _currentQuestionIndex = savedIndex;
+        });
+        
+        // Restore current question's answer if exists
+        final mcqList = _mcqListBloc.state.data?.mcqList;
+        if (mcqList != null && _currentQuestionIndex < mcqList.length) {
+          final mcId = mcqList[_currentQuestionIndex].mcId;
+          selectedOption.add(_allAnswers[mcId]);
+        }
+      }
+    }
+  }
+
+  void _saveProgressLocally() {
+    if (widget.mcqType == "1" && widget.topicId != null) {
+      McqPreference.saveProgress(
+        topicId: widget.topicId!,
+        lastIndex: _currentQuestionIndex,
+        answers: _allAnswers,
+        times: _questionTimeMap,
+      );
+    }
   }
 
   @override
@@ -188,6 +224,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         _currentQuestionIndex = nextIndex;
       });
       
+      _saveProgressLocally();
+      
       // Restore saved answer for next question if exists
       selectedOption.add(savedAnswer);
 
@@ -219,6 +257,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         _currentQuestionIndex = previousIndex;
       });
       
+      _saveProgressLocally();
+      
       // Restore saved answer for previous question
       selectedOption.add(savedAnswer);
 
@@ -240,6 +280,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       if (_currentQuestionIndex < mcqList.length) {
         final currentMcq = mcqList[_currentQuestionIndex];
         _allAnswers[currentMcq.mcId] = option;
+        _saveProgressLocally();
       }
     }
   }
@@ -357,8 +398,14 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           listeners: [
             BlocListener<ChallengeMcqListBloc, ChallengeMcqListState>(
               listener: (context, state) {
-                if (state.status == ChallengeMcqListStatus.success && _timer == null) {
-                  _startTimer();
+            if (state.status == ChallengeMcqListStatus.success && _timer == null) {
+                  if (widget.mcqType == "1") {
+                    _loadSavedProgress().then((_) {
+                      _startTimer();
+                    });
+                  } else {
+                    _startTimer();
+                  }
                 }
               },
             ),
@@ -390,6 +437,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
             listener: (context, state) {
               if (state.status == SubmitMcqAnswerStatus.success) {
                 _stopTimer();
+                if (widget.mcqType == "1" && widget.topicId != null) {
+                  McqPreference.clearProgress(widget.topicId!);
+                }
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.data?.message ?? 'Submit answers.'),

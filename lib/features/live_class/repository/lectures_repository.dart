@@ -7,6 +7,7 @@ import '../../../core/api_models/api_response.dart';
 import '../../../core/api_models/api_status.dart';
 import '../../../core/utils/connectivity_helper.dart';
 import '../../../core/utils/user_preference.dart';
+import '../../../core/utils/app_global.dart';
 import '../model/lectures_model.dart';
 
 class LecturesRepository {
@@ -52,7 +53,8 @@ class LecturesRepository {
         'exm_id': exmId ?? user.stuExmId ?? '1',
         'lv_cls': lvCls ?? '1',
         'lec_sample': lecSample ?? '0',
-        'lec_rept': lecRept ?? '0',
+        'lec_rept': AppGlobal.lecRept,
+        'lec_crsh': AppGlobal.lecCrsh,
       };
 
       final response = await _dioClient.getDio().get(

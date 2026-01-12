@@ -5,6 +5,7 @@ class HomeResponse {
   final String message;
   final int notificationIcon;
   final int lectureReport;
+  final int lectureCrash;
   final bool isSoftBoxEnabled;
   final String? pkId;
   final String? stuTrialDay;
@@ -18,6 +19,7 @@ class HomeResponse {
     required this.message,
     required this.notificationIcon,
     required this.lectureReport,
+    required this.lectureCrash,
     required this.isSoftBoxEnabled,
     required this.mentorVideos,
     required this.sliders,
@@ -36,6 +38,7 @@ class HomeResponse {
       //stuTrialDay: '0',
       trialMsg: json['trial_msg']?.toString() ?? '',
       notificationIcon: _parseInt(json['ntf_icon']),
+      lectureCrash: _parseInt(json['lec_crsh']),
       lectureReport: _parseInt(json['lec_rept']),
       isSoftBoxEnabled: json['isSftBoxEnable'] == true,
       mentorVideos: (json['mtvid_list'] as List<dynamic>? ?? [])

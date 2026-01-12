@@ -7,6 +7,7 @@ import '../../../core/api_models/api_response.dart';
 import '../../../core/api_models/api_status.dart';
 import '../../../core/utils/connectivity_helper.dart';
 import '../../../core/utils/user_preference.dart';
+import '../../../core/utils/app_global.dart';
 import '../model/challenges_list_model.dart';
 
 class ChallengesListRepository {
@@ -31,12 +32,24 @@ class ChallengesListRepository {
         );
       }
 
-      final response = await _dioClient.getDio().post(
-        APIConstants.getChallengesList,
-        queryParameters: {
+      Map<String, dynamic> data;
+      if (challengeType == "2") {
+        data = {
           'stu_id': user.stuId,
           'oe_challenge': challengeType,
-        },
+          'lec_rept': AppGlobal.lecRept,
+          'lec_crsh': AppGlobal.lecCrsh,
+        };
+      } else {
+        data = {
+          'stu_id': user.stuId,
+          'oe_challenge': challengeType,
+        };
+      }
+
+      final response = await _dioClient.getDio().post(
+        APIConstants.getChallengesList,
+        queryParameters: data,
       );
 
       if (response.statusCode == 200) {
