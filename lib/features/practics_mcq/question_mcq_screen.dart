@@ -729,13 +729,17 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 color: AppColors.pinkColor3.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Text(
-                currentMcq.mcQuestion.replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  height: 1.5,
-                ),
+              child: Html(
+                data: currentMcq.mcQuestion.trim(),
+                style: {
+                  "body": Style(
+                    color: Colors.white,
+                    fontSize: FontSize(15.sp),
+                    lineHeight: LineHeight(1.5),
+                    margin: Margins.zero,
+                    padding: HtmlPaddings.zero,
+                  ),
+                },
               ),
             ),
 
@@ -747,13 +751,17 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   color: Colors.white.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text(
-                  currentMcq.mcDescription.replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 13,
-                    height: 1.4,
-                  ),
+                child: Html(
+                  data: currentMcq.mcDescription.trim(),
+                  style: {
+                    "body": Style(
+                      color: Colors.white70,
+                      fontSize: FontSize(13.sp),
+                      lineHeight: LineHeight(1.4),
+                      margin: Margins.zero,
+                      padding: HtmlPaddings.zero,
+                    ),
+                  },
                 ),
               ),
             ],
@@ -766,14 +774,17 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 final selected = snapshot.data;
                 final options = currentMcq.options;
                 final optionLabels = ['A', 'B', 'C', 'D'];
+                final correctIndex = int.tryParse(currentMcq.mcAnswer) ?? 1;
+                final correctAnswerLabel = optionLabels[correctIndex - 1];
 
                 return Column(
                   children: List.generate(
                     options.length,
                         (index) => _optionTile(
                       optionLabels[index],
-                      options[index].replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                      options[index].trim(),
                       selected,
+                      correctAnswerLabel,
                     ),
                   ),
                 );
@@ -964,8 +975,19 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     );
   }
 
-  Widget _optionTile(String label, String text, String? selected) {
+  Widget _optionTile(String label, String text, String? selected, String correctAnswerLabel) {
     final bool isSelected = selected == label;
+
+    Color borderColor = Colors.transparent;
+    if (widget.mcqType == "1" && selected != null && selected != "") {
+      if (label == correctAnswerLabel) {
+        borderColor = AppColors.success; // Green
+      } else if (isSelected) {
+        borderColor = AppColors.error; // Red
+      }
+    } else {
+      borderColor = isSelected ? Colors.purpleAccent : Colors.transparent;
+    }
 
     return GestureDetector(
       onTap: () => onOptionSelect(label),
@@ -976,7 +998,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           color: Colors.white.withOpacity(isSelected ? 0.18 : 0.08),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? Colors.purpleAccent : Colors.transparent,
+            color: borderColor,
             width: 2,
           ),
         ),
@@ -987,9 +1009,16 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                     color: Colors.white, fontWeight: FontWeight.w600)),
             const SizedBox(width: 14),
             Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(color: Colors.white, fontSize: 14),
+              child: Html(
+                data: text,
+                style: {
+                  "body": Style(
+                    color: Colors.white,
+                    fontSize: FontSize(14.sp),
+                    margin: Margins.zero,
+                    padding: HtmlPaddings.zero,
+                  ),
+                },
               ),
             ),
           ],

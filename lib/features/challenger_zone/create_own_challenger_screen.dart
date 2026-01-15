@@ -25,6 +25,7 @@ import 'bloc/topic_bloc.dart';
 import 'bloc/create_challenge_bloc.dart';
 import 'challenge_ready_screen.dart';
 import 'model/chapter_model.dart';
+import 'model/topic_model.dart';
 
 class CreateOwnChallengerScreen extends StatefulWidget {
   const CreateOwnChallengerScreen({super.key});
@@ -34,19 +35,42 @@ class CreateOwnChallengerScreen extends StatefulWidget {
       _CreateOwnChallengerScreenState();
 }
 
+// Helper class to store selections per subject
+class _SubjectSelection {
+  List<String> selectedChapters = [];
+  List<String> selectedTopics = [];
+  List<ChapterModel> chapters = []; // Store chapters for this subject
+}
+
 class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
   final SubjectService _subjectService = SubjectService();
   List<String> _selectedSubjectIds = [];
+  String? _activeSubjectId; // Currently active/viewing subject
+  
+  // Store selections per subject: Map<subjectId, _SubjectSelection>
+  final Map<String, _SubjectSelection> _subjectSelections = {};
+  
   late final ChapterBloc _chapterBloc;
   late final TopicBloc _topicBloc;
   late final CreateChallengeBloc _createChallengeBloc;
 
+  // These streams now represent ONLY the active subject's selections
   final BehaviorSubject<List<String>> _selectedChapters =
       BehaviorSubject<List<String>>.seeded([]);
   final BehaviorSubject<List<String>> _selectedTopics =
       BehaviorSubject<List<String>>.seeded([]);
 
   Timer? _topicTimer;
+
+  void _pruneActiveSelectedTopicsTo(List<String> allowedTopicIds) {
+    if (_activeSubjectId == null || !_subjectSelections.containsKey(_activeSubjectId)) return;
+    final current = List<String>.from(_selectedTopics.value);
+    current.removeWhere((id) => !allowedTopicIds.contains(id));
+    if (current.length != _selectedTopics.value.length) {
+      _selectedTopics.add(current);
+    }
+    _subjectSelections[_activeSubjectId!]!.selectedTopics = List.from(_selectedTopics.value);
+  }
 
   @override
   void initState() {
@@ -58,13 +82,30 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
     // Listen to chapter selection changes and trigger topic API after 3 seconds
     _selectedChapters.listen((chapters) {
       _topicTimer?.cancel();
-      // _selectedTopics.add([]); // Removed: Do not clear all topics when chapters change
-      if (chapters.isNotEmpty) {
+      if (chapters.isNotEmpty && _activeSubjectId != null) {
+        // Save chapters selection for active subject
+        if (_subjectSelections.containsKey(_activeSubjectId)) {
+          _subjectSelections[_activeSubjectId]!.selectedChapters = List.from(chapters);
+        }
+        
         _topicTimer = Timer(const Duration(seconds: 3), () {
-          if (mounted && chapters.isNotEmpty) {
+          if (mounted && chapters.isNotEmpty && _activeSubjectId != null) {
             _topicBloc.add(TopicRequested(chapterIds: chapters));
           }
         });
+      } else if (chapters.isEmpty && _activeSubjectId != null) {
+        // Clear topics when no chapters selected
+        _selectedTopics.add([]);
+        if (_subjectSelections.containsKey(_activeSubjectId)) {
+          _subjectSelections[_activeSubjectId]!.selectedTopics = [];
+        }
+      }
+    });
+    
+    // Listen to topic selection changes and save for active subject
+    _selectedTopics.listen((topics) {
+      if (_activeSubjectId != null && _subjectSelections.containsKey(_activeSubjectId)) {
+        _subjectSelections[_activeSubjectId]!.selectedTopics = List.from(topics);
       }
     });
   }
@@ -179,40 +220,86 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                           _subjectService.subjects[index];
                                       final isSelected =
                                           _selectedSubjectIds.contains(subject.subId);
+                                      final isActive = _activeSubjectId == subject.subId;
                                       return Padding(
                                         padding: EdgeInsets.only(right: 10.w),
                                         child: subjectContainer(
                                           subject: subject,
                                           isSelected: isSelected,
+                                          isActive: isActive,
                                           onTap: () {
                                             setState(() {
                                               if (isSelected) {
-                                                _selectedSubjectIds.remove(subject.subId);
-                                                // targeted removal of chapters and topics
-                                                final chaptersToRemove = _chapterBloc.state.data?.chapterList
-                                                    .where((c) => c.subId == subject.subId)
-                                                    .map((c) => c.chpId)
-                                                    .toList() ?? [];
-                                                
-                                                final currentChapters = List<String>.from(_selectedChapters.value);
-                                                currentChapters.removeWhere((id) => chaptersToRemove.contains(id));
-                                                _selectedChapters.add(currentChapters);
-
-                                                // Filter topics belonging to removed chapters
-                                                final currentTopics = List<String>.from(_selectedTopics.value);
-                                                final allTopics = _topicBloc.state.data?.topicList ?? [];
-                                                final topicsToRemove = allTopics
-                                                    .where((t) => chaptersToRemove.contains(t.chapter))
-                                                    .map((t) => t.tpcId)
-                                                    .toList();
-                                                
-                                                currentTopics.removeWhere((id) => topicsToRemove.contains(id));
-                                                _selectedTopics.add(currentTopics);
-                                                
-                                                _chapterBloc.add(ChapterRemoveRequested(subId: subject.subId));
+                                                // Subject already selected
+                                                if (_activeSubjectId == subject.subId) {
+                                                  // If clicking on already active subject, do nothing (or could deselect if needed)
+                                                  // For now, we'll keep it selected but allow switching
+                                                  return;
+                                                } else {
+                                                  // Switch to this subject (make it active)
+                                                  // Save current active subject's selections before switching
+                                                  if (_activeSubjectId != null && _subjectSelections.containsKey(_activeSubjectId)) {
+                                                    _subjectSelections[_activeSubjectId]!.selectedChapters = List.from(_selectedChapters.value);
+                                                    _subjectSelections[_activeSubjectId]!.selectedTopics = List.from(_selectedTopics.value);
+                                                  }
+                                                  
+                                                  // Switch to this subject
+                                                  _activeSubjectId = subject.subId;
+                                                  
+                                                  // Load this subject's chapters (replace, not append)
+                                                  final subjectChapters = _chapterBloc.state.data?.chapterList
+                                                      .where((c) => c.subId == subject.subId)
+                                                      .toList() ?? [];
+                                                  
+                                                  // Update BLoC state to show only this subject's chapters
+                                                  if (subjectChapters.isNotEmpty) {
+                                                    _chapterBloc.add(ChapterReplaceRequested(
+                                                      chapters: subjectChapters,
+                                                      subId: subject.subId,
+                                                    ));
+                                                  } else {
+                                                    // Fetch chapters if not in state
+                                                    _chapterBloc.add(ChapterRequested(subId: subject.subId, replace: true));
+                                                  }
+                                                  
+                                                  // Restore this subject's selections
+                                                  if (_subjectSelections.containsKey(subject.subId)) {
+                                                    _selectedChapters.add(List.from(_subjectSelections[subject.subId]!.selectedChapters));
+                                                    _selectedTopics.add(List.from(_subjectSelections[subject.subId]!.selectedTopics));
+                                                    
+                                                    // Load topics if chapters are selected
+                                                    if (_subjectSelections[subject.subId]!.selectedChapters.isNotEmpty) {
+                                                      _topicBloc.add(TopicRequested(chapterIds: _subjectSelections[subject.subId]!.selectedChapters));
+                                                    } else {
+                                                      _selectedTopics.add([]);
+                                                    }
+                                                  } else {
+                                                    _selectedChapters.add([]);
+                                                    _selectedTopics.add([]);
+                                                  }
+                                                }
                                               } else {
+                                                // New subject selected - add it and make it active
                                                 _selectedSubjectIds.add(subject.subId);
-                                                _chapterBloc.add(ChapterRequested(subId: subject.subId));
+                                                
+                                                // Save current active subject's selections before switching
+                                                if (_activeSubjectId != null && _subjectSelections.containsKey(_activeSubjectId)) {
+                                                  _subjectSelections[_activeSubjectId]!.selectedChapters = List.from(_selectedChapters.value);
+                                                  _subjectSelections[_activeSubjectId]!.selectedTopics = List.from(_selectedTopics.value);
+                                                }
+                                                
+                                                // Make this subject active
+                                                _activeSubjectId = subject.subId;
+                                                
+                                                // Initialize selection for this subject
+                                                _subjectSelections[subject.subId] = _SubjectSelection();
+                                                
+                                                // Fetch chapters for this subject (replace, not append)
+                                                _chapterBloc.add(ChapterRequested(subId: subject.subId, replace: true));
+                                                
+                                                // Clear current selections (will be populated when chapters load)
+                                                _selectedChapters.add([]);
+                                                _selectedTopics.add([]);
                                               }
                                             });
                                           },
@@ -235,6 +322,16 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                     "STEP 2"),
                                 BlocBuilder<ChapterBloc, ChapterState>(
                                   builder: (context, state) {
+                                    // Store chapters when loaded for active subject
+                                    if (state.hasData && _activeSubjectId != null) {
+                                      final subjectChapters = state.data!.chapterList
+                                          .where((c) => c.subId == _activeSubjectId)
+                                          .toList();
+                                      if (_subjectSelections.containsKey(_activeSubjectId)) {
+                                        _subjectSelections[_activeSubjectId]!.chapters = subjectChapters;
+                                      }
+                                    }
+                                    
                                     if (state.isLoading) {
                                       return _buildShimmerLoading();
                                     }
@@ -264,7 +361,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                           padding: EdgeInsets.symmetric(
                                               vertical: 20.h),
                                           child: Text(
-                                            _selectedSubjectIds.isEmpty
+                                            _activeSubjectId == null
                                                 ? 'Please select a subject first'
                                                 : 'No chapters found',
                                             style: AppTypography.inter12Regular
@@ -278,7 +375,29 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                       );
                                     }
 
-                                    final chapters = state.data!.chapterList;
+                                    // Show ONLY active subject's chapters
+                                    final allChapters = state.data!.chapterList;
+                                    final chapters = _activeSubjectId != null
+                                        ? allChapters.where((c) => c.subId == _activeSubjectId).toList()
+                                        : [];
+                                    
+                                    if (chapters.isEmpty && _activeSubjectId != null) {
+                                      return Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 20.h),
+                                          child: Text(
+                                            'No chapters found for this subject',
+                                            style: AppTypography.inter12Regular
+                                                .copyWith(
+                                              color: AppColors.white
+                                                  .withOpacity(0.6),
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      );
+                                    }
                                     return StreamBuilder<List<String>>(
                                       stream: _selectedChapters.stream,
                                       builder: (context, snapshot) {
@@ -295,16 +414,6 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                                         selectedList);
                                                 if (isSelected) {
                                                   newList.remove(chapter.chpId);
-                                                  
-                                                  // Remove topics belonging to this chapter
-                                                  final currentTopics = List<String>.from(_selectedTopics.value);
-                                                  final topicsToRemove = _topicBloc.state.data?.topicList
-                                                      .where((t) => t.chapter == chapter.chpId)
-                                                      .map((t) => t.tpcId)
-                                                      .toList() ?? [];
-                                                  
-                                                  currentTopics.removeWhere((id) => topicsToRemove.contains(id));
-                                                  _selectedTopics.add(currentTopics);
                                                 } else {
                                                   newList.add(chapter.chpId);
                                                 }
@@ -369,7 +478,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                           padding: EdgeInsets.symmetric(
                                               vertical: 20.h),
                                           child: Text(
-                                            _selectedChapters.value.isEmpty
+                                            _selectedChapters.value.isEmpty || _activeSubjectId == null
                                                 ? 'Please select chapters first'
                                                 : 'No topics found',
                                             style: AppTypography.inter12Regular
@@ -383,7 +492,45 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                       );
                                     }
 
-                                    final topics = state.data!.topicList;
+                                    // Filter topics using selected chapter NAMES (API returns chapter name, not id)
+                                    final allTopics = state.data!.topicList;
+                                    final activeSelection = _activeSubjectId != null
+                                        ? _subjectSelections[_activeSubjectId!]
+                                        : null;
+                                    final selectedChapterIds = _selectedChapters.value;
+                                    final selectedChapterNames = activeSelection == null
+                                        ? <String>[]
+                                        : activeSelection.chapters
+                                            .where((c) => selectedChapterIds.contains(c.chpId))
+                                            .map((c) => c.name)
+                                            .toList();
+
+                                    final topics = selectedChapterNames.isNotEmpty
+                                        ? allTopics.where((t) => selectedChapterNames.contains(t.chapter)).toList()
+                                        : <TopicModel>[];
+
+                                    if (topics.isEmpty && selectedChapterNames.isNotEmpty) {
+                                      return Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 20.h),
+                                          child: Text(
+                                            'No topics found for selected chapters',
+                                            style: AppTypography.inter12Regular
+                                                .copyWith(
+                                              color: AppColors.white
+                                                  .withOpacity(0.6),
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      );
+                                    }
+
+                                    // Keep active subject's selected topics valid against returned topic list.
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      _pruneActiveSelectedTopicsTo(topics.map((t) => t.tpcId).toList());
+                                    });
                                     return StreamBuilder<List<String>>(
                                       stream: _selectedTopics.stream,
                                       builder: (context, snapshot) {
@@ -429,6 +576,12 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                             text:
                                 '${AppLocalizations.of(context)?.generateMyChallenge}',
                             onPressed: () {
+                              // Save current active subject's selections before generating
+                              if (_activeSubjectId != null && _subjectSelections.containsKey(_activeSubjectId)) {
+                                _subjectSelections[_activeSubjectId]!.selectedChapters = List.from(_selectedChapters.value);
+                                _subjectSelections[_activeSubjectId]!.selectedTopics = List.from(_selectedTopics.value);
+                              }
+                              
                               if (_selectedSubjectIds.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -439,50 +592,53 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                 return;
                               }
 
-                              if (_selectedChapters.value.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        'Please select at least one chapter.'),
-                                    backgroundColor: AppColors.error,
-                                  ),
-                                );
-                                return;
-                              }
-
-                              if (_selectedTopics.value.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                        'Please select at least one topic.'),
-                                    backgroundColor: AppColors.error,
-                                  ),
-                                );
-                                return;
-                              }
-
-                              // Filter subject IDs: only include those whose chapters are selected
-                              final List<ChapterModel> allChaptersInState = _chapterBloc.state.data?.chapterList ?? [];
-                              final List<String> selectedChapterIds = _selectedChapters.value;
+                              // Collect ALL selections from ALL subjects
+                              final List<String> allSelectedChapterIds = [];
+                              final List<String> allSelectedTopicIds = [];
+                              final Set<String> allSubjectIds = {};
                               
-                              final Set<String> filteredSubIds = {};
-                              for (var chapterId in selectedChapterIds) {
-                                try {
-                                  final chapter = allChaptersInState.firstWhere((c) => c.chpId == chapterId);
-                                  if (chapter.subId != null) {
-                                    filteredSubIds.add(chapter.subId!);
-                                  }
-                                } catch (_) {
-                                  // Chapter not found in state or subId missing, skip filtering for this one
+                              // Get all chapters from BLoC state
+                              final List<ChapterModel> allChaptersInState = _chapterBloc.state.data?.chapterList ?? [];
+                              
+                              // Collect selections from all subjects
+                              for (var entry in _subjectSelections.entries) {
+                                final subjectId = entry.key;
+                                final selection = entry.value;
+                                
+                                if (selection.selectedChapters.isNotEmpty) {
+                                  allSubjectIds.add(subjectId);
+                                  allSelectedChapterIds.addAll(selection.selectedChapters);
+                                  allSelectedTopicIds.addAll(selection.selectedTopics);
                                 }
                               }
+                              
+                              // Validate that we have selections
+                              if (allSelectedChapterIds.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Please select at least one chapter from any subject.'),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                                return;
+                              }
+                              
+                              if (allSelectedTopicIds.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Please select at least one topic from any subject.'),
+                                    backgroundColor: AppColors.error,
+                                  ),
+                                );
+                                return;
+                              }
 
-                              // Call create challenge API
+                              // Call create challenge API with ALL selections
                               _createChallengeBloc.add(
                                 CreateChallengeRequested(
-                                  chapterIds: _selectedChapters.value,
-                                  topicIds: _selectedTopics.value,
-                                  subIds: filteredSubIds.toList(),
+                                  chapterIds: allSelectedChapterIds,
+                                  topicIds: allSelectedTopicIds,
+                                  subIds: allSubjectIds.toList(),
                                   challengeType: "1",
                                 ),
                               );
@@ -566,6 +722,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
   Widget subjectContainer({
     required SubjectModel subject,
     required bool isSelected,
+    required bool isActive,
     required VoidCallback onTap,
   }) {
     return InkWell(
@@ -586,10 +743,12 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                 : null,
             borderRadius: BorderRadius.all(Radius.circular(10.r)),
             border: Border.all(
-              color: isSelected == false
-                  ? Colors.white.withOpacity(0.3)
-                  : Colors.transparent,
-              width: 1.0,
+              color: isActive && isSelected
+                  ? Colors.yellow.withOpacity(0.8) // Highlight active subject
+                  : isSelected == false
+                      ? Colors.white.withOpacity(0.3)
+                      : Colors.transparent,
+              width: isActive && isSelected ? 2.0 : 1.0,
             )),
         child: Center(
           child: Text(

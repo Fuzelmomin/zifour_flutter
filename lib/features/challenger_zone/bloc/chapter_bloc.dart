@@ -13,6 +13,7 @@ class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
         super(ChapterState.initial()) {
     on<ChapterRequested>(_onRequested);
     on<ChapterRemoveRequested>(_onRemoveRequested);
+    on<ChapterReplaceRequested>(_onReplaceRequested);
   }
 
   final ChapterRepository _repository;
@@ -21,9 +22,6 @@ class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
     ChapterRequested event,
     Emitter<ChapterState> emit,
   ) async {
-    // Keep current chapters if they exist
-    final currentChapters = state.data?.chapterList ?? [];
-
     emit(state.copyWith(
       status: ChapterStatus.loading,
       clearError: true,
@@ -32,25 +30,55 @@ class ChapterBloc extends Bloc<ChapterEvent, ChapterState> {
     final response = await _repository.fetchChapters(subId: event.subId);
 
     if (response.status == ApiStatus.success && response.data != null) {
-      // Append new chapters to existing list
-      final newChapters = response.data!.chapterList;
-      final mergedChapters = [...currentChapters, ...newChapters];
+      if (event.replace) {
+        // Replace: Show only new chapters
+        emit(state.copyWith(
+          status: ChapterStatus.success,
+          data: ChapterResponse(
+            status: true,
+            message: response.data!.message,
+            chapterList: response.data!.chapterList,
+          ),
+          clearError: true,
+        ));
+      } else {
+        // Append: Keep current chapters and add new ones
+        final currentChapters = state.data?.chapterList ?? [];
+        final newChapters = response.data!.chapterList;
+        final mergedChapters = [...currentChapters, ...newChapters];
 
-      emit(state.copyWith(
-        status: ChapterStatus.success,
-        data: ChapterResponse(
-          status: true,
-          message: response.data!.message,
-          chapterList: mergedChapters,
-        ),
-        clearError: true,
-      ));
+        emit(state.copyWith(
+          status: ChapterStatus.success,
+          data: ChapterResponse(
+            status: true,
+            message: response.data!.message,
+            chapterList: mergedChapters,
+          ),
+          clearError: true,
+        ));
+      }
     } else {
       emit(state.copyWith(
         status: ChapterStatus.failure,
         errorMessage: response.errorMsg ?? 'Unable to load chapters.',
       ));
     }
+  }
+
+  void _onReplaceRequested(
+    ChapterReplaceRequested event,
+    Emitter<ChapterState> emit,
+  ) {
+    // Replace chapters with provided list (used when switching subjects)
+    emit(state.copyWith(
+      status: ChapterStatus.success,
+      data: ChapterResponse(
+        status: true,
+        message: 'Chapters loaded',
+        chapterList: event.chapters,
+      ),
+      clearError: true,
+    ));
   }
 
   void _onRemoveRequested(

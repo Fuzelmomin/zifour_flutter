@@ -8,6 +8,7 @@ import '../../core/theme/app_typography.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../module_list/module_order_form_screen.dart';
 import '../practics_mcq/select_chapter_screen.dart';
+import 'dashboard_screen.dart';
 
 class ModulesScreen extends StatefulWidget {
   const ModulesScreen({super.key});
@@ -27,6 +28,19 @@ class _ModulesScreenState extends State<ModulesScreen> {
     if (name.contains('biology')) return AssetsPath.icBiology;
     if (name.contains('math')) return AssetsPath.icMaths;
     return AssetsPath.icPhysics; // Default icon
+  }
+
+  void _handleBackButton(BuildContext context) {
+    // Check if we can pop, if not navigate to home
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      // Find DashboardScreen state and navigate to home
+      final dashboardState = context.findAncestorStateOfType<DashboardScreenState>();
+      if (dashboardState != null) {
+        dashboardState.navigateToHome();
+      }
+    }
   }
 
   @override
@@ -55,6 +69,7 @@ class _ModulesScreenState extends State<ModulesScreen> {
                 child: CustomAppBar(
                   isBack: true,
                   title: 'Module',
+                  onBack: () => _handleBackButton(context),
                 ),
               ),
 

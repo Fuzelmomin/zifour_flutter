@@ -39,6 +39,8 @@ class ChapterRepository {
           'stu_id': user.stuId,
           'sub_id': subId,
           'std_id': user.stuStdId,
+          'exm_id': user.stuExmId,
+          'med_id': user.stuMedId,
         },
       );
 

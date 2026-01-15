@@ -17,7 +17,8 @@ class ChallengeDetailsState {
       const ChallengeDetailsState(status: ChallengeDetailsStatus.initial);
 
   bool get isLoading => status == ChallengeDetailsStatus.loading;
-  bool get hasData => data != null && data!.challenge.totalMcq > 0;
+  // Details should be shown even if total_mcq is 0 (API can return 0 initially)
+  bool get hasData => data != null;
 
   ChallengeDetailsState copyWith({
     ChallengeDetailsStatus? status,

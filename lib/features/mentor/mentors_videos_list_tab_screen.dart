@@ -15,6 +15,7 @@ import '../../core/widgets/mentors_videos_item.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/services/mentor_category_service.dart';
 import '../../core/widgets/signup_field_box.dart';
+import '../dashboard/dashboard_screen.dart';
 import 'model/mentor_videos_model.dart';
 
 class MentorsVideosListTabScreen extends StatefulWidget {
@@ -65,6 +66,19 @@ class _MentorsVideosListTabScreenState extends State<MentorsVideosListTabScreen>
     }
   }
 
+  void _handleBackButton(BuildContext context) {
+    // Check if we can pop, if not navigate to home
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      // Find DashboardScreen state and navigate to home
+      final dashboardState = context.findAncestorStateOfType<DashboardScreenState>();
+      if (dashboardState != null) {
+        dashboardState.navigateToHome();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
@@ -93,6 +107,7 @@ class _MentorsVideosListTabScreenState extends State<MentorsVideosListTabScreen>
                         isBack: widget.isBack,
                         title: widget.mentorName ??
                             '${AppLocalizations.of(context)?.mentors}',
+                        onBack: () => _handleBackButton(context),
 
                       ),
                     ),
@@ -102,7 +117,7 @@ class _MentorsVideosListTabScreenState extends State<MentorsVideosListTabScreen>
                       left: 15.w,
                       right: 15.w,
                       child: Text(
-                        "Zifour Live Classes – Learn Smarter, Achieve Greater.",
+                        "From Doubt To Direction",
                         style: AppTypography.inter14Medium.copyWith(
                           color: AppColors.hintTextColor
                         ),
