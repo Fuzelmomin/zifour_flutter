@@ -26,6 +26,7 @@ import 'bloc/submit_mcq_answer_bloc.dart';
 import 'bloc/mcq_bookmark_bloc.dart';
 import 'model/challenge_mcq_list_model.dart';
 import '../../core/utils/mcq_preference.dart';
+import 'model/submit_mcq_answer_model.dart';
 
 class QuestionMcqScreen extends StatefulWidget {
   final String type;
@@ -436,61 +437,83 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
           child: BlocListener<SubmitMcqAnswerBloc, SubmitMcqAnswerState>(
             listener: (context, state) {
               if (state.status == SubmitMcqAnswerStatus.success) {
+                print("state.status ${state.status}");
+
+                // If status is false (e.g., "Already submited"), show error and go back
+                if (state.data?.status == false) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.data?.message ?? 'Unable to submit answers.'),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                  Navigator.pop(context);
+                  return;
+                }
+
                 _stopTimer();
                 if (widget.mcqType == "1" && widget.topicId != null) {
                   McqPreference.clearProgress(widget.topicId!);
                 }
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.data?.message ?? 'Submit answers.'),
-                backgroundColor: AppColors.success,
-              ),
-            );
-            if(widget.mcqType == "1" || widget.mcqType == "4"){
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DashboardScreen(),
-                ),
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.data?.message ?? 'Submit answers.'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+                SubmitMcqAnswerResponse? result = state.data;
+                //result?.total = "10";
+                if (widget.mcqType == "1" || widget.mcqType == "4") {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DashboardScreen(),
+                    ),
                     (route) => false,
-              );
-              print('Paper MCQ Test Id PKID: ${widget.pkId}');
-              print('Paper MCQ Test Id PaperId: ${widget.paperId}');
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChallengeResultScreen(
-                  title: "Test Series Results 🏆",
-                  crtChlId: "",
-                  screenType: "1", // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
-                  pkId: widget.pkId,
-                  paperId: widget.paperId,
-                  solution: widget.paperSolution,
-                )),
-              );
-            } /*else if(widget.mcqType == "4"){
+                  );
+                  print('Paper MCQ Test Id PKID: ${widget.pkId}');
+                  print('Paper MCQ Test Id PaperId: ${widget.paperId}');
+                  print('Practice Result: ${result!.toJson()}');
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChallengeResultScreen(
+                        title: "Test Series Results 🏆",
+                        crtChlId: "",
+                        screenType: "1", // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
+                        pkId: widget.pkId,
+                        paperId: widget.paperId,
+                        solution: widget.paperSolution,
+                        result: result,
+                      ),
+                    ),
+                  );
+                } /*else if(widget.mcqType == "4"){
               int count = 0;
               Navigator.popUntil(context, (route) => count++ == 1);
             }*/
-            else {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DashboardScreen(),
-                ),
-                (route) => false,
-              );
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChallengeResultScreen(
-                    title: 'Challenge Results',
-                    crtChlId: widget.crtChlId ?? "",
-                    screenType: widget.mcqType, // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
-                  ),
-                ),
-              );
-            }
-          } else if (state.status == SubmitMcqAnswerStatus.failure) {
+                else {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DashboardScreen(),
+                    ),
+                    (route) => false,
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChallengeResultScreen(
+                        title: 'Challenge Results',
+                        crtChlId: widget.crtChlId ?? "",
+                        screenType: widget.mcqType, // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
+                        result: result,
+                      ),
+                    ),
+                  );
+                }
+              } else if (state.status == SubmitMcqAnswerStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.errorMessage ?? 'Unable to submit answers.'),

@@ -198,10 +198,10 @@ class _RevisionListScreenState extends State<RevisionListScreen> {
           /// Floating Button
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           floatingActionButton: SizedBox(
-            width: 160.w,
+            width: 190.w,
             height: 48.h,
             child: CustomGradientArrowButton(
-              text: 'Add Revision',
+              text: 'Add Revision Plan',
               isLoading: false,
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               onPressed: () async {

@@ -14,6 +14,8 @@ import '../../core/widgets/custom_gradient_button.dart';
 import '../challenger_zone/challenge_result_screen.dart';
 import '../dashboard/video_player_screen.dart';
 import '../practics_mcq/question_mcq_screen.dart';
+import '../solution_videos/solution_videos_screen.dart';
+import '../../core/services/subject_service.dart';
 import 'bloc/online_test_paper_bloc.dart';
 
 class AllIndiaTestSeriesScreen extends StatefulWidget {
@@ -174,17 +176,12 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
 
                                     },
                                     onExamClick: (){
-                                      if(paper.erFlag == "2"){
 
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => VideoPlayerScreen(
-                                              videoId: paper.solutionVideo ?? '',
-                                              videoTitle: "",
-                                            ),
-                                          ),
-                                        );
+                                      if(paper.erFlag == "2"){
+                                        // Here open the Subject dialog, subject will come from the Subject Service
+                                        _showSubjectDialog(context, paper.gPaId);
+
+                                        print("Click Item On Solution....");
                                       }else {
                                         Navigator.push(
                                           context,
@@ -379,6 +376,103 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showSubjectDialog(BuildContext context, String paperId) {
+    final subjects = SubjectService().subjects;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            backgroundColor: const Color(0xFF1E1E2E),
+            insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: SignupFieldBox(
+              padding: EdgeInsets.all(20.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Select Subject',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  if (subjects.isEmpty)
+                    const Center(
+                      child: Text(
+                        'No subjects available.',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      height: 300.h,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: subjects.length,
+                        separatorBuilder: (context, index) =>
+                            Divider(color: Colors.white.withOpacity(0.1)),
+                        itemBuilder: (context, index) {
+                          final subject = subjects[index];
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              subject.name,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.white70,
+                              size: 16.sp,
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SolutionVideosListScreen(
+                                    from: 'test_series',
+                                    paperId: paperId,
+                                    subId: subject.subId,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  SizedBox(height: 10.h),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

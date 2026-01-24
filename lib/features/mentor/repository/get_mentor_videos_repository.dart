@@ -6,6 +6,7 @@ import '../../../core/api_client/dio_client.dart';
 import '../../../core/api_models/api_response.dart';
 import '../../../core/api_models/api_status.dart';
 import '../../../core/utils/connectivity_helper.dart';
+import '../../../core/utils/user_preference.dart';
 import '../model/mentor_videos_model.dart';
 
 class GetMentorVideosRepository {
@@ -24,12 +25,17 @@ class GetMentorVideosRepository {
           errorMsg: 'No internet connection. Please check your network.',
         );
       }
-
+      final user = await UserPreference.getUserData();
+      if (user == null) {
+        return ApiResponse.error(
+          errorMsg: 'Please login again to continue.',
+        );
+      }
       final response = await _dioClient.getDio().get(
         APIConstants.getMentorVideos,
-        // queryParameters: {
-        //   'mtr_id': mentorId,
-        // },
+        queryParameters: {
+          'med_id': user.stuMedId,
+        },
       );
 
       if (response.statusCode == 200) {

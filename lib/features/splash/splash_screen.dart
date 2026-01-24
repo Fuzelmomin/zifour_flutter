@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:zifour_sourcecode/core/bloc/language_bloc.dart';
+import 'package:zifour_sourcecode/core/constants/app_colors.dart';
+import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/features/language_selection/language_selection_screen.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/utils/user_preference.dart';
@@ -144,8 +146,11 @@ class _SplashScreenState extends State<SplashScreen>
                     },
                   ),
 
-                  SizedBox(height: 30.h),
-
+                  SizedBox(height: 15.h),
+                  Text(
+                    "Zidd Se Reality",
+                    style: AppTypography.inter22Bold.copyWith(color: AppColors.white),
+                  )
 
                   // // Loading indicator
                   // AnimatedBuilder(

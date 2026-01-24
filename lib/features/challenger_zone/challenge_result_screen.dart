@@ -10,12 +10,16 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
+import '../../core/services/subject_service.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/info_row.dart';
 import '../../l10n/app_localizations.dart';
 import '../dashboard/video_player_screen.dart';
+import '../practics_mcq/model/submit_mcq_answer_model.dart';
+import '../solution_videos/solution_videos_screen.dart';
 import 'bloc/challenge_result_bloc.dart';
+import 'model/challenge_result_model.dart';
 
 class ChallengeResultScreen extends StatelessWidget {
   final String? title;
@@ -25,6 +29,7 @@ class ChallengeResultScreen extends StatelessWidget {
   final String screenType;
   final String? pkId;
   final String? paperId;
+  final SubmitMcqAnswerResponse? result;
 
   const ChallengeResultScreen({
     super.key, 
@@ -34,6 +39,7 @@ class ChallengeResultScreen extends StatelessWidget {
     this.solution,
     this.pkId,
     this.paperId,
+    this.result,
   });
 
   @override
@@ -53,6 +59,7 @@ class ChallengeResultScreen extends StatelessWidget {
         screenType: screenType,
         pkId: pkId,
         paperId: paperId,
+        result: result,
       ),
     );
   }
@@ -66,6 +73,7 @@ class _ChallengeResultView extends StatefulWidget {
   final String screenType;
   final String? pkId;
   final String? paperId;
+  final SubmitMcqAnswerResponse? result;
 
   const _ChallengeResultView({
     this.title,
@@ -74,6 +82,7 @@ class _ChallengeResultView extends StatefulWidget {
     this.solution,
     this.pkId,
     this.paperId,
+    this.result
   });
 
   @override
@@ -181,8 +190,8 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
     );
   }
 
-  Widget _buildContent(ChallengeResultState state) {
-    final data = state.data!;
+  Widget _buildContent(ChallengeResultResponse data) {
+    //final data = state.data!;
     
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -295,7 +304,8 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
 
           /// Graph Card (keeping the existing graph for now)
           Visibility(
-            visible: widget.title == "Challenge Result 🏆" || widget.screenType == "1" ? false : true,
+            //visible: widget.title == "Challenge Result 🏆" || widget.screenType == "1" ? false : true,
+            visible: false,
             child: _glassCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -396,17 +406,23 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                   text: 'View Solutions',
                   onPressed: () {
                     print("View Solutions: ${widget.solution}");
-                    if(widget.solution != null && widget.solution!.isNotEmpty){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VideoPlayerScreen(
-                            videoId: widget.solution ?? '',
-                            videoTitle: "",
+
+                    if(widget.screenType == "2"){
+                      _showSubjectDialog(context, widget.crtChlId);
+                    }else {
+                      if(widget.solution != null && widget.solution!.isNotEmpty){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VideoPlayerScreen(
+                              videoId: widget.solution ?? '',
+                              videoTitle: "",
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     }
+
                   },
                 ),
               ),
@@ -416,6 +432,104 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
           SizedBox(height: 70.h),
         ],
       ),
+    );
+  }
+
+
+  void _showSubjectDialog(BuildContext context, String chalId) {
+    final subjects = SubjectService().subjects;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Dialog(
+            backgroundColor: const Color(0xFF1E1E2E),
+            insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: SignupFieldBox(
+              padding: EdgeInsets.all(20.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Select Subject',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  if (subjects.isEmpty)
+                    const Center(
+                      child: Text(
+                        'No subjects available.',
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                    )
+                  else
+                    SizedBox(
+                      height: 300.h,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: subjects.length,
+                        separatorBuilder: (context, index) =>
+                            Divider(color: Colors.white.withOpacity(0.1)),
+                        itemBuilder: (context, index) {
+                          final subject = subjects[index];
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              subject.name,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.sp,
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.white70,
+                              size: 16.sp,
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SolutionVideosListScreen(
+                                    from: 'expert',
+                                    chalId: chalId,
+                                    subId: subject.subId,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  SizedBox(height: 10.h),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -455,27 +569,49 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                 bottom: 0,
                 child: BlocBuilder<ChallengeResultBloc, ChallengeResultState>(
                   builder: (context, state) {
-                    switch (state.status) {
-                      case ChallengeResultStatus.loading:
-                      case ChallengeResultStatus.initial:
-                        return _buildShimmerLoader();
-                      case ChallengeResultStatus.failure:
-                        return _buildError(
-                          message: state.errorMessage ?? 'Unable to load result.',
-                          onRetry: () {
-                            context.read<ChallengeResultBloc>().add(
-                              ChallengeResultRequested(
-                                crtChlId: widget.crtChlId,
-                                apiType: widget.screenType,
-                                pkId: widget.pkId,
-                                paperId: widget.paperId
-                              ),
-                            );
-                          },
-                        );
-                      case ChallengeResultStatus.success:
-                        return _buildContent(state);
+                    if(widget.screenType == "1"){
+                      var data = ChallengeResultResponse(
+                        message: "",
+                        status: true,
+                        attended: widget.result?.attended ?? "0",
+                        correct: widget.result?.correct ?? "0",
+                        exam: widget.result?.exam ?? "0",
+                        marks: widget.result?.marks ?? "0",
+                        medium: widget.result?.medium ?? "0",
+                        percentage: widget.result?.percentage ?? "0",
+                        pkName: widget.result?.chpName ?? "",
+                        standard: widget.result?.standard ?? "0",
+                        subject: widget.result?.subject ?? "0",
+                        total: widget.result?.total ?? "0",
+                        unattended: widget.result?.unattended ?? "0",
+                        wrong: widget.result?.wrong ?? "0"
+                      );
+                      return _buildContent(data);
+                    }else {
+                      switch (state.status) {
+                        case ChallengeResultStatus.loading:
+                        case ChallengeResultStatus.initial:
+                          return _buildShimmerLoader();
+                        case ChallengeResultStatus.failure:
+                          return _buildError(
+                            message: state.errorMessage ?? 'Unable to load result.',
+                            onRetry: () {
+                              context.read<ChallengeResultBloc>().add(
+                                ChallengeResultRequested(
+                                    crtChlId: widget.crtChlId,
+                                    apiType: widget.screenType,
+                                    pkId: widget.pkId,
+                                    paperId: widget.paperId
+                                ),
+                              );
+                            },
+                          );
+                        case ChallengeResultStatus.success:
+                          var data = state.data;
+                          return _buildContent(data!);
+                      }
                     }
+
                   },
                 ),
               ),

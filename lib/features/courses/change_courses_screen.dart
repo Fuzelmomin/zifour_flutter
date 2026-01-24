@@ -354,87 +354,90 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
           SizedBox(height: 15.h),
 
           // Subject Selection
-          SignupFieldBox(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Section Title
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "SELECT SUBJECT",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      "STEP 1",
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.5),
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-
-                BlocBuilder<SubjectBloc, SubjectState>(
-                  builder: (context, subjectState) {
-                    final subjects = subjectState.data?.subjectList ?? [];
-                    final isLoading = subjectState.status == SubjectStatus.loading;
-
-                    if (isLoading) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: CircularProgressIndicator(color: Colors.white),
+          Visibility(
+            visible: false,
+            child: SignupFieldBox(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Section Title
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "SELECT SUBJECT",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                         ),
-                      );
-                    }
+                      ),
+                      Text(
+                        "STEP 1",
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.5),
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
 
-                    return StreamBuilder<List<String>>(
-                      stream: _selectedSubIds.stream,
-                      builder: (context, snapshot) {
-                        final selectedList = snapshot.data ?? [];
-                        if (subjects.isEmpty) {
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(20.0),
-                              child: Text(
-                                'No subjects available',
-                                style: TextStyle(color: Colors.white70),
-                              ),
-                            ),
-                          );
-                        }
-                        return Column(
-                          children: subjects.map((subject) {
-                            final isSelected = selectedList.contains(subject.subId);
-                            return ChapterSelectionBox(
-                              onTap: () {
-                                // Only one subject can be selected at a time
-                                if (isSelected) {
-                                  // If already selected, deselect it
-                                  _selectedSubIds.add([]);
-                                } else {
-                                  // Select only this subject (replace previous selection)
-                                  _selectedSubIds.add([subject.subId]);
-                                }
-                              },
-                              title: subject.name,
-                              isButton: true,
-                              isSelected: isSelected,
-                            );
-                          }).toList(),
+                  BlocBuilder<SubjectBloc, SubjectState>(
+                    builder: (context, subjectState) {
+                      final subjects = subjectState.data?.subjectList ?? [];
+                      final isLoading = subjectState.status == SubjectStatus.loading;
+
+                      if (isLoading) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: CircularProgressIndicator(color: Colors.white),
+                          ),
                         );
-                      },
-                    );
-                  },
-                ),
-              ],
+                      }
+
+                      return StreamBuilder<List<String>>(
+                        stream: _selectedSubIds.stream,
+                        builder: (context, snapshot) {
+                          final selectedList = snapshot.data ?? [];
+                          if (subjects.isEmpty) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: Text(
+                                  'No subjects available',
+                                  style: TextStyle(color: Colors.white70),
+                                ),
+                              ),
+                            );
+                          }
+                          return Column(
+                            children: subjects.map((subject) {
+                              final isSelected = selectedList.contains(subject.subId);
+                              return ChapterSelectionBox(
+                                onTap: () {
+                                  // Only one subject can be selected at a time
+                                  if (isSelected) {
+                                    // If already selected, deselect it
+                                    _selectedSubIds.add([]);
+                                  } else {
+                                    // Select only this subject (replace previous selection)
+                                    _selectedSubIds.add([subject.subId]);
+                                  }
+                                },
+                                title: subject.name,
+                                isButton: true,
+                                isSelected: isSelected,
+                              );
+                            }).toList(),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
 

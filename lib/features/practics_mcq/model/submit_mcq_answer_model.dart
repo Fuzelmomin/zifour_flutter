@@ -12,7 +12,7 @@ class SubmitMcqAnswerResponse {
   final String? medium;
   final String? subject;
   final String? exam;
-  final String? total;
+  String? total;
   final String? unattended;
   final String? attended;
   final String? correct;
