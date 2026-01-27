@@ -112,10 +112,11 @@ class ChallengerScoreItem extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: CustomGradientButton(
-                    text: 'View Solutions',
-                    onPressed: onViewSolution ?? () {},
-                  ),
+                  // child: CustomGradientButton(
+                  //   text: 'View Solutions',
+                  //   onPressed: onViewSolution ?? () {},
+                  // ),
+                  child: Container(),
                 ),
               ],
             ),

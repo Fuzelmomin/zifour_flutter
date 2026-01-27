@@ -580,16 +580,16 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
       return;
     }
 
-    if (subIds.isEmpty) {
-      ScaffoldMessenger.of(blocContext).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a subject'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      return;
-    }
+    // if (subIds.isEmpty) {
+    //   ScaffoldMessenger.of(blocContext).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Please select a subject'),
+    //       backgroundColor: AppColors.error,
+    //       behavior: SnackBarBehavior.floating,
+    //     ),
+    //   );
+    //   return;
+    // }
 
     final isConnected = await ConnectivityHelper.checkConnectivity();
     if (!isConnected) {
@@ -610,7 +610,8 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
     }
 
     // Use first selected subject ID (API expects single sub_id)
-    final subId = subIds.first;
+    //final subId = subIds.first;
+    final subId = "";
 
     blocContext.read<ChangeCourseBloc>().add(
           ChangeCourseRequested(

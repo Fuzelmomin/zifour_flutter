@@ -282,15 +282,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 SizedBox(
                                   height: 7.h,
                                 ),
-                                labelWidget(
-                                    '${AppLocalizations.of(context)?.selectStandard.toUpperCase()}'),
-                                SizedBox(
-                                  height: 3.h,
-                                ),
-                                _buildStandardDropdown(context, profileState),
-                                SizedBox(
-                                  height: 7.h,
-                                ),
+                                // labelWidget(
+                                //     '${AppLocalizations.of(context)?.selectStandard.toUpperCase()}'),
+                                // SizedBox(
+                                //   height: 3.h,
+                                // ),
+                                // _buildStandardDropdown(context, profileState),
+                                // SizedBox(
+                                //   height: 7.h,
+                                // ),
                                 labelWidget(
                                     '${AppLocalizations.of(context)?.city.toUpperCase()}'),
                                 SizedBox(

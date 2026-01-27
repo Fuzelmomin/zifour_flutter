@@ -99,6 +99,8 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
   @override
   void initState() {
     super.initState();
+
+    print("Result Type: ${widget.screenType}");
     graphData = [
       ChartData("Jan", 8, 5),
       ChartData("Feb", 3, 1),
@@ -402,7 +404,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
               ),
 
               Expanded(
-                child: CustomGradientButton(
+                child: widget.screenType == "3" ? Container() : CustomGradientButton(
                   text: 'View Solutions',
                   onPressed: () {
                     print("View Solutions: ${widget.solution}");
@@ -621,8 +623,6 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
       ),
     );
   }
-
-
 
   Widget _glassCard({required Widget child}) {
     return ClipRRect(

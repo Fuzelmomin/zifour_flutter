@@ -46,7 +46,7 @@ class ChangeCourseRepository {
           'stu_std_id': stuStdId,
           'stu_exm_id': stuExmId,
           'stu_med_id': stuMedId,
-          'stu_sub_id': stuSubId,
+          //'stu_sub_id': stuSubId,
         },
       );
 

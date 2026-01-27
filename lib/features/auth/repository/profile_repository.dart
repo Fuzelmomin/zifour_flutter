@@ -75,9 +75,9 @@ class ProfileRepository {
           'stu_city': stuCity,
           'stu_pincode': stuPincode,
           'stu_address': stuAddress,
-          'stu_std_id': stuStdId,
-          'stu_exm_id': stuExmId,
-          'stu_med_id': stuMedId,
+          // 'stu_std_id': stuStdId,
+          // 'stu_exm_id': stuExmId,
+          // 'stu_med_id': stuMedId,
           'stu_gender': stuGender,
         },
       );
