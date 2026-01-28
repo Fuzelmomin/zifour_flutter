@@ -24,14 +24,19 @@ class TopicResponse {
 @JsonSerializable()
 class TopicModel {
   @JsonKey(name: 'tpc_id')
-  final String tpcId;
+  final String? tpcId;
+
+  @JsonKey(name: 'letp_id')
+  final String? letpId;
+
   final String name;
   final String chapter;
 
   TopicModel({
-    required this.tpcId,
+    this.tpcId,
     required this.name,
     required this.chapter,
+    this.letpId,
   });
 
   factory TopicModel.fromJson(Map<String, dynamic> json) =>

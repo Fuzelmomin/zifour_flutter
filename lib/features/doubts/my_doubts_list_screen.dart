@@ -12,6 +12,7 @@ import '../../core/widgets/my_doubts_item.dart';
 import '../../core/widgets/signup_field_box.dart';
 import '../../l10n/app_localizations.dart';
 import '../doubts/ask_doubts_screen.dart';
+import '../../core/services/subject_service.dart';
 import 'bloc/doubts_list_bloc.dart';
 import 'model/doubts_list_model.dart';
 
@@ -27,18 +28,17 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
 
   String selectedFilter = "All";
 
-  final List<String> filters = [
-    "All",
-    "Physics",
-    "Chemistry",
-    "Biology",
-    "Maths",
-  ];
+  List<String> filters = ["All"];
 
   @override
   void initState() {
     super.initState();
     _doubtsListBloc = DoubtsListBloc()..add(DoubtsListRequested());
+
+    // Initialize dynamic filters from SubjectService
+    if (SubjectService().hasSubjects) {
+      filters.addAll(SubjectService().subjects.map((e) => e.name).toList());
+    }
   }
 
   @override

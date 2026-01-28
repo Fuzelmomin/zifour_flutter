@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 
 import '../../core/bloc/welcome_bloc.dart';
 import '../../core/constants/app_colors.dart';
@@ -13,18 +15,20 @@ import '../auth/login_screen.dart';
 import 'bloc/walkthrough_bloc.dart';
 import 'model/walkthrough_model.dart';
 
-class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({super.key});
+class NewWelcomeScreen extends StatefulWidget {
+  const NewWelcomeScreen({super.key});
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  State<NewWelcomeScreen> createState() => _NewWelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateMixin {
+class _NewWelcomeScreenState extends State<NewWelcomeScreen> with TickerProviderStateMixin {
   late AnimationController _imageAnimationController;
   late AnimationController _contentAnimationController;
   late Animation<double> _imageAnimation;
   late Animation<double> _contentAnimation;
+
+  YoutubePlayerController? _youtubeController;
 
   @override
   void initState() {
@@ -64,12 +68,39 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   void dispose() {
     _imageAnimationController.dispose();
     _contentAnimationController.dispose();
+    _youtubeController?.dispose();
     super.dispose();
+  }
+
+  void _setupYoutubeController(String? videoId) {
+    if (videoId == null || videoId.isEmpty) {
+      _youtubeController?.dispose();
+      _youtubeController = null;
+      return;
+    }
+
+    if (_youtubeController != null) {
+      _youtubeController!.load(videoId);
+    } else {
+      _youtubeController = YoutubePlayerController(
+        initialVideoId: videoId,
+        flags: const YoutubePlayerFlags(
+          autoPlay: true,
+          mute: false,
+          disableDragSeek: true,
+          loop: false,
+          isLive: false,
+          forceHD: false,
+          enableCaption: false,
+          hideControls: true,
+        ),
+      );
+    }
   }
 
   List<WelcomeContent> _mapWalkthroughToContent(List<WalkthroughItem> items) {
     final defaultContent = _getDefaultWelcomeContent();
-    
+
     if (items.isEmpty) {
       return defaultContent;
     }
@@ -77,21 +108,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     return items.asMap().entries.map((entry) {
       final index = entry.key;
       final item = entry.value;
-      
+
       if (index < defaultContent.length) {
         final defaultItem = defaultContent[index];
         return WelcomeContent(
           title: defaultItem.title,
           description: defaultItem.description,
           imagePath: item.wltImage != null ? item.wltImage ?? '' : defaultItem.imagePath,
+          videoPath: item.video,
           subtitle: defaultItem.subtitle,
         );
       }
-      
+
       return WelcomeContent(
         title: item.name,
         description: item.description,
         imagePath: item.wltImage != null ? item.wltImage ?? '' : AssetsPath.screensBgImg,
+        videoPath: item.video,
       );
     }).toList();
   }
@@ -149,6 +182,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                 _imageAnimationController.forward();
                 _contentAnimationController.reset();
                 _contentAnimationController.forward();
+
+                _setupYoutubeController(state.currentContent.videoPath);
+              } else if (state is WelcomeLoaded) {
+                _setupYoutubeController(state.content[state.currentIndex].videoPath);
               }
             },
             child: BlocBuilder<WelcomeBloc, WelcomeState>(
@@ -194,13 +231,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                         ),
                         Column(
                           children: [
-                            SizedBox(height: 50.h),
-                            Image.asset(
-                              AssetsPath.appTitleLogo,
-                              width: 122.w,
-                              height: 40.h,
-                            ),
-
                             Expanded(
                               child: AnimatedBuilder(
                                 animation: _imageAnimation,
@@ -210,7 +240,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                                     child: Container(
                                       width: double.infinity,
                                       height: double.infinity,
-                                      child: _buildImage(currentContent.imagePath),
+                                      child: _buildMedia(currentContent),
                                     ),
                                   );
                                 },
@@ -218,23 +248,24 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                             ),
                           ],
                         ),
+                        // Positioned(
+                        //   bottom: 0.0,
+                        //   left: 0.0,
+                        //   right: 0.0,
+                        //   child: Image.asset(
+                        //     AssetsPath.bottomGradientImg,
+                        //     width: double.infinity,
+                        //     height: 60.h,
+                        //     fit: BoxFit.fill,
+                        //   ),
+                        // ),
                         Positioned(
-                          bottom: 0.0,
-                          left: 0.0,
-                          right: 0.0,
-                          child: Image.asset(
-                            AssetsPath.bottomGradientImg,
-                            width: double.infinity,
-                            height: 150.h,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 15.h,
+                          bottom: 10.h,
                           left: 0.w,
                           right: 0.w,
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 15.w),
+                            color: Colors.transparent,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -254,12 +285,27 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                                     );
                                   }),
                                 ),
-                                SizedBox(height: 20.h),
-                                CustomGradientButton(
-                                  text: canGoNext
-                                      ? '${AppLocalizations.of(context)?.next}'
-                                      : '${AppLocalizations.of(context)?.getStarted}',
-                                  onPressed: () {
+                                SizedBox(height: 10.h),
+                                // CustomGradientButton(
+                                //   text: canGoNext
+                                //       ? '${AppLocalizations.of(context)?.next}'
+                                //       : '${AppLocalizations.of(context)?.getStarted}',
+                                //   onPressed: () {
+                                //     if (canGoNext) {
+                                //       context.read<WelcomeBloc>().add(NextWelcomeScreen());
+                                //     } else {
+                                //       Navigator.pushReplacement(
+                                //         context,
+                                //         MaterialPageRoute(
+                                //           builder: (context) => const LoginScreen(),
+                                //         ),
+                                //       );
+                                //     }
+                                //   },
+                                // ),
+
+                                GestureDetector(
+                                  onTap: (){
                                     if (canGoNext) {
                                       context.read<WelcomeBloc>().add(NextWelcomeScreen());
                                     } else {
@@ -271,7 +317,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                                       );
                                     }
                                   },
-                                ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Skip Now",
+                                        style: AppTypography.inter14Medium.copyWith(
+                                          color: AppColors.white,
+                                          decoration: TextDecoration.underline,
+                                          decorationColor: AppColors.white
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -288,7 +348,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     );
   }
 
-  Widget _buildImage(String imagePath) {
+  Widget _buildMedia(WelcomeContent content) {
+    if (content.videoPath != null && content.videoPath!.isNotEmpty) {
+      if (_youtubeController == null) {
+        _setupYoutubeController(content.videoPath);
+      }
+      return YoutubePlayer(
+        controller: _youtubeController!,
+        showVideoProgressIndicator: false,
+        onEnded: (metaData) {
+          context.read<WelcomeBloc>().add(NextWelcomeScreen());
+        },
+      );
+    }
+
+    final imagePath = content.imagePath;
     if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
       return CachedNetworkImage(
         imageUrl: imagePath,
@@ -322,7 +396,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   Widget _buildImageError(String imagePath) {
     final defaultContent = _getDefaultWelcomeContent();
     final fallbackIndex = defaultContent.indexWhere(
-      (item) => item.imagePath == imagePath,
+          (item) => item.imagePath == imagePath,
     );
     if (fallbackIndex >= 0) {
       return Image.asset(

@@ -10,6 +10,7 @@ import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_loading_widget.dart';
 import '../../core/api_models/medium_model.dart';
 import '../../core/presentation/pages/no_internet_screen.dart';
+import '../welcome/new_welcome_screen.dart';
 import '../welcome/welcome_screen.dart';
 import '../welcome/bloc/walkthrough_bloc.dart';
 import '../../l10n/app_localizations.dart';
@@ -237,7 +238,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
                         MaterialPageRoute(
                           builder: (context) => BlocProvider(
                             create: (context) => WalkthroughBloc(),
-                            child: const WelcomeScreen(),
+                            child: const NewWelcomeScreen(),
                           ),
                         ),
                       );

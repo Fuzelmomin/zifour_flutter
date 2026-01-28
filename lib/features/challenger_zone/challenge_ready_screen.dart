@@ -713,7 +713,7 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                                     if (isSelected) {
                                                       newList.remove(topic.tpcId);
                                                     } else {
-                                                      newList.add(topic.tpcId);
+                                                      newList.add(topic.tpcId ?? '');
                                                     }
                                                     _selectedTopics.add(newList);
                                                   },

@@ -32,6 +32,7 @@ class APIConstants {
   static const getSubject = 'subject.php';
   static const getChapters = 'chapters.php';
   static const getTopics = 'topic.php';
+  static const getLectureTopics = 'lecture_topic.php';
   static const createChallenge = 'create_challenge.php';
   static const getDetailsChallenge = 'create_challenge_details.php';
   static const getChallengesList = 'create_challenge_list.php';

@@ -479,9 +479,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChallengeResultScreen(
-                        title: "Test Series Results 🏆",
+                        title: widget.mcqType == "1" ? "Practice Results 🏆" : "Test Series Results 🏆",
                         crtChlId: "",
-                        screenType: "1", // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
+                        screenType: widget.mcqType, // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
                         pkId: widget.pkId,
                         paperId: widget.paperId,
                         solution: widget.paperSolution,

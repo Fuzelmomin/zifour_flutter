@@ -202,7 +202,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.screenType == "1" ? "See how you performed in this test series." : "See how you performed in this challenge.",
+            widget.screenType == "1" ? "See how you performed in this practice." : widget.screenType == "4" ? "See how you performed in this test series." : "See how you performed in this challenge.",
             style: AppTypography.inter16Regular.copyWith(
               color: AppColors.white.withOpacity(0.6),
             ),
@@ -215,12 +215,12 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data.subject ?? "${widget.screenType == "1" ? "Test series Result" : "Challenge Result"}",
+                  data.subject ?? "${widget.screenType == "1" ? "Practice Result" : widget.screenType == "4" ? "Test series Result" : "Challenge Result"}",
                   style: AppTypography.inter16Medium,
                 ),
                 SizedBox(height: 4),
                 Text(
-                  widget.screenType == "1" ? "Test Series Completed" : "Challenge Completed",
+                  widget.screenType == "1" ? "Practice Completed" :  widget.screenType == "4" ? "Test Series Completed" : "Challenge Completed",
                   style: AppTypography.inter12SemiBold.copyWith(
                     color: AppColors.orange,
                   ),
@@ -571,7 +571,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                 bottom: 0,
                 child: BlocBuilder<ChallengeResultBloc, ChallengeResultState>(
                   builder: (context, state) {
-                    if(widget.screenType == "1"){
+                    if(widget.screenType == "1" || widget.screenType == "4"){
                       var data = ChallengeResultResponse(
                         message: "",
                         status: true,

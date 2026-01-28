@@ -27,6 +27,7 @@ class TopicBloc extends Bloc<TopicEvent, TopicState> {
 
     final response = await _repository.fetchTopics(
       chapterIds: event.chapterIds,
+      type: event.type
     );
 
     if (response.status == ApiStatus.success && response.data != null) {

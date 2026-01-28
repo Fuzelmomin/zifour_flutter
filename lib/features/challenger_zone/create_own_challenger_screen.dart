@@ -529,7 +529,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
 
                                     // Keep active subject's selected topics valid against returned topic list.
                                     WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      _pruneActiveSelectedTopicsTo(topics.map((t) => t.tpcId).toList());
+                                      _pruneActiveSelectedTopicsTo(topics.map((t) => t.tpcId ?? '').toList());
                                     });
                                     return StreamBuilder<List<String>>(
                                       stream: _selectedTopics.stream,
@@ -548,7 +548,7 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                                 if (isSelected) {
                                                   newList.remove(topic.tpcId);
                                                 } else {
-                                                  newList.add(topic.tpcId);
+                                                  newList.add(topic.tpcId ?? '');
                                                 }
                                                 _selectedTopics.add(newList);
                                               },

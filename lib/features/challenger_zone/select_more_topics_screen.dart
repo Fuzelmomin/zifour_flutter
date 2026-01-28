@@ -223,7 +223,7 @@ class _SelectMoreTopicsScreenState extends State<SelectMoreTopicsScreen> {
                                           if (isSelected) {
                                             newList.remove(topic.tpcId);
                                           } else {
-                                            newList.add(topic.tpcId);
+                                            newList.add(topic.tpcId ?? '');
                                           }
                                           _selectedTopicIds.add(newList);
                                         },

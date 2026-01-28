@@ -2,13 +2,15 @@ class WalkthroughItem {
   final String wltId;
   final String name;
   final String description;
-  final String wltImage;
+  final String? wltImage;
+  final String? video;
 
   WalkthroughItem({
     required this.wltId,
     required this.name,
     required this.description,
-    required this.wltImage,
+    this.wltImage,
+    this.video,
   });
 
   factory WalkthroughItem.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class WalkthroughItem {
       name: json['name']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       wltImage: json['wlt_image']?.toString() ?? '',
+      video: json['video']?.toString() ?? '',
     );
   }
 
@@ -26,6 +29,7 @@ class WalkthroughItem {
       'name': name,
       'description': description,
       'wlt_image': wltImage,
+      'video': video,
     };
   }
 }

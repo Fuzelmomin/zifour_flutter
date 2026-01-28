@@ -16,6 +16,7 @@ class TopicRepository {
 
   Future<ApiResponse<TopicResponse>> fetchTopics({
     required List<String> chapterIds,
+    String? type,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -36,7 +37,7 @@ class TopicRepository {
       final chaptersParam = _encodeIdList(chapterIds);
 
       final response = await _dioClient.getDio().post(
-        APIConstants.getTopics,
+        type == "lecture_topic" ? APIConstants.getLectureTopics : APIConstants.getTopics,
         queryParameters: {
           'chp_id': chaptersParam,
         },

@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     },
     {
       "title": "My Courses",
-      "subtitle": "Live Classes\nLearn Live\nWith Mentors",
+      "subtitle": "Recorded Lectures, \nTest & Challenge Solutions",
       "icon": AssetsPath.svgMyCourse,
       "color": const Color(0xFF2DA63A),
     },

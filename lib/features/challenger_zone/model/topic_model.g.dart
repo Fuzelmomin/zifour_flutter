@@ -23,7 +23,8 @@ Map<String, dynamic> _$TopicResponseToJson(TopicResponse instance) =>
     };
 
 TopicModel _$TopicModelFromJson(Map<String, dynamic> json) => TopicModel(
-      tpcId: json['tpc_id'] as String,
+      tpcId: json['tpc_id'] as String?,
+      letpId: json['letp_id'] as String?,
       name: json['name'] as String,
       chapter: json['chapter'] as String,
     );
@@ -31,6 +32,7 @@ TopicModel _$TopicModelFromJson(Map<String, dynamic> json) => TopicModel(
 Map<String, dynamic> _$TopicModelToJson(TopicModel instance) =>
     <String, dynamic>{
       'tpc_id': instance.tpcId,
+      'letp_id': instance.tpcId,
       'name': instance.name,
       'chapter': instance.chapter,
     };

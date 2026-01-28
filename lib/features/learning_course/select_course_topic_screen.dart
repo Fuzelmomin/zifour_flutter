@@ -49,7 +49,7 @@ class _SelectCourseTopicScreenState extends State<SelectCourseTopicScreen> {
     super.initState();
     _topicBloc = TopicBloc();
     // Load topics from API
-    _topicBloc.add(TopicRequested(chapterIds: [widget.chapterId]));
+    _topicBloc.add(TopicRequested(chapterIds: [widget.chapterId], type: "lecture_topic"));
   }
 
   @override
@@ -228,7 +228,7 @@ class _SelectCourseTopicScreenState extends State<SelectCourseTopicScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => LearningChapterVideosScreen(
-                                        topicId: topic.tpcId,
+                                        topicId: topic.letpId ?? '',
                                         topicName: topic.name,
                                         chapterId: widget.chapterId,
                                         chapterName: widget.chapterName,

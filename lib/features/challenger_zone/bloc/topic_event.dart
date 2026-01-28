@@ -6,8 +6,9 @@ abstract class TopicEvent {
 
 class TopicRequested extends TopicEvent {
   final List<String> chapterIds;
+  final String? type;
 
-  const TopicRequested({required this.chapterIds});
+  const TopicRequested({required this.chapterIds, this.type});
 }
 
 
