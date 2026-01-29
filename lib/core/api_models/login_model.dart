@@ -21,11 +21,11 @@ class LoginData {
   @JsonKey(name: 'stu_address')
   final String stuAddress;
   @JsonKey(name: 'stu_std_id')
-  final String stuStdId;
+  final String? stuStdId;
   @JsonKey(name: 'stu_sub_id')
   final String? stuSubId;
   @JsonKey(name: 'stu_med_id')
-  final String stuMedId;
+  final String? stuMedId;
   @JsonKey(name: 'stu_exm_id')
   final String? stuExmId;
 
@@ -38,9 +38,9 @@ class LoginData {
     required this.stuCity,
     required this.stuPincode,
     required this.stuAddress,
-    required this.stuStdId,
+    this.stuStdId,
     this.stuSubId,
-    required this.stuMedId,
+    this.stuMedId,
     this.stuExmId,
   });
 

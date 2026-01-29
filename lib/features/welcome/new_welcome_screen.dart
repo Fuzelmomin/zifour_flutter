@@ -162,188 +162,203 @@ class _NewWelcomeScreenState extends State<NewWelcomeScreen> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocConsumer<WalkthroughBloc, WalkthroughState>(
-        listener: (context, walkthroughState) {
-          if (walkthroughState.status == WalkthroughStatus.success && walkthroughState.hasData) {
-            final walkthroughItems = walkthroughState.data!.walkthroughList;
-            final content = _mapWalkthroughToContent(walkthroughItems);
-            context.read<WelcomeBloc>().add(LoadWelcomeContentWithData(content));
-          } else if (walkthroughState.status == WalkthroughStatus.failure) {
-            final defaultContent = _getDefaultWelcomeContent();
-            context.read<WelcomeBloc>().add(LoadWelcomeContentWithData(defaultContent));
-          }
-        },
-        builder: (context, walkthroughState) {
-          return BlocListener<WelcomeBloc, WelcomeState>(
-            listener: (context, state) {
-              if (state is WelcomeChanged) {
-                _imageAnimationController.reset();
-                _imageAnimationController.forward();
-                _contentAnimationController.reset();
-                _contentAnimationController.forward();
-
-                _setupYoutubeController(state.currentContent.videoPath);
-              } else if (state is WelcomeLoaded) {
-                _setupYoutubeController(state.content[state.currentIndex].videoPath);
-              }
-            },
-            child: BlocBuilder<WelcomeBloc, WelcomeState>(
-              builder: (context, state) {
-                if (walkthroughState.status == WalkthroughStatus.loading ||
-                    state is WelcomeInitial) {
-                  return _buildShimmerLoader();
+    return SafeArea(
+      child: Scaffold(
+        body: BlocConsumer<WalkthroughBloc, WalkthroughState>(
+          listener: (context, walkthroughState) {
+            if (walkthroughState.status == WalkthroughStatus.success && walkthroughState.hasData) {
+              final walkthroughItems = walkthroughState.data!.walkthroughList;
+              final content = _mapWalkthroughToContent(walkthroughItems);
+              context.read<WelcomeBloc>().add(LoadWelcomeContentWithData(content));
+            } else if (walkthroughState.status == WalkthroughStatus.failure) {
+              final defaultContent = _getDefaultWelcomeContent();
+              context.read<WelcomeBloc>().add(LoadWelcomeContentWithData(defaultContent));
+            }
+          },
+          builder: (context, walkthroughState) {
+            return BlocListener<WelcomeBloc, WelcomeState>(
+              listener: (context, state) {
+                if (state is WelcomeChanged) {
+                  _imageAnimationController.reset();
+                  _imageAnimationController.forward();
+                  _contentAnimationController.reset();
+                  _contentAnimationController.forward();
+      
+                  _setupYoutubeController(state.currentContent.videoPath);
+                } else if (state is WelcomeLoaded) {
+                  _setupYoutubeController(state.content[state.currentIndex].videoPath);
                 }
-
-                WelcomeContent currentContent;
-                int currentIndex = 0;
-                bool canGoNext = false;
-                int totalItems = 0;
-
-                if (state is WelcomeLoaded) {
-                  currentContent = state.content[state.currentIndex];
-                  currentIndex = state.currentIndex;
-                  canGoNext = state.canGoNext;
-                  totalItems = state.content.length;
-                } else if (state is WelcomeChanged) {
-                  currentContent = state.currentContent;
-                  currentIndex = state.newIndex;
-                  canGoNext = state.canGoNext;
-                  totalItems = state.content.length;
-                } else {
-                  return _buildShimmerLoader();
-                }
-
-                return Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: AppColors.darkBlue,
-                  child: SafeArea(
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            AssetsPath.screensBgImg,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            Expanded(
-                              child: AnimatedBuilder(
-                                animation: _imageAnimation,
-                                builder: (context, child) {
-                                  return Transform.scale(
-                                    scale: 0.85 + (0.2 * _imageAnimation.value),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: double.infinity,
-                                      child: _buildMedia(currentContent),
-                                    ),
-                                  );
-                                },
-                              ),
+              },
+              child: BlocBuilder<WelcomeBloc, WelcomeState>(
+                builder: (context, state) {
+                  if (walkthroughState.status == WalkthroughStatus.loading ||
+                      state is WelcomeInitial) {
+                    return _buildShimmerLoader();
+                  }
+      
+                  WelcomeContent currentContent;
+                  int currentIndex = 0;
+                  bool canGoNext = false;
+                  int totalItems = 0;
+      
+                  if (state is WelcomeLoaded) {
+                    currentContent = state.content[state.currentIndex];
+                    currentIndex = state.currentIndex;
+                    canGoNext = state.canGoNext;
+                    totalItems = state.content.length;
+                  } else if (state is WelcomeChanged) {
+                    currentContent = state.currentContent;
+                    currentIndex = state.newIndex;
+                    canGoNext = state.canGoNext;
+                    totalItems = state.content.length;
+                  } else {
+                    return _buildShimmerLoader();
+                  }
+      
+                  return Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: AppColors.darkBlue,
+                    child: SafeArea(
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Image.asset(
+                              AssetsPath.screensBgImg,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
                             ),
-                          ],
-                        ),
-                        // Positioned(
-                        //   bottom: 0.0,
-                        //   left: 0.0,
-                        //   right: 0.0,
-                        //   child: Image.asset(
-                        //     AssetsPath.bottomGradientImg,
-                        //     width: double.infinity,
-                        //     height: 60.h,
-                        //     fit: BoxFit.fill,
-                        //   ),
-                        // ),
-                        Positioned(
-                          bottom: 10.h,
-                          left: 0.w,
-                          right: 0.w,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15.w),
-                            color: Colors.transparent,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(totalItems, (index) {
-                                    return Container(
-                                      margin: EdgeInsets.symmetric(horizontal: 4.w),
-                                      width: index == currentIndex ? 24.w : 8.w,
-                                      height: 4.h,
-                                      decoration: BoxDecoration(
-                                        color: index == currentIndex
-                                            ? Colors.white
-                                            : Colors.white.withOpacity(0.3),
-                                        borderRadius: BorderRadius.circular(2.r),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                                SizedBox(height: 10.h),
-                                // CustomGradientButton(
-                                //   text: canGoNext
-                                //       ? '${AppLocalizations.of(context)?.next}'
-                                //       : '${AppLocalizations.of(context)?.getStarted}',
-                                //   onPressed: () {
-                                //     if (canGoNext) {
-                                //       context.read<WelcomeBloc>().add(NextWelcomeScreen());
-                                //     } else {
-                                //       Navigator.pushReplacement(
-                                //         context,
-                                //         MaterialPageRoute(
-                                //           builder: (context) => const LoginScreen(),
-                                //         ),
-                                //       );
-                                //     }
-                                //   },
-                                // ),
-
-                                GestureDetector(
-                                  onTap: (){
-                                    if (canGoNext) {
-                                      context.read<WelcomeBloc>().add(NextWelcomeScreen());
-                                    } else {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const LoginScreen(),
+                          ),
+                          Column(
+                            children: [
+                              SizedBox(height: 50.h),
+                              Image.asset(
+                                AssetsPath.appTitleLogo,
+                                width: 122.w,
+                                height: 40.h,
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 30.w).copyWith(top: 25.h),
+                                  child: AnimatedBuilder(
+                                    animation: _imageAnimation,
+                                    builder: (context, child) {
+                                      return Transform.scale(
+                                        scale: 0.85 + (0.2 * _imageAnimation.value),
+                                        child: Container(
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                          //margin: EdgeInsets.symmetric(vertical: 15.h, horizontal: 25.w),
+                                          child: ClipRRect(
+                                              borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+                                              child: _buildMedia(currentContent)),
                                         ),
                                       );
-                                    }
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Skip Now",
-                                        style: AppTypography.inter14Medium.copyWith(
-                                          color: AppColors.white,
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: AppColors.white
-                                        ),
-                                      ),
-                                    ],
+                                    },
                                   ),
-                                )
-                              ],
+                                ),
+                              ),
+      
+                            ],
+                          ),
+                          Positioned(
+                            bottom: 0.0,
+                            left: 0.0,
+                            right: 0.0,
+                            child: Image.asset(
+                              AssetsPath.bottomGradientImg,
+                              width: double.infinity,
+                              height: 150.h,
+                              fit: BoxFit.fill,
                             ),
                           ),
-                        ),
-                      ],
+                          Positioned(
+                            bottom: 15.h,
+                            left: 0.w,
+                            right: 0.w,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15.w),
+                              color: Colors.transparent,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(totalItems, (index) {
+                                      return Container(
+                                        margin: EdgeInsets.symmetric(horizontal: 4.w),
+                                        width: index == currentIndex ? 24.w : 8.w,
+                                        height: 4.h,
+                                        decoration: BoxDecoration(
+                                          color: index == currentIndex
+                                              ? Colors.white
+                                              : Colors.white.withOpacity(0.3),
+                                          borderRadius: BorderRadius.circular(2.r),
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                  SizedBox(height: 10.h),
+                                  CustomGradientButton(
+                                    text: canGoNext
+                                        ? 'Skip Now'
+                                        : '${AppLocalizations.of(context)?.getStarted}',
+                                    onPressed: () {
+                                      if (canGoNext) {
+                                        context.read<WelcomeBloc>().add(NextWelcomeScreen());
+                                      } else {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const LoginScreen(),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+      
+                                  // GestureDetector(
+                                  //   onTap: (){
+                                  //     if (canGoNext) {
+                                  //       context.read<WelcomeBloc>().add(NextWelcomeScreen());
+                                  //     } else {
+                                  //       Navigator.pushReplacement(
+                                  //         context,
+                                  //         MaterialPageRoute(
+                                  //           builder: (context) => const LoginScreen(),
+                                  //         ),
+                                  //       );
+                                  //     }
+                                  //   },
+                                  //   child: Row(
+                                  //     mainAxisAlignment: MainAxisAlignment.center,
+                                  //     crossAxisAlignment: CrossAxisAlignment.center,
+                                  //     children: [
+                                  //       Text(
+                                  //         "Skip Now",
+                                  //         style: AppTypography.inter14Medium.copyWith(
+                                  //           color: AppColors.white,
+                                  //           decoration: TextDecoration.underline,
+                                  //           decorationColor: AppColors.white
+                                  //         ),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

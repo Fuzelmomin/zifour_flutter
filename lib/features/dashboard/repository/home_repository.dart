@@ -84,7 +84,7 @@ class HomeRepository {
     if (user.stuSubId != null && user.stuSubId!.isNotEmpty) {
       return user.stuSubId!;
     }
-    return user.stuStdId;
+    return user.stuStdId ?? "";
   }
 }
 

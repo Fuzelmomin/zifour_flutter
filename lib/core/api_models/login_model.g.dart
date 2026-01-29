@@ -15,9 +15,9 @@ LoginData _$LoginDataFromJson(Map<String, dynamic> json) => LoginData(
       stuCity: json['stu_city'] as String,
       stuPincode: json['stu_pincode'] as String,
       stuAddress: json['stu_address'] as String,
-      stuStdId: json['stu_std_id'] as String,
+      stuStdId: json['stu_std_id'] as String?,
       stuSubId: json['stu_sub_id'] as String?,
-      stuMedId: json['stu_med_id'] as String,
+      stuMedId: json['stu_med_id'] as String?,
       stuExmId: json['stu_exm_id'] as String?,
     );
 

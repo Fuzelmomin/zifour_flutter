@@ -715,8 +715,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   "Difficulty : ",
                   style: TextStyle(color: Colors.white54, fontSize: 14),
                 ),
-                const Text(
-                  "Easy",
+                Text(
+                  currentMcq.mcqVariant ?? "",
                   style: TextStyle(color: Colors.pinkAccent, fontSize: 14),
                 ),
                 const Spacer(),

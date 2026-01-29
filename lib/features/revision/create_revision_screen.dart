@@ -504,7 +504,7 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
       stdId: _selectedStdId!,
       exmId: user.stuExmId ?? '1',
       subId: _selectedSubId!,
-      medId: user.stuMedId,
+      medId: user.stuMedId ?? "",
       chpId: _selectedChpId!,
       tpcId: _selectedTpcId!,
       sDate: _startDateController.text,
