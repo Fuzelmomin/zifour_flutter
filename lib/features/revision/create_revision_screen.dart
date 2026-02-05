@@ -23,6 +23,7 @@ import 'package:zifour_sourcecode/features/challenger_zone/repository/topic_repo
 import 'package:zifour_sourcecode/features/revision/bloc/revision_bloc.dart';
 
 import '../../core/api_models/api_response.dart';
+import '../../core/widgets/multi_select_field.dart';
 import '../../core/widgets/text_field_container.dart';
 
 class CreateRevisionScreen extends StatefulWidget {
@@ -49,9 +50,9 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
   List<TopicModel> _topics = [];
 
   String? _selectedStdId;
-  String? _selectedSubId;
-  String? _selectedChpId;
-  String? _selectedTpcId;
+  List<String> _selectedSubIds = [];
+  List<String> _selectedChpIds = [];
+  List<String> _selectedTpcIds = [];
 
   DateTime? _startDate;
   DateTime? _endDate;
@@ -81,35 +82,42 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
     setState(() => _isLoadingDropdowns = false);
   }
 
-  Future<void> _loadChapters(String subId) async {
+  Future<void> _loadChapters(List<String> subIds) async {
     setState(() {
       _isLoadingDropdowns = true;
       _chapters = [];
-      _selectedChpId = null;
+      _selectedChpIds = [];
       _topics = [];
-      _selectedTpcId = null;
+      _selectedTpcIds = [];
     });
     
-    final response = await _chapterRepository.fetchChapters(subId: subId);
+    // Create a list of futures to fetch chapters for each subject
+    final responses = await Future.wait(
+      subIds.map((id) => _chapterRepository.fetchChapters(subId: id))
+    );
     
     if (mounted) {
       setState(() => _isLoadingDropdowns = false);
-      if (response.status == ApiStatus.success && response.data != null) {
-        setState(() {
-          _chapters = response.data!.chapterList;
-        });
+      List<ChapterModel> allChapters = [];
+      for (var response in responses) {
+        if (response.status == ApiStatus.success && response.data != null) {
+          allChapters.addAll(response.data!.chapterList);
+        }
       }
+      setState(() {
+        _chapters = allChapters;
+      });
     }
   }
 
-  Future<void> _loadTopics(String chpId) async {
+  Future<void> _loadTopics(List<String> chpIds) async {
     setState(() {
       _isLoadingDropdowns = true;
       _topics = [];
-      _selectedTpcId = null;
+      _selectedTpcIds = [];
     });
     
-    final response = await _topicRepository.fetchTopics(chapterIds: [chpId]);
+    final response = await _topicRepository.fetchTopics(chapterIds: chpIds);
     
     if (mounted) {
       setState(() => _isLoadingDropdowns = false);
@@ -236,13 +244,57 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
                                 children: [
                                   Expanded(child: _buildStandardDropdown()),
                                   SizedBox(width: 15.w),
-                                  Expanded(child: _buildSubjectDropdown()),
+                                  Expanded(
+                                    child: MultiSelectField(
+                                      label: 'Subject',
+                                      hint: 'Select Subjects',
+                                      selectedIds: _selectedSubIds,
+                                      items: _subjects.map((s) => {'id': s.subId, 'name': s.name}).toList(),
+                                      onSelectionChanged: (ids) {
+                                        setState(() => _selectedSubIds = ids);
+                                        if (ids.isNotEmpty) {
+                                          _loadChapters(ids);
+                                        } else {
+                                          setState(() {
+                                            _chapters = [];
+                                            _selectedChpIds = [];
+                                            _topics = [];
+                                            _selectedTpcIds = [];
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
                                 ],
                               ),
                               SizedBox(height: 15.h),
-                              _buildChapterDropdown(),
+                              MultiSelectField(
+                                label: 'Chapter',
+                                hint: 'Select Chapters',
+                                selectedIds: _selectedChpIds,
+                                items: _chapters.map((c) => {'id': c.chpId, 'name': c.name}).toList(),
+                                onSelectionChanged: (ids) {
+                                  setState(() => _selectedChpIds = ids);
+                                  if (ids.isNotEmpty) {
+                                    _loadTopics(ids);
+                                  } else {
+                                    setState(() {
+                                      _topics = [];
+                                      _selectedTpcIds = [];
+                                    });
+                                  }
+                                },
+                              ),
                               SizedBox(height: 15.h),
-                              _buildTopicDropdown(),
+                              MultiSelectField(
+                                label: 'Topic',
+                                hint: 'Select Topics',
+                                selectedIds: _selectedTpcIds,
+                                items: _topics.map((t) => {'id': t.tpcId ?? '', 'name': t.name}).toList(),
+                                onSelectionChanged: (ids) {
+                                  setState(() => _selectedTpcIds = ids);
+                                },
+                              ),
                               SizedBox(height: 15.h),
                               Row(
                                 children: [
@@ -303,126 +355,42 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
   }
 
   Widget _buildStandardDropdown() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          isExpanded: true,
-          dropdownColor: const Color(0xFF2A2663),
-          value: _selectedStdId,
-          hint: Text(
-            'Standard',
-            style: AppTypography.inter14Regular.copyWith(color: AppColors.hintTextColor),
-          ),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
-          style: const TextStyle(color: Colors.white),
-          items: _standards.map((s) => DropdownMenuItem(value: s.stdId, child: Text(s.name, overflow: TextOverflow.ellipsis))).toList(),
-          onChanged: (val) {
-            if (val != null) {
-              setState(() => _selectedStdId = val);
-            }
-          },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Standard',
+          style: AppTypography.inter12Medium.copyWith(color: Colors.white),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSubjectDropdown() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          isExpanded: true,
-          dropdownColor: const Color(0xFF2A2663),
-          value: _selectedSubId,
-          hint: Text(
-            'Subject',
-            style: AppTypography.inter14Regular.copyWith(color: AppColors.hintTextColor),
+        SizedBox(height: 8.h),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 14.w),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
           ),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
-          style: const TextStyle(color: Colors.white),
-          items: _subjects.map((s) => DropdownMenuItem(value: s.subId, child: Text(s.name, overflow: TextOverflow.ellipsis))).toList(),
-          onChanged: (val) {
-            if (val != null) {
-              setState(() => _selectedSubId = val);
-              _loadChapters(val);
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildChapterDropdown() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          isExpanded: true,
-          dropdownColor: const Color(0xFF2A2663),
-          value: _selectedChpId,
-          hint: Text(
-            'Chapter',
-            style: AppTypography.inter14Regular.copyWith(color: AppColors.hintTextColor),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              isExpanded: true,
+              dropdownColor: const Color(0xFF2A2663),
+              value: _selectedStdId,
+              hint: Text(
+                'Standard',
+                style: AppTypography.inter14Regular.copyWith(color: AppColors.hintTextColor),
+              ),
+              icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
+              style: const TextStyle(color: Colors.white),
+              items: _standards.map((s) => DropdownMenuItem(value: s.stdId, child: Text(s.name, overflow: TextOverflow.ellipsis))).toList(),
+              onChanged: (val) {
+                if (val != null) {
+                  setState(() => _selectedStdId = val);
+                }
+              },
+            ),
           ),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
-          style: const TextStyle(color: Colors.white),
-          items: _chapters.map((c) => DropdownMenuItem(value: c.chpId, child: Text(c.name, overflow: TextOverflow.ellipsis))).toList(),
-          onChanged: (val) {
-            if (val != null) {
-              setState(() => _selectedChpId = val);
-              _loadTopics(val);
-            }
-          },
         ),
-      ),
-    );
-  }
-
-  Widget _buildTopicDropdown() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          isExpanded: true,
-          dropdownColor: const Color(0xFF2A2663),
-          value: _selectedTpcId,
-          hint: Text(
-            'Topic',
-            style: AppTypography.inter14Regular.copyWith(color: AppColors.hintTextColor),
-          ),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white),
-          style: const TextStyle(color: Colors.white),
-          items: _topics.map((t) => DropdownMenuItem(value: t.tpcId, child: Text(t.name, overflow: TextOverflow.ellipsis))).toList(),
-          onChanged: (val) {
-            if (val != null) {
-              setState(() => _selectedTpcId = val);
-            }
-          },
-        ),
-      ),
+      ],
     );
   }
 
@@ -462,16 +430,16 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
       _showError('Please select standard');
       return;
     }
-    if (_selectedSubId == null) {
-      _showError('Please select subject');
+    if (_selectedSubIds.isEmpty) {
+      _showError('Please select at least one subject');
       return;
     }
-    if (_selectedChpId == null) {
-      _showError('Please select chapter');
+    if (_selectedChpIds.isEmpty) {
+      _showError('Please select at least one chapter');
       return;
     }
-    if (_selectedTpcId == null) {
-      _showError('Please select topic');
+    if (_selectedTpcIds.isEmpty) {
+      _showError('Please select at least one topic');
       return;
     }
     if (_startDate == null) {
@@ -503,10 +471,10 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
     context.read<RevisionBloc>().add(RevisionSubmitted(
       stdId: _selectedStdId!,
       exmId: user.stuExmId ?? '1',
-      subId: _selectedSubId!,
+      subId: _selectedSubIds,
       medId: user.stuMedId ?? "",
-      chpId: _selectedChpId!,
-      tpcId: _selectedTpcId!,
+      chpId: _selectedChpIds,
+      tpcId: _selectedTpcIds,
       sDate: _startDateController.text,
       eDate: _endDateController.text,
       dHours: _hourController.text.trim(),

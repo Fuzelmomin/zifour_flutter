@@ -10,13 +10,15 @@ import 'package:dio/dio.dart';
 class RevisionRepository {
   final DioClient _dioClient;
 
-  RevisionRepository({DioClient? dioClient}) : _dioClient = dioClient ?? DioClient();
+  RevisionRepository({DioClient? dioClient})
+      : _dioClient = dioClient ?? DioClient();
 
   Future<ApiResponse<RevisionResponse>> fetchRevisionList() async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
       if (!isConnected) {
-        return ApiResponse.error(errorMsg: 'No internet connection. Please check your network.');
+        return ApiResponse.error(
+            errorMsg: 'No internet connection. Please check your network.');
       }
 
       final userData = await UserPreference.getUserData();
@@ -36,7 +38,8 @@ class RevisionRepository {
         if (data['status'] == true) {
           return ApiResponse.success(data: RevisionResponse.fromJson(data));
         }
-        return ApiResponse.error(errorMsg: data['message']?.toString() ?? 'Unable to fetch revision list.');
+        return ApiResponse.error(errorMsg: data['message']?.toString() ??
+            'Unable to fetch revision list.');
       }
 
       return ApiResponse.error(errorMsg: 'Unable to fetch revision list.');
@@ -55,7 +58,8 @@ class RevisionRepository {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
       if (!isConnected) {
-        return ApiResponse.error(errorMsg: 'No internet connection. Please check your network.');
+        return ApiResponse.error(
+            errorMsg: 'No internet connection. Please check your network.');
       }
 
       final userData = await UserPreference.getUserData();
@@ -84,10 +88,10 @@ class RevisionRepository {
   Future<ApiResponse<String>> submitRevision({
     required String stdId,
     required String exmId,
-    required String subId,
+    required List<String> subId,
     required String medId,
-    required String chpId,
-    required String tpcId,
+    required List<String> chpId,
+    required List<String> tpcId,
     required String sDate, // YYYY-MM-DD
     required String eDate, // YYYY-MM-DD
     required String dHours,
@@ -96,7 +100,8 @@ class RevisionRepository {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
       if (!isConnected) {
-        return ApiResponse.error(errorMsg: 'No internet connection. Please check your network.');
+        return ApiResponse.error(
+            errorMsg: 'No internet connection. Please check your network.');
       }
 
       final userData = await UserPreference.getUserData();
@@ -110,10 +115,10 @@ class RevisionRepository {
           'stu_id': userData.stuId,
           'std_id': stdId,
           'exm_id': exmId,
-          'sub_id': subId,
+          'sub_id': _encodeIdList(subId),
           'med_id': medId,
-          'chp_id': chpId,
-          'tpc_id': tpcId,
+          'chp_id': _encodeIdList(chpId),
+          'tpc_id': _encodeIdList(tpcId),
           'plnr_sdate': sDate,
           'plnr_edate': eDate,
           'plnr_dhours': dHours,
@@ -124,13 +129,22 @@ class RevisionRepository {
       if (response.statusCode == 200) {
         final data = response.data;
         if (data['status'] == true) {
-          return ApiResponse.success(data: data['message']?.toString() ?? 'Revision submitted successfully.');
+          return ApiResponse.success(data: data['message']?.toString() ??
+              'Revision submitted successfully.');
         }
-        return ApiResponse.error(errorMsg: data['message']?.toString() ?? 'Unable to submit revision.');
+        return ApiResponse.error(errorMsg: data['message']?.toString() ??
+            'Unable to submit revision.');
       }
       return ApiResponse.error(errorMsg: 'Unable to submit revision.');
     } catch (e) {
       return ApiResponse.error(errorMsg: 'Unexpected error: ${e.toString()}');
     }
   }
+
+  String _encodeIdList(List<String> ids) {
+    if (ids.isEmpty) return '[]';
+    return '[${ids.join(',')}]';
+  }
 }
+
+

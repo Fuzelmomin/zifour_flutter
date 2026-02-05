@@ -89,6 +89,7 @@ class _PracticeSubjectScreenState extends State<PracticeSubjectScreen> {
                                       from: 'practice',
                                       subjectId: subject.subId,
                                       subjectName: subject.name,
+                                      subjectIcon: subject.icon,
                                     ),
                                   ),
                                 );

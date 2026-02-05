@@ -526,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 //MaterialPageRoute(builder: (context) => MentorsListScreen()),
-                MaterialPageRoute(builder: (context) => MentorsVideosListScreen(mentorId: '', isBack: true)),
+                MaterialPageRoute(builder: (context) => MentorsVideosListScreen(mentorId: '', isBack: true, isZMentor: true,)),
               );
             },
           ),

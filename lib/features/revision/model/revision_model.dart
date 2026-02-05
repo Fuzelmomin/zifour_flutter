@@ -57,6 +57,7 @@ class PlannerModel {
   final String subject;
   final String chapter;
   final String topic;
+  final String? plnrDhours;
 
   PlannerModel({
     required this.plnrId,
@@ -69,6 +70,7 @@ class PlannerModel {
     required this.subject,
     required this.chapter,
     required this.topic,
+    this.plnrDhours,
   });
 
   factory PlannerModel.fromJson(Map<String, dynamic> json) {
@@ -83,6 +85,7 @@ class PlannerModel {
       subject: json['subject']?.toString() ?? '',
       chapter: json['chapter']?.toString() ?? '',
       topic: json['topic']?.toString() ?? '',
+      plnrDhours: json['plnr_dhours']?.toString() ?? '',
     );
   }
 }

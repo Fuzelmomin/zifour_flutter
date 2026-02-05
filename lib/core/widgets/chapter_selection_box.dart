@@ -10,9 +10,11 @@ class ChapterSelectionBox extends StatelessWidget {
   Color? bgColor;
   Color? borderColor;
   EdgeInsets? padding;
+  EdgeInsets? margin;
+  Color? textColor;
   Function() onTap;
 
-  ChapterSelectionBox({super.key, this.isSelected, this.title, this.isButton, required this.onTap, this.bgColor, this.borderColor, this.padding});
+  ChapterSelectionBox({super.key, this.isSelected, this.title, this.isButton, required this.onTap, this.bgColor, this.borderColor, this.padding, this.margin, this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +23,11 @@ class ChapterSelectionBox extends StatelessWidget {
         onTap();
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
+        margin: margin ?? const EdgeInsets.only(bottom: 12),
         padding: padding ??  EdgeInsets.symmetric(
             horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF1B193D),
+          color: bgColor ?? const Color(0xFF1B193D),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected == true
@@ -52,8 +54,8 @@ class ChapterSelectionBox extends StatelessWidget {
                   width: MediaQuery.sizeOf(context).width - 220.w,
                   child: Text(
                     title ?? '',
-                    style: const TextStyle(
-                        color: Colors.white,
+                    style: TextStyle(
+                        color: textColor ?? Colors.white,
                         fontSize: 15),
                   ),
                 ),
@@ -72,7 +74,7 @@ class ChapterSelectionBox extends StatelessWidget {
               child: Text(
                 isSelected == true ? "Selected": "Select",
                 style: TextStyle(
-                    color: Colors.white,
+                    color: textColor ?? Colors.white,
                     fontSize: 13),
               ),
             ) : Container(),

@@ -30,12 +30,14 @@ class SelectChapterScreen extends StatefulWidget {
   final String? from;
   final String? subjectId;
   final String? subjectName;
-  
+  final String? subjectIcon;
+
   SelectChapterScreen({
     super.key, 
     this.from,
     this.subjectId,
     this.subjectName,
+    this.subjectIcon,
   });
 
   @override
@@ -130,6 +132,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                           title: widget.subjectName ?? 'Physics',
                           subtitle: 'Select a Chapter',
                           iconPath: AssetsPath.icPhysics,
+                          iconUrl: widget.subjectIcon ?? '',
                         ),
                         SizedBox(height: 20.h),
                         // Dynamic chapter list based on from parameter
@@ -185,6 +188,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                               subjectName: widget.subjectName ?? '',
                                               chapterId: chapter.chpId,
                                               chapterName: chapter.name,
+                                              subjectIcon: widget.subjectIcon ?? '',
                                             ),
                                           ),
                                         );
@@ -198,6 +202,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                               subjectName: widget.subjectName ?? '',
                                               chapterId: chapter.chpId,
                                               chapterName: chapter.name,
+                                              subjectIcon: widget.subjectIcon,
                                             ),
                                           ),
                                         );
@@ -247,7 +252,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                 itemClick: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => SelectTopicScreen()),
+                                    MaterialPageRoute(builder: (context) => SelectTopicScreen(subjectIcon: widget.subjectIcon,)),
                                   );
                                 },
                               );

@@ -71,7 +71,8 @@ class _LearningCourseListScreenState extends State<LearningCourseListScreen> {
                       progress: 65, // Static for now as API doesn't provide this
                       chapters: subject.totalChapter ?? "", // Static for now as API doesn't provide this
                       lectures: subject.totalLectures ?? "", // Static for now as API doesn't provide this
-                      iconUrl: "https://cdn-icons-png.flaticon.com/512/4149/4149678.png", // Static icon
+                      //iconUrl: "https://cdn-icons-png.flaticon.com/512/4149/4149678.png", // Static icon
+                      iconUrl: subject.icon, // Static icon
                       onTap: (){
                         Navigator.push(
                           context,
@@ -80,6 +81,7 @@ class _LearningCourseListScreenState extends State<LearningCourseListScreen> {
                               from: "course",
                               subjectId: subject.subId,
                               subjectName: subject.name,
+                              subjectIcon: subject.icon,
                             ),
                           ),
                         );

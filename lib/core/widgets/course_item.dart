@@ -80,14 +80,14 @@ class CourseItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 10.h),
-                  Row(
-                    spacing: 10.w,
-                    children: [
-                      _iconLabelWidget(AssetsPath.svgFileText, testsText),
-                      _iconLabelWidget(AssetsPath.svgPlayCircle, videosText),
-                    ],
-                  ),
+                  // SizedBox(height: 10.h),
+                  // Row(
+                  //   spacing: 10.w,
+                  //   children: [
+                  //     _iconLabelWidget(AssetsPath.svgFileText, testsText),
+                  //     _iconLabelWidget(AssetsPath.svgPlayCircle, videosText),
+                  //   ],
+                  // ),
                   SizedBox(height: 10.h),
                   Text(
                     title,

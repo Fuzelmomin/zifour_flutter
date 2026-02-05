@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_gradient_button.dart';
+import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/services/subject_service.dart';
@@ -124,11 +125,24 @@ class _ModulesScreenState extends State<ModulesScreen> {
                 left: 20.w,
                 right: 20.w,
                 bottom: 0,
-                child: CustomGradientButton(
-                  text: "Buy Modules",
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleOrderFormScreen(mdlId: "1",),));
-                  },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SignupFieldBox(
+                      child: Text(
+                        "We recommend students use our complete premium content, featuring new sets of 15,000+ MCQs, PYQs, smart tricks, and more.",
+                        textAlign: TextAlign.left,
+                        style: AppTypography.inter12Regular.copyWith(color: AppColors.white, fontSize: 13.sp),
+                      ),
+                    ),
+                    SizedBox(height: 10.h,),
+                    CustomGradientButton(
+                      text: "Buy Modules",
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleOrderFormScreen(mdlId: "1",),));
+                      },
+                    ),
+                  ],
                 ),
               )
             ],

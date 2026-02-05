@@ -19,10 +19,10 @@ class RevisionItemDeleted extends RevisionEvent {
 class RevisionSubmitted extends RevisionEvent {
   final String stdId;
   final String exmId;
-  final String subId;
+  final List<String> subId;
   final String medId;
-  final String chpId;
-  final String tpcId;
+  final List<String> chpId;
+  final List<String> tpcId;
   final String sDate;
   final String eDate;
   final String dHours;

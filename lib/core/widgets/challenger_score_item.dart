@@ -44,14 +44,14 @@ class ChallengerScoreItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 4),
-                      Text(
-                        challenge?.oeChaName ?? "Challenge Type",
-                        style: AppTypography.inter12SemiBold.copyWith(
-                          color: AppColors.orange,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      // Text(
+                      //   challenge?.oeChaName ?? "Challenge Type",
+                      //   style: AppTypography.inter12SemiBold.copyWith(
+                      //     color: AppColors.orange,
+                      //   ),
+                      //   maxLines: 1,
+                      //   overflow: TextOverflow.ellipsis,
+                      // ),
                     ],
                   ),
                 ),

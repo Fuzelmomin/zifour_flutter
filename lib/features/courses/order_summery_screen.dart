@@ -47,7 +47,7 @@ class _OrderSummeryScreenState extends State<OrderSummeryScreen> {
                   right: 20.w,
                   child: CustomAppBar(
                     isBack: true,
-                    title: 'Order Summery',
+                    title: 'Payment Details',
                   )),
 
               // Main Content with BLoC

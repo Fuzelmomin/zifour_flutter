@@ -26,6 +26,7 @@ class SubjectModel {
   @JsonKey(name: 'sub_id')
   final String subId;
   final String name;
+  final String icon;
 
   @JsonKey(name: 'total_lectures')
   final String? totalLectures;
@@ -35,6 +36,7 @@ class SubjectModel {
   SubjectModel({
     required this.subId,
     required this.name,
+    required this.icon,
     this.totalLectures,
     this.totalChapter,
   });

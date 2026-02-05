@@ -23,7 +23,7 @@ class GetMentorVideosBloc
   ) async {
     emit(GetMentorVideosLoading());
 
-    final response = await _repository.getMentorVideos(mentorId: event.mentorId);
+    final response = await _repository.getMentorVideos(mentorId: event.mentorId, isZMentor: event.isZMentor);
 
     if (response.status == ApiStatus.success && response.data != null) {
       final videos = response.data!.mtvidList ?? [];

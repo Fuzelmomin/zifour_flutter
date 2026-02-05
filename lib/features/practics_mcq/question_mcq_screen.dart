@@ -843,11 +843,10 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                                 ),
                               );
                             }else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Video solution not available for this question.'),
-                                  backgroundColor: AppColors.error,
-                                ),
+                              showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (context) => const VideoSolutionUnavailableDialog(),
                               );
                             }
                           },
@@ -1216,6 +1215,97 @@ class _SolutionDialogState extends State<SolutionDialog>
 
                 SizedBox(height: 20.h),
 
+                CustomGradientButton(
+                  text: 'Close',
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class VideoSolutionUnavailableDialog extends StatefulWidget {
+  const VideoSolutionUnavailableDialog({super.key});
+
+  @override
+  State<VideoSolutionUnavailableDialog> createState() => _VideoSolutionUnavailableDialogState();
+}
+
+class _VideoSolutionUnavailableDialogState extends State<VideoSolutionUnavailableDialog>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _offsetAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 450),
+      vsync: this,
+    );
+
+    _offsetAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.6),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+    ));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+      child: Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(20.w),
+        child: SlideTransition(
+          position: _offsetAnimation,
+          child: SignupFieldBox(
+            padding: EdgeInsets.symmetric(
+                vertical: 30.h, horizontal: 20.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.videocam_off_rounded,
+                  size: 48,
+                  color: AppColors.pinkColor3,
+                ),
+                SizedBox(height: 15.h),
+                const Text(
+                  "Video Solution",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Text(
+                  "This question is marked as self-assessment to build exam-ready confidence. A video solution will be added soon",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 14.sp,
+                  ),
+                ),
+                SizedBox(height: 25.h),
                 CustomGradientButton(
                   text: 'Close',
                   onPressed: () {

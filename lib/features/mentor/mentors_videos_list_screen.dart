@@ -18,12 +18,14 @@ class MentorsVideosListScreen extends StatefulWidget {
   final String mentorId;
   final String? mentorName;
   final bool? isBack;
+  final bool? isZMentor;
 
   MentorsVideosListScreen({
     super.key,
     required this.mentorId,
     this.mentorName,
     this.isBack,
+    this.isZMentor,
   });
 
   @override
@@ -58,7 +60,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
 
     if (mounted) {
       //_videosBloc.add(FetchMentorVideos(mentorId: widget.mentorId));
-      _videosBloc.add(FetchMentorVideos(mentorId: ""));
+      _videosBloc.add(FetchMentorVideos(mentorId: "", isZMentor: widget.isZMentor!));
     }
   }
 
@@ -90,7 +92,7 @@ class _MentorsVideosListScreenState extends State<MentorsVideosListScreen> {
                         isBack: widget.isBack,
                         title: widget.mentorName ??
                             '${AppLocalizations.of(context)?.mentors}',
-                        isActionWidget: true,
+                        isActionWidget: widget.isZMentor == true ? false : true,
                         actionWidget: PopupMenuButton<String>(
                           onSelected: (value) => setState(() => selectedFilter = value),
                           itemBuilder: (context) {

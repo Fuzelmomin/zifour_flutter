@@ -72,5 +72,6 @@ class APIConstants {
   static const addMcqFeedback = 'mcq_feedback_add.php';
   static const getTestSeriesSolution = 'testseries_solution.php';
   static const getExpertSolution = 'expert_solution.php';
+  static const getZMentorVideos = 'mentor_video_home.php';
 
 }

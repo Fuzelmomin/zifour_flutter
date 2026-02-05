@@ -17,6 +17,7 @@ class GetMentorVideosRepository {
 
   Future<ApiResponse<MentorVideosResponse>> getMentorVideos({
     required String mentorId,
+    bool? isZMentor
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -32,7 +33,7 @@ class GetMentorVideosRepository {
         );
       }
       final response = await _dioClient.getDio().get(
-        APIConstants.getMentorVideos,
+        isZMentor == true ? APIConstants.getZMentorVideos : APIConstants.getMentorVideos,
         queryParameters: {
           'med_id': user.stuMedId,
         },

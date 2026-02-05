@@ -75,6 +75,11 @@ class RevisionItemWidget extends StatelessWidget {
                 Icons.calendar_month_outlined,
                 '${planner.plnrSdate} to ${planner.plnrEdate}',
               ),
+              SizedBox(width: 10.w,),
+              _buildMetaInfo(
+                Icons.watch_later_outlined,
+                '${planner.plnrDhours ?? '00' } hrs',
+              ),
             ],
           ),
           SizedBox(height: 8.h),

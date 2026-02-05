@@ -21,6 +21,7 @@ class SelectTopicScreen extends StatefulWidget {
   final String? subjectName;
   final String? chapterId;
   final String? chapterName;
+  final String? subjectIcon;
 
   const SelectTopicScreen({
     super.key,
@@ -29,6 +30,7 @@ class SelectTopicScreen extends StatefulWidget {
     this.subjectName,
     this.chapterId,
     this.chapterName,
+    this.subjectIcon,
   });
 
   @override
@@ -103,6 +105,7 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
                               '${widget.subjectName ?? 'Physics'} - ${widget.chapterName ?? 'Motion'}',
                           subtitle: 'Select a Topic',
                           iconPath: AssetsPath.icPhysics,
+                          iconUrl: widget.subjectIcon ?? '',
                         ),
                         SizedBox(height: 20.h),
                         

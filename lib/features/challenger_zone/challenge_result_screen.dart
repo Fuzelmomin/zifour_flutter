@@ -410,8 +410,11 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                     print("View Solutions: ${widget.solution}");
 
                     if(widget.screenType == "2"){
-                      _showSubjectDialog(context, widget.crtChlId);
-                    }else {
+                      _showSubjectDialog(context, widget.crtChlId, "", "expert");
+                    }else if(widget.screenType == "4"){
+                      _showSubjectDialog(context, "", widget.paperId ?? '', "test_series");
+                    }
+                    else {
                       if(widget.solution != null && widget.solution!.isNotEmpty){
                         Navigator.push(
                           context,
@@ -438,7 +441,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
   }
 
 
-  void _showSubjectDialog(BuildContext context, String chalId) {
+  void _showSubjectDialog(BuildContext context, String chalId, String paperId, String type) {
     final subjects = SubjectService().subjects;
 
     showDialog(
@@ -501,9 +504,10 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => SolutionVideosListScreen(
-                                    from: 'expert',
+                                    from: type,
                                     chalId: chalId,
                                     subId: subject.subId,
+                                    paperId: paperId,
                                   ),
                                 ),
                               );

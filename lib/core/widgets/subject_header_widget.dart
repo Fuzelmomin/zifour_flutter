@@ -8,12 +8,14 @@ class SubjectHeaderWidget extends StatelessWidget {
   final String title;
   final String subtitle;
   final String iconPath;
+  final String iconUrl;
 
   const SubjectHeaderWidget({
     super.key,
     required this.title,
     required this.subtitle,
     required this.iconPath,
+    required this.iconUrl,
   });
 
   @override
@@ -72,7 +74,13 @@ class SubjectHeaderWidget extends StatelessWidget {
             child: Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(30.r),
-                child: Image.asset(
+                child: iconUrl.isNotEmpty ?
+                Image.network(
+                  iconUrl,
+                  width: 60.w,
+                  height: 60.w,
+                  fit: BoxFit.contain,
+                ) : Image.asset(
                   iconPath,
                   width: 60.w,
                   height: 60.w,

@@ -28,13 +28,15 @@ class SelectCourseTopicScreen extends StatefulWidget {
   final String subjectName;
   final String chapterId;
   final String chapterName;
-  
+  final String subjectIcon;
+
   const SelectCourseTopicScreen({
     super.key,
     required this.subjectId,
     required this.subjectName,
     required this.chapterId,
     required this.chapterName,
+    required this.subjectIcon,
   });
 
   @override
@@ -109,6 +111,7 @@ class _SelectCourseTopicScreenState extends State<SelectCourseTopicScreen> {
                           title: '${widget.subjectName} - ${widget.chapterName}',
                           subtitle: 'Select a Topic',
                           iconPath: AssetsPath.icPhysics,
+                          iconUrl: widget.subjectIcon ?? "",
                         ),
 
                         /*Container(

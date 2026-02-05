@@ -148,9 +148,9 @@ class CustomDrawer extends StatelessWidget {
                     _drawerItem(AssetsPath.svgNote, "My Notes", (){
                       _closeDrawerAndPush(context, (_) => MyNotesListScreen());
                     }),
-                    _drawerItem(AssetsPath.svgBarChart, "My Performance", (){
-                      _closeDrawerAndPush(context, (_) => MyPerformanceScreen());
-                    }),
+                    // _drawerItem(AssetsPath.svgBarChart, "My Performance", (){
+                    //   _closeDrawerAndPush(context, (_) => MyPerformanceScreen());
+                    // }),
                     _drawerItem(AssetsPath.svgCalendar, "Revision Planner", (){
                       _closeDrawerAndPush(context, (_) => RevisionListScreen());
                     }),
