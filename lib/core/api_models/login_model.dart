@@ -13,13 +13,13 @@ class LoginData {
   @JsonKey(name: 'stu_mobile')
   final String stuMobile;
   @JsonKey(name: 'stu_email')
-  final String stuEmail;
+  final String? stuEmail;
   @JsonKey(name: 'stu_city')
-  final String stuCity;
+  final String? stuCity;
   @JsonKey(name: 'stu_pincode')
-  final String stuPincode;
+  final String? stuPincode;
   @JsonKey(name: 'stu_address')
-  final String stuAddress;
+  final String? stuAddress;
   @JsonKey(name: 'stu_std_id')
   final String? stuStdId;
   @JsonKey(name: 'stu_sub_id')
@@ -34,10 +34,10 @@ class LoginData {
     required this.stuName,
     required this.stuImage,
     required this.stuMobile,
-    required this.stuEmail,
-    required this.stuCity,
-    required this.stuPincode,
-    required this.stuAddress,
+    this.stuEmail,
+    this.stuCity,
+    this.stuPincode,
+    this.stuAddress,
     this.stuStdId,
     this.stuSubId,
     this.stuMedId,

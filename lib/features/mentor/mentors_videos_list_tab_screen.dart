@@ -22,12 +22,14 @@ class MentorsVideosListTabScreen extends StatefulWidget {
   final String mentorId;
   final String? mentorName;
   final bool? isBack;
+  final bool? isZMentors;
 
   MentorsVideosListTabScreen({
     super.key,
     required this.mentorId,
     this.mentorName,
     this.isBack,
+    this.isZMentors,
   });
 
   @override
@@ -62,7 +64,7 @@ class _MentorsVideosListTabScreenState extends State<MentorsVideosListTabScreen>
 
     if (mounted) {
       //_videosBloc.add(FetchMentorVideos(mentorId: widget.mentorId));
-      _videosBloc.add(FetchMentorVideos(mentorId: ""));
+      _videosBloc.add(FetchMentorVideos(mentorId: "", isZMentor: widget.isZMentors));
     }
   }
 

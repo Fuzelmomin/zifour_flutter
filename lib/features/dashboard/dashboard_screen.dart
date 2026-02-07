@@ -69,7 +69,7 @@ class DashboardScreenState extends State<DashboardScreen> {
       ),
      // MentorsListScreen(),
       //const AllCoursesScreen(),
-      MentorsVideosListTabScreen(mentorId: '', isBack: true,),
+      MentorsVideosListTabScreen(mentorId: '', isBack: true, isZMentors: false,),
       ModulesScreen(),
       const ProfileScreen(),
     ];

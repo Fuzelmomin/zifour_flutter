@@ -18,7 +18,8 @@ import 'bloc/challenges_list_bloc.dart';
 import 'model/challenges_list_model.dart';
 
 class ExpertChallengeScreen extends StatefulWidget {
-  const ExpertChallengeScreen({super.key});
+  final String from;
+  const ExpertChallengeScreen({super.key, required this.from});
 
   @override
   State<ExpertChallengeScreen> createState() => _ExpertChallengeScreenState();
@@ -32,7 +33,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
     super.initState();
     _challengesListBloc = ChallengesListBloc();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _challengesListBloc.add(ChallengesListRequested(challengeType: '2'));
+      _challengesListBloc.add(ChallengesListRequested(challengeType: widget.from == "course" ? 'course' : '2'));
     });
   }
 
@@ -69,7 +70,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
                   right: 5.w,
                   child: CustomAppBar(
                     isBack: true,
-                    title: '${AppLocalizations.of(context)?.expertsChallenge}',
+                    title: widget.from == "course" ? "Challenger Zone Solutions" : '${AppLocalizations.of(context)?.expertsChallenge}',
                   ),
                 ),
 
@@ -83,7 +84,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Compete in faculty - Designed challenges and track your progress.",
+                        widget.from == "course" ? "Revisit past challenges and master the toughest MCQs." : "Compete in faculty - Designed challenges and track your progress.",
                         style: AppTypography.inter16Regular.copyWith(
                           color: AppColors.white.withOpacity(0.6),
                         ),

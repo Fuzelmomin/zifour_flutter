@@ -112,7 +112,7 @@ class _ChallengerZoneScreenState extends State<ChallengerZoneScreen> {
                       onTap: (){
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ExpertChallengeScreen()),
+                          MaterialPageRoute(builder: (context) => ExpertChallengeScreen(from: "Expert",)),
                         );
                       },
                     ),

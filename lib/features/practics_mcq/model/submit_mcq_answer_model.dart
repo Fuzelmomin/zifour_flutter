@@ -20,6 +20,9 @@ class SubmitMcqAnswerResponse {
   final String? marks;
   final String? percentage;
 
+  @JsonKey(name: 'pdf_file')
+  final String? pdfFile;
+
   SubmitMcqAnswerResponse({
     required this.status,
     required this.message,
@@ -35,6 +38,7 @@ class SubmitMcqAnswerResponse {
     this.wrong,
     this.marks,
     this.percentage,
+    this.pdfFile,
   });
 
   factory SubmitMcqAnswerResponse.fromJson(Map<String, dynamic> json) =>

@@ -17,9 +17,11 @@ import '../../core/widgets/info_row.dart';
 import '../../l10n/app_localizations.dart';
 import '../dashboard/video_player_screen.dart';
 import '../practics_mcq/model/submit_mcq_answer_model.dart';
+import '../practics_mcq/question_mcq_screen.dart';
 import '../solution_videos/solution_videos_screen.dart';
 import 'bloc/challenge_result_bloc.dart';
 import 'model/challenge_result_model.dart';
+import '../../core/utils/download_utils.dart';
 
 class ChallengeResultScreen extends StatelessWidget {
   final String? title;
@@ -392,7 +394,22 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
               Expanded(
                 child: CustomGradientButton(
                   text: 'Download PDF',
-                  onPressed: () {},
+                  onPressed: () {
+                    if (data.pdfFile != null && data.pdfFile!.isNotEmpty) {
+                      DownloadUtils.downloadFile(
+                        context: context,
+                        url: data.pdfFile!,
+                        fileName: "Result_${widget.crtChlId}.pdf",
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("PDF file not available for download."),
+                          backgroundColor: Colors.orange,
+                        ),
+                      );
+                    }
+                  },
                   customDecoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
@@ -424,6 +441,12 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                               videoTitle: "",
                             ),
                           ),
+                        );
+                      }else {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (context) => const VideoSolutionUnavailableDialog(from: "solution",),
                         );
                       }
                     }
@@ -590,7 +613,8 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                         subject: widget.result?.subject ?? "0",
                         total: widget.result?.total ?? "0",
                         unattended: widget.result?.unattended ?? "0",
-                        wrong: widget.result?.wrong ?? "0"
+                        wrong: widget.result?.wrong ?? "0",
+                        pdfFile: widget.result?.pdfFile ?? ""
                       );
                       return _buildContent(data);
                     }else {

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_gradient_button.dart';
@@ -89,7 +90,7 @@ class _ModulesScreenState extends State<ModulesScreen> {
                     spacing: 20.h,
                     children: _subjectService.subjects.map((subject) {
                       return subjectContainer(
-                        _getSubjectIcon(subject.name),
+                        subject.icon,
                         subject.name,
                             () {
                           Navigator.push(
@@ -99,6 +100,7 @@ class _ModulesScreenState extends State<ModulesScreen> {
                                 from: 'module',
                                 subjectId: subject.subId,
                                 subjectName: subject.name,
+                                subjectIcon: subject.icon,
                               ),
                             ),
                           );
@@ -152,7 +154,7 @@ class _ModulesScreenState extends State<ModulesScreen> {
     );
   }
 
-  Widget subjectContainer(String iconPath, String title, Function() onTap) {
+  Widget subjectContainer(String iconUrl, String title, Function() onTap) {
     return GestureDetector(
       onTap: () {
         onTap();
@@ -176,10 +178,20 @@ class _ModulesScreenState extends State<ModulesScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               spacing: 12.w,
               children: [
-                Image.asset(
+                /*Image.asset(
                   iconPath,
                   width: 50.h,
                   height: 50.h,
+                ),*/
+                CircleAvatar(
+                  radius: 24,
+                  backgroundColor: Colors.white.withOpacity(0.1),
+                  child: CachedNetworkImage(
+                    imageUrl: iconUrl,
+                    height: 40,
+                    color: Colors.white,
+                    errorWidget: (_, __, ___) => Icon(Icons.book, color: Colors.white),
+                  ),
                 ),
                 Text(
                   title,
@@ -198,4 +210,5 @@ class _ModulesScreenState extends State<ModulesScreen> {
     );
   }
 }
+
 

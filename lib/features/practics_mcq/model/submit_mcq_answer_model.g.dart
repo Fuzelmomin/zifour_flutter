@@ -12,6 +12,7 @@ SubmitMcqAnswerResponse _$SubmitMcqAnswerResponseFromJson(
       status: json['status'] as bool,
       message: json['message'] as String,
       chpName: json['chp_name'] as String?,
+      pdfFile: json['pdf_file'] as String?,
       standard: json['standard'] as String?,
       medium: json['medium'] as String?,
       subject: json['subject'] as String?,
@@ -42,4 +43,5 @@ Map<String, dynamic> _$SubmitMcqAnswerResponseToJson(
       'wrong': instance.wrong,
       'marks': instance.marks,
       'percentage': instance.percentage,
+          'pdf_file': instance.pdfFile,
     };

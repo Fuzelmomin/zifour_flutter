@@ -23,6 +23,7 @@ ChallengeResultResponse _$ChallengeResultResponseFromJson(
       medium: json['medium'] as String?,
       exam: json['exam'] as String?,
       pkName: json['pk_name'] as String?,
+          pdfFile: json['pdf_file'] as String?,
     );
 
 Map<String, dynamic> _$ChallengeResultResponseToJson(
@@ -42,4 +43,5 @@ Map<String, dynamic> _$ChallengeResultResponseToJson(
       'medium': instance.medium,
       'exam': instance.exam,
       'pk_name': instance.pkName,
+      'pdf_file': instance.pdfFile,
     };

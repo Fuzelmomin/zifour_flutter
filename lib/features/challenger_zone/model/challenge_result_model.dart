@@ -21,6 +21,9 @@ class ChallengeResultResponse {
   @JsonKey(name: 'pk_name')
   final String? pkName;
 
+  @JsonKey(name: 'pdf_file')
+  final String? pdfFile;
+
   ChallengeResultResponse({
     required this.status,
     required this.message,
@@ -37,6 +40,7 @@ class ChallengeResultResponse {
     this.medium,
     this.exam,
     this.pkName,
+    this.pdfFile,
   });
 
   factory ChallengeResultResponse.fromJson(Map<String, dynamic> json) =>

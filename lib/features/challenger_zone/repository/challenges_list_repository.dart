@@ -40,7 +40,10 @@ class ChallengesListRepository {
           'lec_rept': AppGlobal.lecRept,
           'lec_crsh': AppGlobal.lecCrsh,
         };
-      } else {
+      } else if(challengeType == "course") {
+        data = {"stu_id": user.stuId, "oe_challenge": "0"};
+      }
+      else {
         data = {
           'stu_id': user.stuId,
           'oe_challenge': challengeType,

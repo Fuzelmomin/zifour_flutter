@@ -846,7 +846,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                               showDialog(
                                 context: context,
                                 barrierDismissible: true,
-                                builder: (context) => const VideoSolutionUnavailableDialog(),
+                                builder: (context) => const VideoSolutionUnavailableDialog(
+                                  from:  "videoSolution" ?? "",
+                                ),
                               );
                             }
                           },
@@ -1231,7 +1233,8 @@ class _SolutionDialogState extends State<SolutionDialog>
 }
 
 class VideoSolutionUnavailableDialog extends StatefulWidget {
-  const VideoSolutionUnavailableDialog({super.key});
+  final String from;
+  const VideoSolutionUnavailableDialog({super.key, required this.from});
 
   @override
   State<VideoSolutionUnavailableDialog> createState() => _VideoSolutionUnavailableDialogState();
@@ -1282,14 +1285,14 @@ class _VideoSolutionUnavailableDialogState extends State<VideoSolutionUnavailabl
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                widget.from == 'solution' ? Container() : const Icon(
                   Icons.videocam_off_rounded,
                   size: 48,
                   color: AppColors.pinkColor3,
                 ),
                 SizedBox(height: 15.h),
-                const Text(
-                  "Video Solution",
+                Text(
+                  widget.from == 'solution' ? "Solution" : "Video Solution",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -1298,7 +1301,7 @@ class _VideoSolutionUnavailableDialogState extends State<VideoSolutionUnavailabl
                 ),
                 const SizedBox(height: 15),
                 Text(
-                  "This question is marked as self-assessment to build exam-ready confidence. A video solution will be added soon",
+                  "This question is marked as self-assessment to build exam-ready confidence. A ${widget.from == 'solution' ? "" : "video"} solution will be added soon",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),

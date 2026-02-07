@@ -8,6 +8,7 @@ import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/widgets/custom_app_bar.dart';
+import '../challenger_zone/expert_challenge_screen.dart';
 import '../india_test_series/all_india_test_series_screen.dart';
 import 'challenger_zone_solution_screen.dart';
 import 'learning_course_list_screen.dart';
@@ -106,9 +107,13 @@ class _LearningCourseScreenState extends State<LearningCourseScreen> {
                               MaterialPageRoute(builder: (context) => LearningCourseListScreen()),
                             );
                           }else if(index == 1){
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => ChallengerZoneSolutionScreen()),
+                            // );
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ChallengerZoneSolutionScreen()),
+                              MaterialPageRoute(builder: (context) => ExpertChallengeScreen(from: "course",)),
                             );
                           }else {
                             /*Navigator.push(

@@ -23,6 +23,7 @@ import '../../core/widgets/mentors_item_widget.dart';
 import '../../core/widgets/title_view_row_widget.dart';
 import '../../l10n/app_localizations.dart';
 import '../al_based_performance/al_based_performanc_screen.dart';
+import '../challenger_zone/ai_performance_analysis_screen.dart';
 import '../challenger_zone/challenger_zone_screen.dart';
 import '../courses/all_course_list_screen.dart';
 import '../courses/bloc/course_package_details_bloc.dart';
@@ -33,6 +34,7 @@ import '../learning_course/learning_course_screen.dart';
 import '../live_class/live_class_screen.dart';
 import '../mentor/mentor_list_screen.dart';
 import '../mentor/mentors_videos_list_screen.dart';
+import '../mentor/mentors_videos_list_tab_screen.dart';
 import '../practics_mcq/practice_subject_screen.dart';
 import 'bloc/home_bloc.dart';
 import 'models/home_model.dart';
@@ -526,7 +528,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 //MaterialPageRoute(builder: (context) => MentorsListScreen()),
-                MaterialPageRoute(builder: (context) => MentorsVideosListScreen(mentorId: '', isBack: true, isZMentor: true,)),
+                MaterialPageRoute(builder: (context) => MentorsVideosListTabScreen(mentorId: '', isBack: true, isZMentors: true,)),
               );
             },
           ),
@@ -795,7 +797,8 @@ class _HomeScreenState extends State<HomeScreen> {
         } else if (index == 7) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AiBasedPerformanceScreen()),
+            //MaterialPageRoute(builder: (context) => const AiBasedPerformanceScreen()),
+            MaterialPageRoute(builder: (context) => const AiPerformanceAnalysisScreen()),
           );
         }
       },
