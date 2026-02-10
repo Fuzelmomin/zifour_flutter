@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/api_client/api_constans.dart';
 import '../../../core/api_client/dio_client.dart';
@@ -60,7 +61,9 @@ class LoginRepository {
   }) async {
     try {
       // Get device ID
+      FirebaseMessaging _fcm = FirebaseMessaging.instance;
       final deviceId = await _getDeviceId();
+      String? fcmToken = await _fcm.getToken() ?? '';
       
       // Use query parameters as per API requirement (shown in the image)
       final response = await _dioClient.getDio().post(
@@ -69,6 +72,7 @@ class LoginRepository {
           'stu_mobile': mobile,
           'stu_password': password,
           'device_id': deviceId,
+          'fcm_token': fcmToken
         },
       );
 

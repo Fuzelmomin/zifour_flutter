@@ -24,6 +24,7 @@ import '../../core/widgets/title_view_row_widget.dart';
 import '../../l10n/app_localizations.dart';
 import '../al_based_performance/al_based_performanc_screen.dart';
 import '../challenger_zone/ai_performance_analysis_screen.dart';
+import '../challenger_zone/biology_performance_analysis_screen.dart';
 import '../challenger_zone/challenger_zone_screen.dart';
 import '../courses/all_course_list_screen.dart';
 import '../courses/bloc/course_package_details_bloc.dart';

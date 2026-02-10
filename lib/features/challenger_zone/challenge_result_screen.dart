@@ -11,6 +11,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/services/subject_service.dart';
+import '../../core/utils/download_utils.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/info_row.dart';
@@ -21,7 +22,7 @@ import '../practics_mcq/question_mcq_screen.dart';
 import '../solution_videos/solution_videos_screen.dart';
 import 'bloc/challenge_result_bloc.dart';
 import 'model/challenge_result_model.dart';
-import '../../core/utils/download_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChallengeResultScreen extends StatelessWidget {
   final String? title;
@@ -394,13 +395,56 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
               Expanded(
                 child: CustomGradientButton(
                   text: 'Download PDF',
-                  onPressed: () {
-                    if (data.pdfFile != null && data.pdfFile!.isNotEmpty) {
-                      DownloadUtils.downloadFile(
-                        context: context,
-                        url: data.pdfFile!,
-                        fileName: "Result_${widget.crtChlId}.pdf",
-                      );
+                  onPressed: () async {
+                    print("PDF Url STart: ${data.pdfFile}");
+                    if (data.pdfFile != null && data.pdfFile!.isNotEmpty && data.pdfFile!.contains(".pdf")) {
+                      try {
+                        final Uri url = Uri.parse(data.pdfFile!);
+                        //final Uri url = Uri.parse("https://www.orimi.com/pdf-test.pdf");
+
+                        print("PDF Url: $url");
+                        // Check if URL can be launched
+                        if (await canLaunchUrl(url)) {
+                          // Open in Chrome browser - browser will handle download automatically
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.inAppBrowserView,
+                            webViewConfiguration: const WebViewConfiguration(
+                              enableJavaScript: true,
+                            ),
+                          );
+
+                          // Show success message
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("PDF Downloading..."),
+                                backgroundColor: Colors.green,
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        } else {
+                          throw Exception('Could not launch $url');
+                        }
+
+
+                        // DownloadUtils.downloadFile(
+                        //   context: context,
+                        //   url: data.pdfFile!,
+                        //   fileName: "Result_${widget.crtChlId}.pdf",
+                        // );
+
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Failed to open PDF: ${e.toString()}"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
