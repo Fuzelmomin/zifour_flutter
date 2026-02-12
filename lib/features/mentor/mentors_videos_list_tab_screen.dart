@@ -127,7 +127,7 @@ class _MentorsVideosListTabScreenState extends State<MentorsVideosListTabScreen>
                     ),
 
                     // Horizontal Category Tabs
-                    Positioned(
+                    widget.isZMentors == true ? Container() : Positioned(
                       top: 140.h,
                       left: 0,
                       right: 0,
@@ -136,7 +136,7 @@ class _MentorsVideosListTabScreenState extends State<MentorsVideosListTabScreen>
                     ),
 
                     Positioned(
-                      top: 200.h,
+                      top: widget.isZMentors == true ? 120.h : 200.h,
                       left: 20.w,
                       right: 20.w,
                       bottom: 0,

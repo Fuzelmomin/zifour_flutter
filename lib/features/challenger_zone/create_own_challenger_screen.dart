@@ -528,9 +528,10 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                     }
 
                                     // Keep active subject's selected topics valid against returned topic list.
-                                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                                      _pruneActiveSelectedTopicsTo(topics.map((t) => t.tpcId ?? '').toList());
-                                    });
+                                    // COMMENTED OUT: This was causing topics selection to be lost when switching subjects
+                                    // WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    //   _pruneActiveSelectedTopicsTo(topics.map((t) => t.tpcId ?? '').toList());
+                                    // });
                                     return StreamBuilder<List<String>>(
                                       stream: _selectedTopics.stream,
                                       builder: (context, snapshot) {

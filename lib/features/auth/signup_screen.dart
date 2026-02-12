@@ -16,11 +16,15 @@ import 'package:zifour_sourcecode/core/widgets/be_ziddi_item_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/upload_box_widget.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_loading_widget.dart';
 import 'package:zifour_sourcecode/features/auth/login_screen.dart';
+import 'package:zifour_sourcecode/features/auth/repository/login_repository.dart';
+import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
 
 import '../../core/bloc/signup_bloc.dart';
+import '../../core/api_models/api_status.dart';
 import '../../core/api_models/standard_model.dart';
 import '../../core/api_models/exam_model.dart';
 import '../../core/constants/assets_path.dart';
+import '../../core/utils/user_preference.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_gradient_widget.dart';
 import '../../core/widgets/line_label_row.dart';
@@ -50,6 +54,8 @@ class _SignupScreenState extends State<SignupScreen> {
   BehaviorSubject<int> _otpResendTimer = BehaviorSubject<int>.seeded(20);
   Timer? _timer;
   bool _showOtpField = false; // Local state to track OTP field visibility
+  bool _isAutoLoggingIn = false;
+  bool _didAutoLogin = false;
 
   @override
   void initState() {
@@ -944,28 +950,80 @@ class _SignupScreenState extends State<SignupScreen> {
     final bool isLoading = state is OtpVerifying;
 
     return BlocListener<SignupBloc, SignupState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is SignupMobileVerified) {
-          // Show success message
+          // Auto-login after signup/OTP verification (new client requirement)
+          if (_didAutoLogin || _isAutoLoggingIn) return;
+          _didAutoLogin = true;
+          _isAutoLoggingIn = true;
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('${AppLocalizations.of(context)?.signupSuccessful}'),
               backgroundColor: Colors.green,
+              duration: const Duration(seconds: 1),
             ),
           );
+
+          try {
+            final mobile = _mobileController.text.trim();
+            final password = _passwordController.text;
+            final repo = LoginRepository();
+            final res = await repo.login(mobile: mobile, password: password);
+
+            if (!mounted) return;
+
+            if (res.status == ApiStatus.success && res.data != null) {
+              // Save user data as LoginBloc does
+              final loginResponse = res.data!;
+              if (loginResponse.data != null) {
+                // ignore: use_build_context_synchronously
+                await UserPreference.saveUserData(loginResponse.data!);
+              }
+
+              // Navigate to dashboard
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                (route) => false,
+              );
+            } else {
+              _didAutoLogin = false; // allow retry
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(res.errorMsg ?? 'Auto login failed. Please login manually.'),
+                  backgroundColor: AppColors.error,
+                ),
+              );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            }
+          } catch (e) {
+            if (!mounted) return;
+            _didAutoLogin = false; // allow retry
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Auto login failed: ${e.toString()}'),
+                backgroundColor: AppColors.error,
+              ),
+            );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            );
+          } finally {
+            _isAutoLoggingIn = false;
+          }
         }
       },
       child: CustomGradientButton(
         text: '${AppLocalizations.of(context)?.signUpButton}',
         isLoading: isLoading,
         isEnabled: isMobileVerified, // Disabled by default, enabled only after OTP verification
-        onPressed: isMobileVerified ? () {
-          // Navigate to login screen when button is clicked after verification
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-          );
-        } : null,
+        // New flow is automatic; keep button disabled to avoid confusion
+        onPressed: null,
       ),
     );
   }

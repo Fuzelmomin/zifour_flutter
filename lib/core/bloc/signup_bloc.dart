@@ -558,18 +558,8 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
         return;
       }
       
-      // Marksheet is mandatory only for Female gender
+      // Marksheet/document upload is OPTIONAL (for all genders).
       final bool isFemale = data.gender == 'Female';
-      if (isFemale && data.imageFile == null) {
-        emit(SignupError('Please upload marksheet image'));
-        // Restore SignupLoaded state to preserve selections
-        emit(SignupLoaded(
-          data: data,
-          standards: currentState.standards,
-          exams: currentState.exams,
-        ));
-        return;
-      }
 
       try {
         final medId = await LanguagePreference.getSelectedMediumId();

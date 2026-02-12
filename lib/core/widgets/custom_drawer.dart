@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/constants/assets_path.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
@@ -33,6 +34,21 @@ class CustomDrawer extends StatelessWidget {
   void _closeDrawerAndPush(BuildContext context, WidgetBuilder builder) {
     Navigator.pop(context);
     Navigator.push(context, MaterialPageRoute(builder: builder));
+  }
+
+  Future<void> openReviewPage() async {
+    final Uri url = Uri.parse(
+      "https://play.google.com/store/apps/details?id=com.zifour.app",
+    );
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+    } else {
+      throw "Could not open Play Store";
+    }
   }
 
   Future<void> _logout(BuildContext context) async {
@@ -155,7 +171,9 @@ class CustomDrawer extends StatelessWidget {
                       _closeDrawerAndPush(context, (_) => RevisionListScreen());
                     }),
                     _drawerItem(AssetsPath.svgStar, "Feedback", (){
-                      _closeDrawerAndPush(context, (_) => const GiveFeedbackScreen());
+                      //_closeDrawerAndPush(context, (_) => const GiveFeedbackScreen());
+                      Navigator.pop(context);
+                      openReviewPage();
                     }),
                     _drawerItem(AssetsPath.svgHelpCircle, "Help/Support", (){
                       _closeDrawerAndPush(context, (_) => const HelpSupportScreen());

@@ -46,7 +46,7 @@ class MultiSelectField extends StatelessWidget {
                   child: Text(
                     selectedIds.isEmpty
                         ? hint
-                        : "${selectedIds.length} items selected",
+                        : "${selectedIds.length} ${label}s selected",
                     style: AppTypography.inter14Regular.copyWith(
                       color: selectedIds.isEmpty
                           ? AppColors.hintTextColor
