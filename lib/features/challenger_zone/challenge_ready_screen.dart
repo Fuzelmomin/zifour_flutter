@@ -112,6 +112,16 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
       // We don't clear topics here anymore; it's handled in the manual onTap of ChapterSelectionBox
     });
     
+    // Listen to topic selection changes to sync with per-subject map
+    _selectedTopics.listen((topics) {
+      if (_isInitializingFromDetails || _activeSubjectId == null) {
+        return;
+      }
+      
+      // Update the per-subject map with current topics
+      _selectedTopicsBySubject[_activeSubjectId!] = List.from(topics);
+    });
+    
     // Corrected Listener Logic:
     // We shouldn't use this listener to manage state restoration logic to avoid conflicts.
     // Instead, we'll trigger topic loading manually or via specific events.
@@ -474,7 +484,12 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                             setState(() {
                                               if (isSelected) {
                                                 // If already selected, switch active subject (toggle view)
-                                                _saveActiveSelections();
+                                                // CRITICAL: Save previous active subject's selections BEFORE changing activeSubjectId
+                                                if (_activeSubjectId != null && _activeSubjectId != subject.subId) {
+                                                  _selectedChaptersBySubject[_activeSubjectId!] = List.from(_selectedChapters.value);
+                                                  _selectedTopicsBySubject[_activeSubjectId!] = List.from(_selectedTopics.value);
+                                                }
+                                                
                                                 _activeSubjectId = subject.subId;
 
                                                 // Restore this subject's selections (or empty)
@@ -509,13 +524,20 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                                 
                                               } else {
                                                 // New subject selection
-                                                _saveActiveSelections(); // save previous
+                                                // CRITICAL: Save previous active subject's selections BEFORE changing activeSubjectId
+                                                if (_activeSubjectId != null) {
+                                                  _selectedChaptersBySubject[_activeSubjectId!] = List.from(_selectedChapters.value);
+                                                  _selectedTopicsBySubject[_activeSubjectId!] = List.from(_selectedTopics.value);
+                                                }
+                                                
                                                 _selectedSubjectIds.add(subject.subId);
                                                 _activeSubjectId = subject.subId;
                                                 _selectedChaptersBySubject.putIfAbsent(subject.subId, () => []);
                                                 _selectedTopicsBySubject.putIfAbsent(subject.subId, () => []);
-                                                _selectedChapters.add([]);
-                                                _selectedTopics.add([]);
+                                                
+                                                // Restore new subject's selections (will be empty for new subject)
+                                                _selectedChapters.add(List.from(_selectedChaptersBySubject[subject.subId] ?? const []));
+                                                _selectedTopics.add(List.from(_selectedTopicsBySubject[subject.subId] ?? const []));
                                                 
                                                 // Fetch chapters for this new subject
                                                 _chapterBloc.add(ChapterRequested(subId: subject.subId, replace: true));
@@ -605,17 +627,25 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                                       List<String>.from(selectedList);
                                                       if (isSelected) {
                                                         newList.remove(chapter.chpId);
+                                                        
+                                                        // Remove topics belonging to this removed chapter
+                                                        final currentTopics = List<String>.from(_selectedTopics.value);
+                                                        final allTopics = _topicBloc.state.data?.topicList ?? [];
+                                                        final chapterName = chapter.name;
+                                                        final topicsToRemove = allTopics
+                                                            .where((t) => t.chapter == chapterName)
+                                                            .map((t) => t.tpcId)
+                                                            .toList();
+                                                        
+                                                        currentTopics.removeWhere((id) => topicsToRemove.contains(id));
+                                                        _selectedTopics.add(currentTopics);
                                                       } else {
                                                         newList.add(chapter.chpId);
                                                       }
                                                       _selectedChapters.add(newList);
                                                       
-                                                      // If user manually changes chapters, clear topics for this subject 
-                                                      // as the topics might not be valid anymore.
-                                                      // (Or we could keep them and let the server/next fetch filter them)
-                                                      // Typical flow: change chapter -> reset topics.
-                                                      _selectedTopics.add([]);
-                                                      _selectedTopicsBySubject[_activeSubjectId!] = [];
+                                                      // Don't clear all topics - preserve topics from other selected chapters
+                                                      // Topics will be filtered in UI to show only selected chapters' topics
                                                     },
                                                   title: chapter.name,
                                                   isButton: true,
