@@ -7,9 +7,15 @@ import 'package:zifour_sourcecode/core/constants/app_colors.dart';
 import 'package:zifour_sourcecode/core/constants/assets_path.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_app_bar.dart';
-
+import '../challenger_zone/genetics_performance_analysis_screen.dart';
 import 'biology_performance_analysis_screen.dart';
-import 'genetics_performance_analysis_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'bloc/overall_report_bloc.dart';
+import 'repository/overall_report_repository.dart';
+import 'model/overall_report_model.dart';
+import '../../core/utils/user_preference.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AiPerformanceAnalysisScreen extends StatefulWidget {
   const AiPerformanceAnalysisScreen({super.key});
@@ -23,148 +29,182 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
   final List<String> tabs = ["Today", "This Week", "This Month"];
 
   @override
+  void initState() {
+    super.initState();
+    // Fetch user data and trigger report fetch if needed
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBlue,
-      floatingActionButton: InkWell(
-        onTap: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BiologyPerformanceAnalysisScreen(),
+    return BlocProvider(
+      create: (context) => OverallReportBloc()..add(const FetchOverallReport()),
+      child: Scaffold(
+        backgroundColor: AppColors.darkBlue,
+        floatingActionButton: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BiologyPerformanceAnalysisScreen(),
+              ),
+            );
+          },
+          child: Container(
+            width: 40.0,
+            height: 40.0,
+            decoration: BoxDecoration(
+              color: AppColors.pinkColor.withOpacity(0.5),
+              shape: BoxShape.circle,
             ),
-          );
-        },
-        child: Container(
-          width: 40.0,
-          height: 40.0,
-          decoration: BoxDecoration(
-            color: AppColors.pinkColor.withOpacity(0.5),
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Icon(
-              Icons.arrow_right_alt,
-              color: AppColors.white,
+            child: Center(
+              child: Icon(
+                Icons.arrow_right_alt,
+                color: AppColors.white,
+              ),
             ),
           ),
         ),
-      ),
-      body: Stack(
-        children: [
-          // Background Image
-          Positioned.fill(
-            child: Image.asset(
-              AssetsPath.signupBgImg,
-              fit: BoxFit.cover,
+        body: Stack(
+          children: [
+            // Background Image
+            Positioned.fill(
+              child: Image.asset(
+                AssetsPath.signupBgImg,
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          
-          SafeArea(
-            child: Column(
-              children: [
-                // App Bar
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                  child: CustomAppBar(
-                    isBack: true,
-                    title: "AI Performance Analysis",
-                  ),
-                ),
-                
-                // Screen Content
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TweenAnimationBuilder(
-                          tween: Tween<double>(begin: 0, end: 1),
-                          duration: const Duration(milliseconds: 800),
-                          builder: (context, value, child) {
-                            return Opacity(
-                              opacity: value,
-                              child: Transform.translate(
-                                offset: Offset(0, 20 * (1 - value)),
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: Text(
-                            "Your path to success in NEET begins here!",
-                            style: AppTypography.inter14Regular.copyWith(
-                              color: AppColors.white.withOpacity(0.6),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
-                        
-                        // Tab Selector & Date Range
-                        _buildTabSelector(),
-                        SizedBox(height: 25.h),
-                        
-                        // Overall Performance Section
-                        _buildSectionHeader("Overall Performance"),
-                        SizedBox(height: 15.h),
-                        _buildOverallPerformanceCards(),
-                        SizedBox(height: 15.h),
-                        _buildAiInsightBox(),
-                        SizedBox(height: 30.h),
-                        
-                        // Subject-Wise Analysis Section
-                        _buildSectionHeader("Subject-Wise Analysis"),
-                        SizedBox(height: 15.h),
-                        _buildSubjectAnalysisCard(
-                          title: "Biology",
-                          questions: 420,
-                          accuracy: 78,
-                          strongAreas: "Genetics, Ecology",
-                          color: Colors.greenAccent,
-                        ),
-                        SizedBox(height: 15.h),
-                        _buildSubjectAnalysisCard(
-                          title: "Chemistry",
-                          questions: 180,
-                          accuracy: 67,
-                          strongAreas: "Organic, Thermodynamics",
-                          color: Colors.orangeAccent,
-                        ),
-                        SizedBox(height: 15.h),
-                        _buildSubjectAnalysisCard(
-                          title: "Physics",
-                          questions: 140,
-                          accuracy: 75,
-                          strongAreas: "Optics, Modern Physics",
-                          color: Colors.blueAccent,
-                        ),
-                        SizedBox(height: 30.h),
-                        
-                        // Performance Overview Graph
-                        // _buildPerformanceOverview(),
-                        // SizedBox(height: 30.h),
-                        
-                        // Chapter Performance Section
-                        _buildSectionHeader("Chapter Performance"),
-                        SizedBox(height: 15.h),
-                        _buildChapterPerformanceList(),
-                        SizedBox(height: 30.h),
-                        
-                        // Weak Topic Insights
-                        _buildSectionHeader("Weak Topic Insights"),
-                        SizedBox(height: 15.h),
-                        _buildWeakTopicInsights(),
-                        
-                        SizedBox(height: 50.h),
-                      ],
+
+            SafeArea(
+              child: Column(
+                children: [
+                  // App Bar
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                    child: CustomAppBar(
+                      isBack: true,
+                      title: "AI Performance Analysis",
                     ),
                   ),
-                ),
-              ],
+
+                  // Screen Content
+                  Expanded(
+                    child: BlocBuilder<OverallReportBloc, OverallReportState>(
+                      builder: (context, state) {
+                        if (state.isLoading) {
+                          return _buildShimmerLoading();
+                        }
+
+                        if (state.isFailure) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  state.errorMessage ?? "An error occurred",
+                                  style: AppTypography.inter14Regular.copyWith(color: AppColors.white),
+                                ),
+                                SizedBox(height: 10.h),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    context.read<OverallReportBloc>().add(const FetchOverallReport());
+                                  },
+                                  child: const Text("Retry"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+
+                        if (state.isSuccess && state.data != null) {
+                          final report = state.data!;
+                          return SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TweenAnimationBuilder(
+                                  tween: Tween<double>(begin: 0, end: 1),
+                                  duration: const Duration(milliseconds: 800),
+                                  builder: (context, value, child) {
+                                    return Opacity(
+                                      opacity: value,
+                                      child: Transform.translate(
+                                        offset: Offset(0, 20 * (1 - value)),
+                                        child: child,
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Your path to success in NEET begins here!",
+                                    style: AppTypography.inter14Regular.copyWith(
+                                      color: AppColors.white.withOpacity(0.6),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 20.h),
+
+                                // Overall Performance Section
+                                _buildSectionHeader("Overall Performance"),
+                                SizedBox(height: 15.h),
+                                _buildOverallPerformanceCards(report.overall),
+                                SizedBox(height: 15.h),
+                                _buildAiInsightBox(report.overall?.trend),
+                                SizedBox(height: 30.h),
+
+                                // Subject-Wise Analysis Section
+                                if (report.subjects != null && report.subjects!.isNotEmpty) ...[
+                                  _buildSectionHeader("Subject-Wise Analysis"),
+                                  SizedBox(height: 15.h),
+                                  ...report.subjects!.map((subj) => Column(
+                                        children: [
+                                          _buildSubjectAnalysisCard(
+                                            title: subj.subjectName,
+                                            questions: int.tryParse(subj.totalQuestions) ?? 0,
+                                            accuracy: (double.tryParse(subj.accuracy) ?? 0).toInt(),
+                                            strongAreas: "Analysis based on ${subj.correct} correct answers", // Placeholder for actual strong areas if not in API
+                                            color: subj.subjectName.toLowerCase().contains("bio")
+                                                ? Colors.greenAccent
+                                                : subj.subjectName.toLowerCase().contains("chem")
+                                                    ? Colors.orangeAccent
+                                                    : Colors.blueAccent,
+                                          ),
+                                          SizedBox(height: 15.h),
+                                        ],
+                                      )),
+                                  SizedBox(height: 15.h),
+                                ],
+
+                                // Chapter Performance Section
+                                if (report.chapters != null && report.chapters!.isNotEmpty) ...[
+                                  _buildSectionHeader("Chapter Performance"),
+                                  SizedBox(height: 15.h),
+                                  _buildChapterPerformanceList(report.chapters!),
+                                  SizedBox(height: 30.h),
+                                ],
+
+                                // Weak Topic Insights
+                                if (report.topics != null && report.topics!.isNotEmpty) ...[
+                                  _buildSectionHeader("Weak Topic Insights"),
+                                  SizedBox(height: 15.h),
+                                  _buildWeakTopicInsights(report.topics!),
+                                ],
+
+                                SizedBox(height: 50.h),
+                              ],
+                            ),
+                          );
+                        }
+
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -259,13 +299,13 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
     );
   }
 
-  Widget _buildOverallPerformanceCards() {
+  Widget _buildOverallPerformanceCards(OverallStats? overall) {
     return Row(
       children: [
         Expanded(
           child: _buildStatCard(
             "Total Attempted",
-            "1,200",
+            "${overall?.totalQuestions ?? 0}",
             Icons.edit_note,
             const Color(0xFF4A90E2).withOpacity(0.2),
           ),
@@ -274,7 +314,7 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
         Expanded(
           child: _buildStatCard(
             "Accuracy",
-            "81%",
+            "${overall?.accuracy ?? 0}%",
             Icons.analytics,
             const Color(0xFF5FC1CA).withOpacity(0.2),
             subtitle: "Correct",
@@ -284,7 +324,7 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
         Expanded(
           child: _buildStatCard(
             "Trend",
-            "Improving",
+            overall?.trend ?? "Stable",
             Icons.trending_up,
             const Color(0xFFF58D30).withOpacity(0.2),
             isTrend: true,
@@ -335,7 +375,11 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
     );
   }
 
-  Widget _buildAiInsightBox() {
+  Widget _buildAiInsightBox(String? trend) {
+    String insightText = trend == "Improving" 
+      ? "Your performance shows positive growth. Keep up the consistent effort!"
+      : "Maintain your practice schedule to see more consistent results across all subjects.";
+    
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -365,7 +409,7 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
           SizedBox(width: 12.w),
           Expanded(
             child: Text(
-              "Your performance shows strong consistency, but your Biology speed needs improvement.",
+              insightText,
               style: AppTypography.inter12Regular.copyWith(color: Colors.white70),
             ),
           ),
@@ -557,15 +601,18 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
     );
   }
 
-  Widget _buildChapterPerformanceList() {
+  Widget _buildChapterPerformanceList(List<ChapterAnalysis> chapters) {
     return Column(
-      children: [
-        _buildChapterItem("Genetics", 88, Colors.green),
-        SizedBox(height: 10.h),
-        _buildChapterItem("Human Physiology", 56, Colors.red),
-        SizedBox(height: 10.h),
-        _buildChapterItem("Thermodynamics", 64, Colors.orange),
-      ],
+      children: chapters.map((chapter) => Column(
+        children: [
+          _buildChapterItem(
+            chapter.chapterName, 
+            (double.tryParse(chapter.accuracy) ?? 0).toInt(),
+            chapter.level.toLowerCase() == "strong" ? Colors.green : Colors.red
+          ),
+          SizedBox(height: 10.h),
+        ],
+      )).toList(),
     );
   }
 
@@ -607,18 +654,18 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
     );
   }
 
-  Widget _buildWeakTopicInsights() {
+  Widget _buildWeakTopicInsights(List<TopicAnalysis> topics) {
     return _glassCard(
       padding: EdgeInsets.all(15.w),
       child: Column(
         children: [
-          _buildWeakTopicRow("Respiration", 42, 48),
-          Divider(color: Colors.white10, height: 20.h),
-          _buildWeakTopicRow("Excretion", 35, 25),
-          Divider(color: Colors.white10, height: 20.h),
-          _buildWeakTopicRow("Neural Control", 28, 50),
-          Divider(color: Colors.white10, height: 20.h),
-          _buildWeakTopicRow("Marks Potential", 0, 0, isPotential: true),
+          ...topics.map((topic) => Column(
+            children: [
+              _buildWeakTopicRow(topic.topicName, 0, 0), // Q/Acc not available for specific topics in JSON
+              Divider(color: Colors.white10, height: 20.h),
+            ],
+          )),
+          _buildWeakTopicRow("Performance Review", 0, 0, isPotential: true),
         ],
       ),
     );
@@ -674,6 +721,61 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
           ),
           child: child,
         ),
+      ),
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Shimmer.fromColors(
+        baseColor: Colors.white.withOpacity(0.05),
+        highlightColor: Colors.white.withOpacity(0.1),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20.h),
+            _shimmerRect(width: 200.w, height: 14.h), // Path to success text
+            SizedBox(height: 30.h),
+            _shimmerRect(width: 150.w, height: 20.h), // Overall Performance header
+            SizedBox(height: 15.h),
+            Row(
+              children: [
+                Expanded(child: _shimmerRect(height: 100.h)),
+                SizedBox(width: 12.w),
+                Expanded(child: _shimmerRect(height: 100.h)),
+                SizedBox(width: 12.w),
+                Expanded(child: _shimmerRect(height: 100.h)),
+              ],
+            ),
+            SizedBox(height: 15.h),
+            _shimmerRect(height: 60.h, borderRadius: 12.r), // AI Insight box
+            SizedBox(height: 30.h),
+            _shimmerRect(width: 150.w, height: 20.h), // Subject-Wise header
+            SizedBox(height: 15.h),
+            _shimmerRect(height: 120.h, borderRadius: 18.r),
+            SizedBox(height: 15.h),
+            _shimmerRect(height: 120.h, borderRadius: 18.r),
+            SizedBox(height: 30.h),
+            _shimmerRect(width: 150.w, height: 20.h), // Chapter Performance header
+            SizedBox(height: 15.h),
+            _shimmerRect(height: 70.h, borderRadius: 18.r),
+            SizedBox(height: 10.h),
+            _shimmerRect(height: 70.h, borderRadius: 18.r),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _shimmerRect({double? width, required double height, double? borderRadius}) {
+    return Container(
+      width: width ?? double.infinity,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(borderRadius ?? 8.r),
       ),
     );
   }

@@ -9,7 +9,7 @@ import 'package:zifour_sourcecode/core/widgets/custom_app_bar.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/challenger_zone/genetics_performance_analysis_screen.dart';
 
-import 'ai_performance_analysis_screen.dart';
+import '../al_based_performance/ai_performance_analysis_screen.dart';
 
 class BiologyPerformanceAnalysisScreen extends StatefulWidget {
   const BiologyPerformanceAnalysisScreen({super.key});

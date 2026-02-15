@@ -73,5 +73,6 @@ class APIConstants {
   static const getTestSeriesSolution = 'testseries_solution.php';
   static const getExpertSolution = 'expert_solution.php';
   static const getZMentorVideos = 'mentor_video_home.php';
+  static const getAllOverReport = 'report_all_over.php';
 
 }
