@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -76,10 +77,18 @@ class MyNotesItem extends StatelessWidget {
             ),
             SizedBox(
               width: MediaQuery.sizeOf(context).width - 100.0,
-              child: Text(
-                question ?? '',
-                style: AppTypography.inter14Medium,
-              ),
+              child: Html(
+                data: question?.trim() ?? '',
+                style: {
+                  "body": Style(
+                    color: Colors.white,
+                    fontSize: FontSize(14.sp),
+                    lineHeight: LineHeight(1.5),
+                    margin: Margins.zero,
+                    padding: HtmlPaddings.zero,
+                  ),
+                },
+              )
             ),
             SizedBox(height: 7.h,),
             Text(

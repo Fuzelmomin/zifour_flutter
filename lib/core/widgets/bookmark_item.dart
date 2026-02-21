@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -44,10 +45,18 @@ class BookmarkItem extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 9,
-                  child: Text(
-                    title ?? '',
-                    style: AppTypography.inter14Medium,
-                  ),
+                  child: Html(
+                    data: title?.trim() ?? '',
+                    style: {
+                      "body": Style(
+                        color: Colors.white,
+                        fontSize: FontSize(14.sp),
+                        lineHeight: LineHeight(1.5),
+                        margin: Margins.zero,
+                        padding: HtmlPaddings.zero,
+                      ),
+                    },
+                  )
                 ),
                 Expanded(
                   flex: 1,
@@ -70,10 +79,18 @@ class BookmarkItem extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 9,
-                  child: Text(
-                    description ?? '',
-                    style: AppTypography.inter12Medium.copyWith(color: AppColors.hintTextColor),
-                  ),
+                    child: Html(
+                    data: description?.trim() ?? '',
+                    style: {
+                      "body": Style(
+                        color: AppColors.hintTextColor,
+                        fontSize: FontSize(12.sp),
+                        lineHeight: LineHeight(1.5),
+                        margin: Margins.zero,
+                        padding: HtmlPaddings.zero,
+                      ),
+                    },
+                  )
                 ),
               ],
             ),

@@ -324,10 +324,8 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                                 itemBuilder: (context, index) {
                                   final bookmark = filteredBookmarks[index];
                                   return BookmarkItem(
-                                    title: bookmark.mcQuestion
-                                        .replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
-                                    description: bookmark.mcDescription
-                                        .replaceAll(RegExp(r'\r\n&nbsp;'), ' '),
+                                    title: bookmark.mcQuestion,
+                                    description: bookmark.mcDescription,
                                     bookmarkType: bookmark.type,
                                     deleteClick: () {
                                       _showDeleteConfirmation(bookmark.mcqId);

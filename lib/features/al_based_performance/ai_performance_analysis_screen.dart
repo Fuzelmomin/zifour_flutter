@@ -9,6 +9,7 @@ import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/widgets/custom_app_bar.dart';
 import '../challenger_zone/genetics_performance_analysis_screen.dart';
 import 'biology_performance_analysis_screen.dart';
+import 'al_based_performanc_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/overall_report_bloc.dart';
 import 'repository/overall_report_repository.dart';
@@ -40,30 +41,6 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
       create: (context) => OverallReportBloc()..add(const FetchOverallReport()),
       child: Scaffold(
         backgroundColor: AppColors.darkBlue,
-        floatingActionButton: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const BiologyPerformanceAnalysisScreen(),
-              ),
-            );
-          },
-          child: Container(
-            width: 40.0,
-            height: 40.0,
-            decoration: BoxDecoration(
-              color: AppColors.pinkColor.withOpacity(0.5),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Icon(
-                Icons.arrow_right_alt,
-                color: AppColors.white,
-              ),
-            ),
-          ),
-        ),
         body: Stack(
           children: [
             // Background Image
@@ -162,12 +139,23 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
                                             title: subj.subjectName,
                                             questions: int.tryParse(subj.totalQuestions) ?? 0,
                                             accuracy: (double.tryParse(subj.accuracy) ?? 0).toInt(),
-                                            strongAreas: "Analysis based on ${subj.correct} correct answers", // Placeholder for actual strong areas if not in API
+                                            strongAreas: "Analysis based on ${subj.correct} correct answers",
                                             color: subj.subjectName.toLowerCase().contains("bio")
                                                 ? Colors.greenAccent
                                                 : subj.subjectName.toLowerCase().contains("chem")
                                                     ? Colors.orangeAccent
                                                     : Colors.blueAccent,
+                                            onViewReport: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => BiologyPerformanceAnalysisScreen(
+                                                    subjectId: subj.subjectId,
+                                                    subjectName: subj.subjectName,
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           ),
                                           SizedBox(height: 15.h),
                                         ],
@@ -424,6 +412,7 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
     required int accuracy,
     required String strongAreas,
     required Color color,
+    VoidCallback? onViewReport,
   }) {
     return _glassCard(
       padding: EdgeInsets.zero,
@@ -500,6 +489,31 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
                     ),
                   ],
                 ),
+                if (onViewReport != null) ...[
+                  SizedBox(height: 12.h),
+                  Divider(color: Colors.white10, height: 1),
+                  SizedBox(height: 10.h),
+                  GestureDetector(
+                    onTap: onViewReport,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "View Subject Report",
+                          style: AppTypography.inter12SemiBold.copyWith(
+                            color: color,
+                          ),
+                        ),
+                        SizedBox(width: 4.w),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: color,
+                          size: 12.sp,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -602,8 +616,9 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
   }
 
   Widget _buildChapterPerformanceList(List<ChapterAnalysis> chapters) {
+    final limitedChapters = chapters.take(chapters.length > 30 ? 30 : chapters.length).toList();
     return Column(
-      children: chapters.map((chapter) => Column(
+      children: limitedChapters.map((chapter) => Column(
         children: [
           _buildChapterItem(
             chapter.chapterName, 
@@ -655,13 +670,27 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
   }
 
   Widget _buildWeakTopicInsights(List<TopicAnalysis> topics) {
+    final limitedTopics = topics.take(topics.length > 30 ? 30 : topics.length).toList();
     return _glassCard(
       padding: EdgeInsets.all(15.w),
       child: Column(
         children: [
-          ...topics.map((topic) => Column(
+          ...limitedTopics.map((topic) => Column(
             children: [
-              _buildWeakTopicRow(topic.topicName, 0, 0), // Q/Acc not available for specific topics in JSON
+              _buildWeakTopicRow(
+                topic.topicName, 0, 0,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AiBasedPerformanceScreen(
+                        topicId: topic.topicId,
+                        topicName: topic.topicName,
+                      ),
+                    ),
+                  );
+                },
+              ),
               Divider(color: Colors.white10, height: 20.h),
             ],
           )),
@@ -671,39 +700,42 @@ class _AiPerformanceAnalysisScreenState extends State<AiPerformanceAnalysisScree
     );
   }
 
-  Widget _buildWeakTopicRow(String title, int q, int acc, {bool isPotential = false}) {
-    return Row(
-      children: [
-        Container(
-          width: 8.w,
-          height: 8.w,
-          decoration: BoxDecoration(
-            color: isPotential ? const Color(0xFF4A90E2) : Colors.blueAccent,
-            shape: BoxShape.circle,
+  Widget _buildWeakTopicRow(String title, int q, int acc, {bool isPotential = false, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: isPotential ? null : onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 8.w,
+            height: 8.w,
+            decoration: BoxDecoration(
+              color: isPotential ? const Color(0xFF4A90E2) : Colors.blueAccent,
+              shape: BoxShape.circle,
+            ),
           ),
-        ),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                isPotential ? "22 Marks Potential" : title,
-                style: AppTypography.inter14Regular.copyWith(
-                  color: isPotential ? const Color(0xFF4A90E2) : Colors.white70,
-                  fontWeight: isPotential ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-              if (!isPotential)
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  "$q Questions, $acc% Accuracy",
-                  style: AppTypography.inter10Regular.copyWith(color: Colors.white38),
+                  isPotential ? "22 Marks Potential" : title,
+                  style: AppTypography.inter14Regular.copyWith(
+                    color: isPotential ? const Color(0xFF4A90E2) : Colors.white70,
+                    fontWeight: isPotential ? FontWeight.bold : FontWeight.normal,
+                  ),
                 ),
-            ],
+                if (!isPotential)
+                  Text(
+                    "$q Questions, $acc% Accuracy",
+                    style: AppTypography.inter10Regular.copyWith(color: Colors.white38),
+                  ),
+              ],
+            ),
           ),
-        ),
-        if (!isPotential) Icon(Icons.arrow_forward_ios, size: 12.sp, color: Colors.white24),
-      ],
+          if (!isPotential) Icon(Icons.arrow_forward_ios, size: 12.sp, color: Colors.white24),
+        ],
+      ),
     );
   }
 

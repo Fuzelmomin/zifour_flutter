@@ -658,7 +658,7 @@ class _HomeScreenState extends State<HomeScreen> {
             itemClick: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AiBasedPerformanceScreen()),
+                MaterialPageRoute(builder: (context) => const AiPerformanceAnalysisScreen()),
               );
             },
           ),
