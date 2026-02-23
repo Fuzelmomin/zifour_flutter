@@ -42,7 +42,7 @@ class CoursesItemWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 150.h,
+                height: 150.0,
                 child: Stack(
                   children: [
                     Positioned.fill(
@@ -62,7 +62,7 @@ class CoursesItemWidget extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      top: 10.h,
+                      top: 10.0,
                       left: 10.w,
                       right: 10.w,
                       child: Row(
@@ -87,13 +87,13 @@ class CoursesItemWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 8.h),
+              SizedBox(height: 8.0),
               Text(
                 title,
                 style: AppTypography.inter14SemiBold,
               ),
               if ((subtitle ?? '').isNotEmpty) ...[
-                SizedBox(height: 4.h),
+                SizedBox(height: 4.0),
                 Text(
                   subtitle!,
                   style: AppTypography.inter12Regular.copyWith(
@@ -101,7 +101,7 @@ class CoursesItemWidget extends StatelessWidget {
                   ),
                 ),
               ],
-              SizedBox(height: 8.h),
+              SizedBox(height: 8.0),
               Row(
                 children: [
                   if ((finalPrice ?? '').isNotEmpty)
@@ -112,7 +112,7 @@ class CoursesItemWidget extends StatelessWidget {
                       ),
                     ),
                   if ((originalPrice ?? '').isNotEmpty) ...[
-                    SizedBox(width: 8.w),
+                    SizedBox(width: 8.0),
                     Text(
                       "₹ ${originalPrice!}",
                       style: AppTypography.inter12Regular.copyWith(

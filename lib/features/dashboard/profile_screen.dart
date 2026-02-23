@@ -166,65 +166,29 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                   crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
-                    Container(
-                      width: double.infinity,
-                      height: 190.h,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            top: 50.h,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              height: 140.h,
-                              width: double.infinity,
-                              child: SignupFieldBox(
-                                boxBgColor: AppColors.pinkColor3.withOpacity(0.1),
-                                child: Container(
-                                  margin: EdgeInsets.only(top: 15.h),
-                                  child: ValueListenableBuilder(
-                                    valueListenable: UserPreference.userNotifier,
-                                    builder: (context, userData, child) {
-                                      return Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            userData?.stuName ?? 'Guest',
-                                            style: AppTypography.inter24Medium,
-                                          ),
-                                          SizedBox(height: 5.h,),
-                                          Text(
-                                            userData?.stuMobile ?? '',
-                                            style: AppTypography.inter14Medium.copyWith(
-                                              color: AppColors.white.withOpacity(0.5)
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            top: 0.0,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Row(
+                    // Profile avatar + info card section
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+                        final avatarSize = isLandscape ? 85.0 : 90.w;
+                        final innerAvatarSize = isLandscape ? 75.0 : 80.w;
+                        final avatarOverlap = avatarSize / 2;
+
+                        return Column(
+                          children: [
+                            // Avatar row
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                  width: 90.w,
-                                  height: 90.w,
+                                  width: avatarSize,
+                                  height: avatarSize,
                                   child: Stack(
                                     clipBehavior: Clip.none,
                                     children: [
                                       Positioned.fill(
                                         child: BlocBuilder<ProfilePhotoBloc, ProfilePhotoState>(
                                           builder: (context, photoState) {
-                                            // Show shimmer loader only during upload/update
                                             final isLoading = photoState is ProfilePhotoUploading || 
                                                              photoState is ProfilePhotoUpdating;
                                             
@@ -233,8 +197,8 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                                                 baseColor: Colors.white.withOpacity(0.08),
                                                 highlightColor: Colors.white.withOpacity(0.2),
                                                 child: Container(
-                                                  width: 90.w,
-                                                  height: 90.w,
+                                                  width: avatarSize,
+                                                  height: avatarSize,
                                                   decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     color: AppColors.pinkColor3.withOpacity(0.2),
@@ -243,49 +207,48 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                                               );
                                             }
 
-                                            // Show dynamic image from UserPreference
                                             return ValueListenableBuilder(
                                               valueListenable: UserPreference.userNotifier,
                                               builder: (context, userData, child) {
                                                 return Container(
-                                                  width: 90.w,
-                                                  height: 90.w,
+                                                  width: avatarSize,
+                                                  height: avatarSize,
                                                   decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     color: AppColors.pinkColor3.withOpacity(0.2)
                                                   ),
                                                   child: Center(
                                                     child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(40.r),
+                                                      borderRadius: BorderRadius.circular(innerAvatarSize / 2),
                                                       child: CachedNetworkImage(
                                                         imageUrl: userData?.stuImage ?? '',
-                                                        width: 80.w,
-                                                        height: 80.h,
+                                                        width: innerAvatarSize,
+                                                        height: innerAvatarSize,
                                                         fit: BoxFit.cover,
                                                         placeholder: (context, url) => Container(
-                                                          width: 80.w,
-                                                          height: 80.h,
+                                                          width: innerAvatarSize,
+                                                          height: innerAvatarSize,
                                                           decoration: BoxDecoration(
                                                             color: AppColors.pinkColor.withOpacity(0.3),
-                                                            borderRadius: BorderRadius.circular(30.r),
+                                                            borderRadius: BorderRadius.circular(innerAvatarSize / 2),
                                                           ),
                                                           child: Icon(
                                                             Icons.person,
                                                             color: AppColors.pinkColor,
-                                                            size: 30.sp,
+                                                            size: isLandscape ? 24.0 : 30.sp,
                                                           ),
                                                         ),
                                                         errorWidget: (context, url, error) => Container(
-                                                          width: 80.w,
-                                                          height: 80.h,
+                                                          width: innerAvatarSize,
+                                                          height: innerAvatarSize,
                                                           decoration: BoxDecoration(
                                                             color: AppColors.pinkColor.withOpacity(0.3),
-                                                            borderRadius: BorderRadius.circular(30.r),
+                                                            borderRadius: BorderRadius.circular(innerAvatarSize / 2),
                                                           ),
                                                           child: Icon(
                                                             Icons.person,
                                                             color: AppColors.pinkColor,
-                                                            size: 30.sp,
+                                                            size: isLandscape ? 24.0 : 30.sp,
                                                           ),
                                                         ),
                                                       ),
@@ -299,7 +262,7 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                                       ),
                                       Positioned(
                                         right: -5.0,
-                                        bottom: 10.0,
+                                        bottom: 5.0,
                                         child: BlocBuilder<ProfilePhotoBloc, ProfilePhotoState>(
                                           builder: (context, photoState) {
                                             final isLoading = photoState is ProfilePhotoUploading || 
@@ -344,9 +307,50 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                                 )
                               ],
                             ),
-                          ),
-                        ],
-                      ),
+                            // Info card overlapping the avatar bottom
+                            Transform.translate(
+                              offset: Offset(0, -avatarOverlap / 1.2),
+                              child: SizedBox(
+                                child: SignupFieldBox(
+                                  boxBgColor: AppColors.pinkColor3.withOpacity(0.1),
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      top: avatarOverlap / 2 + 8,
+                                      bottom: isLandscape ? 10 : 15.h,
+                                      left: 16.w,
+                                      right: 16.w,
+                                    ),
+                                    child: ValueListenableBuilder(
+                                      valueListenable: UserPreference.userNotifier,
+                                      builder: (context, userData, child) {
+                                        return Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              userData?.stuName ?? 'Guest',
+                                              style: AppTypography.inter24Medium,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: isLandscape ? 4 : 5.h),
+                                            Text(
+                                              userData?.stuMobile ?? '',
+                                              style: AppTypography.inter14Medium.copyWith(
+                                                color: AppColors.white.withOpacity(0.5)
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                width: double.infinity,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                     SizedBox(height: 20.h),
                     ProfileOptionWidget(

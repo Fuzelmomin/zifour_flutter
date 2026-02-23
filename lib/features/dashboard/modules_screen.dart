@@ -47,6 +47,8 @@ class _ModulesScreenState extends State<ModulesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -65,7 +67,7 @@ class _ModulesScreenState extends State<ModulesScreen> {
 
               // App Bar
               Positioned(
-                top: 20.h,
+                top: isLandscape ? 8 : 20.h,
                 left: 15.w,
                 right: 5.w,
                 child: CustomAppBar(
@@ -75,38 +77,62 @@ class _ModulesScreenState extends State<ModulesScreen> {
                 ),
               ),
 
-              // Main Content
+              // Main Content - subject list + promo all in one scroll
               Positioned(
-                top: 100.h,
+                top: isLandscape ? 50 : 100.h,
                 left: 20.w,
                 right: 20.w,
-                bottom: 60.h,
+                bottom: 0,
                 child: _subjectService.hasSubjects
                     ? SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 20.h,
-                    children: _subjectService.subjects.map((subject) {
-                      return subjectContainer(
-                        subject.icon,
-                        subject.name,
-                            () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SelectChapterScreen(
-                                from: 'module',
-                                subjectId: subject.subId,
-                                subjectName: subject.name,
-                                subjectIcon: subject.icon,
-                              ),
-                            ),
-                          );
+                    children: [
+                      // Subject items
+                      ..._subjectService.subjects.map((subject) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: isLandscape ? 10 : 20.h),
+                          child: subjectContainer(
+                            subject.icon,
+                            subject.name,
+                                () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SelectChapterScreen(
+                                    from: 'module',
+                                    subjectId: subject.subId,
+                                    subjectName: subject.name,
+                                    subjectIcon: subject.icon,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }),
+
+                      // Promo section (now scrolls with content)
+                      SizedBox(height: isLandscape ? 150.0 : 160.h),
+                      //Spacer(),
+                      SignupFieldBox(
+                        child: Text(
+                          "We recommend students use our complete premium content, featuring new sets of 15,000+ MCQs, PYQs, smart tricks, and more.",
+                          textAlign: TextAlign.left,
+                          style: AppTypography.inter12Regular.copyWith(color: AppColors.white, fontSize: 13.sp),
+                        ),
+                      ),
+                      SizedBox(height: isLandscape ? 6 : 10.h),
+                      CustomGradientButton(
+                        text: "Buy Modules",
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleOrderFormScreen(mdlId: "1",),));
                         },
-                      );
-                    }).toList(),
+                      ),
+                      SizedBox(height: isLandscape ? 10 : 20.h),
+                    ],
                   ),
                 )
                     : Center(
@@ -122,31 +148,6 @@ class _ModulesScreenState extends State<ModulesScreen> {
                   ),
                 ),
               ),
-
-              Positioned(
-                left: 20.w,
-                right: 20.w,
-                bottom: 0,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SignupFieldBox(
-                      child: Text(
-                        "We recommend students use our complete premium content, featuring new sets of 15,000+ MCQs, PYQs, smart tricks, and more.",
-                        textAlign: TextAlign.left,
-                        style: AppTypography.inter12Regular.copyWith(color: AppColors.white, fontSize: 13.sp),
-                      ),
-                    ),
-                    SizedBox(height: 10.h,),
-                    CustomGradientButton(
-                      text: "Buy Modules",
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ModuleOrderFormScreen(mdlId: "1",),));
-                      },
-                    ),
-                  ],
-                ),
-              )
             ],
           ),
         ),

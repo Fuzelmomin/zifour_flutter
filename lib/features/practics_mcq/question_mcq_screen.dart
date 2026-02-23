@@ -602,6 +602,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
   }
 
   Widget _buildContent(ChallengeMcqListState state) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     if (state.isLoading) {
       return _buildShimmerLoading();
     }
@@ -747,7 +748,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
             const SizedBox(height: 18),
 
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               decoration: BoxDecoration(
                 color: AppColors.pinkColor3.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(14),
@@ -757,7 +758,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 style: {
                   "body": Style(
                     color: Colors.white,
-                    fontSize: FontSize(15.sp),
+                    fontSize: FontSize(isLandscape ? 15.0 : 15.sp),
                     lineHeight: LineHeight(1.5),
                     margin: Margins.zero,
                     padding: HtmlPaddings.zero,
@@ -808,6 +809,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                       options[index].trim(),
                       selected,
                       correctAnswerLabel,
+                            isLandscape
                     ),
                   ),
                 );
@@ -999,7 +1001,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     );
   }
 
-  Widget _optionTile(String label, String text, String? selected, String correctAnswerLabel) {
+  Widget _optionTile(String label, String text, String? selected, String correctAnswerLabel, bool isLandscape) {
     final bool isSelected = selected == label;
 
     Color borderColor = Colors.transparent;
@@ -1017,7 +1019,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       onTap: () => onOptionSelect(label),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(isSelected ? 0.18 : 0.08),
           borderRadius: BorderRadius.circular(14),
@@ -1038,7 +1040,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 style: {
                   "body": Style(
                     color: Colors.white,
-                    fontSize: FontSize(14.sp),
+                    fontSize: FontSize(isLandscape ? 14.0 : 14.sp),
                     margin: Margins.zero,
                     padding: HtmlPaddings.zero,
                   ),

@@ -9,7 +9,7 @@ class AppTypography {
 
   // 12px Regular (weight 400), line-height ~13px
   static TextStyle get dm12Regular => GoogleFonts.dmSans(
-        fontSize: 12.sp,
+        fontSize: 12.0,
         fontWeight: FontWeight.w400,
         height: 13 / 12,
         letterSpacing: 0,
@@ -18,7 +18,7 @@ class AppTypography {
 
   // 12px Bold (weight 700), line-height ~13px
   static TextStyle get inter12Bold => GoogleFonts.inter(
-        fontSize: 12.sp,
+        fontSize: 12.0,
         fontWeight: FontWeight.w700,
         height: 22 / 16,
         letterSpacing: 0,
@@ -26,7 +26,7 @@ class AppTypography {
       );
 
   static TextStyle get inter12Regular => GoogleFonts.inter(
-    fontSize: 12.sp,
+    fontSize: 12.0,
     fontWeight: FontWeight.w400,
     height: 22 / 16,
     letterSpacing: 0,
@@ -34,7 +34,7 @@ class AppTypography {
   );
 
   static TextStyle get inter14Regular => GoogleFonts.inter(
-    fontSize: 14.sp,
+    fontSize: 14.0,
     fontWeight: FontWeight.w400,
     height: 22 / 16,
     letterSpacing: 0,
@@ -42,7 +42,7 @@ class AppTypography {
   );
 
   static TextStyle get inter16Regular => GoogleFonts.inter(
-    fontSize: 16.sp,
+    fontSize: 16.0,
     fontWeight: FontWeight.w400,
     height: 13 / 12,
     letterSpacing: 0,
@@ -50,7 +50,7 @@ class AppTypography {
   );
 
   static TextStyle get inter12Medium => GoogleFonts.inter(
-    fontSize: 12.sp,
+    fontSize: 12.0,
     fontWeight: FontWeight.w500,
     height: 13 / 12,
     letterSpacing: 0,
@@ -58,7 +58,7 @@ class AppTypography {
   );
 
   static TextStyle get inter12SemiBold => GoogleFonts.inter(
-    fontSize: 12.sp,
+    fontSize: 12.0,
     fontWeight: FontWeight.w500,
     height: 13 / 12,
     letterSpacing: 0,
@@ -66,21 +66,21 @@ class AppTypography {
   );
 
   static TextStyle get inter10Medium => GoogleFonts.inter(
-    fontSize: 10.sp,
+    fontSize: 10.0,
     fontWeight: FontWeight.w500,
     letterSpacing: 0,
     color: AppColors.white,
   );
 
   static TextStyle get inter10Regular => GoogleFonts.inter(
-    fontSize: 10.sp,
+    fontSize: 10.0,
     fontWeight: FontWeight.w400,
     letterSpacing: 0,
     color: AppColors.white,
   );
 
   static TextStyle get inter14Medium => GoogleFonts.inter(
-    fontSize: 14.sp,
+    fontSize: 14.0,
     fontWeight: FontWeight.w500,
     height: 22 / 16,
     letterSpacing: 0,
@@ -88,7 +88,7 @@ class AppTypography {
   );
 
   static TextStyle get inter16Medium => GoogleFonts.inter(
-    fontSize: 16.sp,
+    fontSize: 16.0,
     fontWeight: FontWeight.w500,
     height: 22 / 16,
     letterSpacing: 0,
@@ -96,21 +96,21 @@ class AppTypography {
   );
 
   static TextStyle get inter24Medium => GoogleFonts.inter(
-    fontSize: 24.sp,
+    fontSize: 24.0,
     fontWeight: FontWeight.w500,
     letterSpacing: 0,
     color: AppColors.white,
   );
 
   static TextStyle get inter16SemiBold => GoogleFonts.inter(
-    fontSize: 16.sp,
+    fontSize: 16.0,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     color: AppColors.white,
   );
 
   static TextStyle get inter18Medium => GoogleFonts.inter(
-    fontSize: 18.sp,
+    fontSize: 18.0,
     fontWeight: FontWeight.w500,
     height: 22 / 16,
     letterSpacing: 0,
@@ -118,21 +118,21 @@ class AppTypography {
   );
 
   static TextStyle get inter20Medium => GoogleFonts.inter(
-    fontSize: 20.sp,
+    fontSize: 20.0,
     fontWeight: FontWeight.w500,
     letterSpacing: 0,
     color: AppColors.white,
   );
 
   static TextStyle get inter20SemiBold => GoogleFonts.inter(
-    fontSize: 20.sp,
+    fontSize: 20.0,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
     color: AppColors.white,
   );
 
   static TextStyle get inter22Bold => GoogleFonts.inter(
-    fontSize: 22.sp,
+    fontSize: 22.0,
     fontWeight: FontWeight.w700,
     height: 22 / 16,
     letterSpacing: 0,
@@ -140,7 +140,7 @@ class AppTypography {
   );
 
   static TextStyle get inter14SemiBold => GoogleFonts.inter(
-    fontSize: 14.sp,
+    fontSize: 14.0,
     fontWeight: FontWeight.w600,
     height: 14 / 16,
     letterSpacing: 0,
@@ -148,7 +148,7 @@ class AppTypography {
   );
 
   static TextStyle get inter18SemiBold => GoogleFonts.inter(
-    fontSize: 18.sp,
+    fontSize: 18.0,
     fontWeight: FontWeight.w600,
     height: 18 / 16,
     letterSpacing: 0,
@@ -156,7 +156,7 @@ class AppTypography {
   );
 
   static TextStyle get inter10SemiBold => GoogleFonts.inter(
-    fontSize: 10.sp,
+    fontSize: 10.0,
     fontWeight: FontWeight.w600,
     height: 10 / 16,
     letterSpacing: 0,
@@ -164,7 +164,7 @@ class AppTypography {
   );
 
   static TextStyle get inter24Bold => GoogleFonts.inter(
-    fontSize: 24.sp,
+    fontSize: 24.0,
     fontWeight: FontWeight.w700,
     height: 22 / 16,
     letterSpacing: 0,
@@ -172,7 +172,7 @@ class AppTypography {
   );
 
   static TextStyle get inter14Bold => GoogleFonts.inter(
-    fontSize: 14.sp,
+    fontSize: 14.0,
     fontWeight: FontWeight.w700,
     height: 22 / 16,
     letterSpacing: 0,
@@ -181,7 +181,7 @@ class AppTypography {
 
   // 12px SemiBold (weight 600), line-height ~11.79px
   static TextStyle get dm12SemiBold => GoogleFonts.dmSans(
-        fontSize: 12.sp,
+        fontSize: 12.0,
         fontWeight: FontWeight.w600,
         height: 11.79 / 12,
         letterSpacing: 0,
@@ -190,7 +190,7 @@ class AppTypography {
 
   // 16px Medium (weight 500), line-height ~21.57px
   static TextStyle get dm16Medium => GoogleFonts.dmSans(
-        fontSize: 16.sp,
+        fontSize: 16.0,
         fontWeight: FontWeight.w500,
         height: 22 / 16,
         letterSpacing: 0,
@@ -198,7 +198,7 @@ class AppTypography {
       );
 
   static TextStyle get robotoMedium => GoogleFonts.roboto(
-    fontSize: 16.sp,
+    fontSize: 16.0,
     height: 1.5, // line-height equivalent (14 * 1.5 = 21px)
     letterSpacing: 0,
     fontWeight: FontWeight.w400,

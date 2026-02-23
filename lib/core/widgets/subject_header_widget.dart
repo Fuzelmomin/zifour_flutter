@@ -20,20 +20,24 @@ class SubjectHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final iconOuterSize = isLandscape ? 65.0 : 70.w;
+    final iconInnerSize = isLandscape ? 50.0 : 60.w;
+
     return Stack(
       alignment: Alignment.topCenter,
       clipBehavior: Clip.none,
       children: [
         // Background Box (Non-positioned to determine height)
         Padding(
-          padding: EdgeInsets.only(top: 35.h),
+          padding: EdgeInsets.only(top: isLandscape ? 25 : 35.h),
           child: SignupFieldBox(
             boxBgColor: AppColors.pinkColor3.withOpacity(0.1),
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.only(
-                top: 40.h,
-                bottom: 20.h,
+                top: isLandscape ? 30 : 40.h,
+                bottom: isLandscape ? 12 : 20.h,
                 left: 15.w,
                 right: 15.w,
               ),
@@ -47,7 +51,7 @@ class SubjectHeaderWidget extends StatelessWidget {
                     style: AppTypography.inter24Medium,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: isLandscape ? 4 : 8.h),
                   Text(
                     subtitle,
                     style: AppTypography.inter14Medium.copyWith(
@@ -65,25 +69,25 @@ class SubjectHeaderWidget extends StatelessWidget {
         Positioned(
           top: 0.0,
           child: Container(
-            width: 70.w,
-            height: 70.w,
+            width: iconOuterSize,
+            height: iconOuterSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.pinkColor3.withOpacity(0.2),
             ),
             child: Center(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(30.r),
+                borderRadius: BorderRadius.circular(iconInnerSize / 2),
                 child: iconUrl.isNotEmpty ?
                 Image.network(
                   iconUrl,
-                  width: 60.w,
-                  height: 60.w,
+                  width: iconInnerSize,
+                  height: iconInnerSize,
                   fit: BoxFit.contain,
                 ) : Image.asset(
                   iconPath,
-                  width: 60.w,
-                  height: 60.w,
+                  width: iconInnerSize,
+                  height: iconInnerSize,
                   fit: BoxFit.contain,
                 ),
               ),

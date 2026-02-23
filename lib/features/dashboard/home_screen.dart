@@ -472,7 +472,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           else
             SizedBox(
-              height: 220.h,
+              height: 220.0,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),

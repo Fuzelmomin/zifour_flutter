@@ -37,8 +37,8 @@ class HomeAppBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(30.r),
               child: CachedNetworkImage(
                 imageUrl: profileImg ?? '',
-                width: 50.w,
-                height: 50.h,
+                width: 50.0,
+                height: 50.0,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Container(
                   width: 50.w,
