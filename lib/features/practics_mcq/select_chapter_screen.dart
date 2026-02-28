@@ -174,10 +174,13 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                               }
 
                               final chapters = state.data!.chapterList;
+
                               return Column(
                                 children: chapters.map((chapter) {
+                                  bool isPdf = chapter.chpPdf!.contains(".pdf") ? true : false;
                                   return ProfileOptionWidget(
                                     title: chapter.name,
+                                    icon: widget.from == "module" ? isPdf ? AssetsPath.icPdf : AssetsPath.icPdfLock : null,
                                     itemClick: () {
                                       if (widget.from == "course") {
                                         Navigator.push(
@@ -217,7 +220,7 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                         //   ),
                                         // );
 
-                                        if (chapter.chpPdf != null && chapter.chpPdf!.isNotEmpty) {
+                                        if (isPdf) {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(

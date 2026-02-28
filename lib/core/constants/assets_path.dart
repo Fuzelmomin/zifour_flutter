@@ -48,6 +48,7 @@ class AssetsPath {
   static const String icPlayCircle = "assets/icons/ic_play_circle.png";
   static const String icPaytm = "assets/icons/ic_paytm.png";
   static const String icPdf = "assets/icons/ic_pdf.png";
+  static const String icPdfLock = "assets/icons/pdf_lock.png";
 
 
 

@@ -490,7 +490,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                         showDialog(
                           context: context,
                           barrierDismissible: true,
-                          builder: (context) => const VideoSolutionUnavailableDialog(from: "solution",),
+                          builder: (context) => VideoSolutionUnavailableDialog(from: "solution", mcqType: widget.screenType,),
                         );
                       }
                     }

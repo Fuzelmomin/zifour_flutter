@@ -19,7 +19,8 @@ class WalkthroughItem {
       name: json['name']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       wltImage: json['wlt_image']?.toString() ?? '',
-      video: json['video']?.toString() ?? '',
+        video: json['video']?.toString() ?? '',
+      //video: 'QqCSCm6zZUA',
     );
   }
 

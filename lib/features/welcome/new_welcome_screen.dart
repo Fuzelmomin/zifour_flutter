@@ -368,11 +368,30 @@ class _NewWelcomeScreenState extends State<NewWelcomeScreen> with TickerProvider
       if (_youtubeController == null) {
         _setupYoutubeController(content.videoPath);
       }
-      return YoutubePlayer(
-        controller: _youtubeController!,
-        showVideoProgressIndicator: false,
-        onEnded: (metaData) {
-          context.read<WelcomeBloc>().add(NextWelcomeScreen());
+      // return YoutubePlayer(
+      //   controller: _youtubeController!,
+      //   showVideoProgressIndicator: false,
+      //   onEnded: (metaData) {
+      //     context.read<WelcomeBloc>().add(NextWelcomeScreen());
+      //   },
+      // );
+
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return FittedBox(
+            fit: BoxFit.cover, // 👈 important
+            child: SizedBox(
+              width: constraints.maxHeight * 9 / 16,
+              height: constraints.maxHeight,
+              child: YoutubePlayer(
+                controller: _youtubeController!,
+                showVideoProgressIndicator: false,
+                onEnded: (metaData) {
+                  context.read<WelcomeBloc>().add(NextWelcomeScreen());
+                },
+              ),
+            ),
+          );
         },
       );
     }

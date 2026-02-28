@@ -848,8 +848,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                               showDialog(
                                 context: context,
                                 barrierDismissible: true,
-                                builder: (context) => const VideoSolutionUnavailableDialog(
+                                builder: (context) => VideoSolutionUnavailableDialog(
                                   from:  "videoSolution" ?? "",
+                                  mcqType: widget.mcqType
                                 ),
                               );
                             }
@@ -1236,7 +1237,8 @@ class _SolutionDialogState extends State<SolutionDialog>
 
 class VideoSolutionUnavailableDialog extends StatefulWidget {
   final String from;
-  const VideoSolutionUnavailableDialog({super.key, required this.from});
+  final String mcqType;
+  const VideoSolutionUnavailableDialog({super.key, required this.from, required this.mcqType});
 
   @override
   State<VideoSolutionUnavailableDialog> createState() => _VideoSolutionUnavailableDialogState();
@@ -1303,7 +1305,9 @@ class _VideoSolutionUnavailableDialogState extends State<VideoSolutionUnavailabl
                 ),
                 const SizedBox(height: 15),
                 Text(
-                  "This question is marked as self-assessment to build exam-ready confidence. A ${widget.from == 'solution' ? "" : "video"} solution will be added soon",
+                  widget.mcqType == "1"
+                      ? "Intentionally marked as Self-Assessment to strengthen exam-ready thinking. Text solution is available. Video explanation coming soon."
+                  : "This question is marked as self-assessment to build exam-ready confidence. A ${widget.from == 'solution' ? "" : "video"} solution will be added soon",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),

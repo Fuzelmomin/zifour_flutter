@@ -7,8 +7,10 @@ import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 class ProfileOptionWidget extends StatelessWidget {
   String? title;
   Function()? itemClick;
+  String? icon;
 
-  ProfileOptionWidget({super.key, this.title, this.itemClick});
+
+  ProfileOptionWidget({super.key, this.title, this.itemClick, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +28,15 @@ class ProfileOptionWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              icon != null ? Image.asset(
+                 icon ?? '',
+                width: 22.0,
+                height: 22.0,
+                color: AppColors.white.withOpacity(0.8),
+              ) : Container(),
+              //SizedBox(width: icon != null ? 5.0 : 0.0),
               SizedBox(
-                width: MediaQuery.sizeOf(context).width - 100.w,
+                width: icon != null ? MediaQuery.sizeOf(context).width - 150.w : MediaQuery.sizeOf(context).width - 100.w,
                 child: Text(
                   title ?? '',
                   style: AppTypography.inter16Medium.copyWith(
