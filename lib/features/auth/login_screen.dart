@@ -289,17 +289,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                         ),
-
+                        SizedBox(height: 5.h),
+                        _buildSignupLink(),
                         SizedBox(height: 40.h),
                       ],
                     ),
                   ),
-                  Positioned(
-                    left: 0.0,
-                    right: 0.0,
-                    bottom: 0.0,
-                    child: _buildSignupLink(),
-                  )
+                  // Positioned(
+                  //   left: 0.0,
+                  //   right: 0.0,
+                  //   bottom: 0.0,
+                  //   child: _buildSignupLink(),
+                  // )
                 ],
               ),
             ),

@@ -148,7 +148,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                   SizedBox(height: 15.h),
                   Text(
-                    "Zidd Se Reality",
+                    "Zidd Se Shuru",
                     style: AppTypography.inter22Bold.copyWith(color: AppColors.white),
                   )
 

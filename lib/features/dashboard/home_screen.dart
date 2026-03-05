@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _bannerTimer?.cancel();
     if (sliders.isEmpty || !mounted) return;
 
-    _bannerTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    _bannerTimer = Timer.periodic(const Duration(seconds: 6), (timer) {
       if (!mounted || sliders.isEmpty) {
         timer.cancel();
         return;

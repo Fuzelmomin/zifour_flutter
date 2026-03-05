@@ -759,6 +759,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   "body": Style(
                     color: Colors.white,
                     fontSize: FontSize(isLandscape ? 15.0 : 15.sp),
+                    fontWeight: FontWeight.w700,
                     lineHeight: LineHeight(1.5),
                     margin: Margins.zero,
                     padding: HtmlPaddings.zero,

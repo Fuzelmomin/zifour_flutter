@@ -97,6 +97,7 @@ class DashboardScreenState extends State<DashboardScreen> {
         BlocProvider.value(value: _mentorCategoryBloc),
       ],
       child: SafeArea(
+        bottom: false,
         child: Scaffold(
           body: Container(
             width: double.infinity,
@@ -131,9 +132,12 @@ class DashboardScreenState extends State<DashboardScreen> {
             builder: (context, snapshot) {
               final currentIndex = snapshot.data ?? 0;
               return Container(
+                color: AppColors.darkBlue2,
+                child: SafeArea(
+                  top: false,
+                  child: SizedBox(
                 height: 70.h,
                 width: double.infinity,
-                color: AppColors.darkBlue2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -170,6 +174,8 @@ class DashboardScreenState extends State<DashboardScreen> {
                       onTap: () => _onItemTapped(3),
                     ),
                   ],
+                ),
+                  ),
                 ),
               );
             },

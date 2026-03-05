@@ -392,77 +392,79 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
           Row(
             spacing: 15.w,
             children: [
-              Expanded(
-                child: CustomGradientButton(
-                  text: 'Download PDF',
-                  onPressed: () async {
-                    print("PDF Url STart: ${data.pdfFile}");
-                    if (data.pdfFile != null && data.pdfFile!.isNotEmpty && data.pdfFile!.contains(".pdf")) {
-                      try {
-                        final Uri url = Uri.parse(data.pdfFile!);
-                        //final Uri url = Uri.parse("https://www.orimi.com/pdf-test.pdf");
+              // Expanded(
+              //   child: CustomGradientButton(
+              //     text: 'Download PDF',
+              //     onPressed: () async {
+              //       print("PDF Url STart: ${data.pdfFile}");
+              //       if (data.pdfFile != null && data.pdfFile!.isNotEmpty && data.pdfFile!.contains(".pdf")) {
+              //         try {
+              //           final Uri url = Uri.parse(data.pdfFile!);
+              //           //final Uri url = Uri.parse("https://www.orimi.com/pdf-test.pdf");
+              //
+              //           print("PDF Url: $url");
+              //           // Check if URL can be launched
+              //           if (await canLaunchUrl(url)) {
+              //             // Open in Chrome browser - browser will handle download automatically
+              //             await launchUrl(
+              //               url,
+              //               mode: LaunchMode.inAppBrowserView,
+              //               webViewConfiguration: const WebViewConfiguration(
+              //                 enableJavaScript: true,
+              //               ),
+              //             );
+              //
+              //             // Show success message
+              //             if (context.mounted) {
+              //               ScaffoldMessenger.of(context).showSnackBar(
+              //                 const SnackBar(
+              //                   content: Text("PDF Downloading..."),
+              //                   backgroundColor: Colors.green,
+              //                   duration: Duration(seconds: 2),
+              //                 ),
+              //               );
+              //             }
+              //           } else {
+              //             throw Exception('Could not launch $url');
+              //           }
+              //
+              //
+              //           // DownloadUtils.downloadFile(
+              //           //   context: context,
+              //           //   url: data.pdfFile!,
+              //           //   fileName: "Result_${widget.crtChlId}.pdf",
+              //           // );
+              //
+              //         } catch (e) {
+              //           if (context.mounted) {
+              //             ScaffoldMessenger.of(context).showSnackBar(
+              //               SnackBar(
+              //                 content: Text("Failed to open PDF: ${e.toString()}"),
+              //                 backgroundColor: Colors.red,
+              //               ),
+              //             );
+              //           }
+              //         }
+              //       } else {
+              //         ScaffoldMessenger.of(context).showSnackBar(
+              //           const SnackBar(
+              //             content: Text("PDF file not available for download."),
+              //             backgroundColor: Colors.orange,
+              //           ),
+              //         );
+              //       }
+              //     },
+              //     customDecoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(12.r),
+              //       border: Border.all(
+              //         color: Colors.white.withOpacity(0.2),
+              //       ),
+              //       color: const Color(0xFF464375),
+              //     ),
+              //   ),
+              // ),
 
-                        print("PDF Url: $url");
-                        // Check if URL can be launched
-                        if (await canLaunchUrl(url)) {
-                          // Open in Chrome browser - browser will handle download automatically
-                          await launchUrl(
-                            url,
-                            mode: LaunchMode.inAppBrowserView,
-                            webViewConfiguration: const WebViewConfiguration(
-                              enableJavaScript: true,
-                            ),
-                          );
-
-                          // Show success message
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("PDF Downloading..."),
-                                backgroundColor: Colors.green,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                        } else {
-                          throw Exception('Could not launch $url');
-                        }
-
-
-                        // DownloadUtils.downloadFile(
-                        //   context: context,
-                        //   url: data.pdfFile!,
-                        //   fileName: "Result_${widget.crtChlId}.pdf",
-                        // );
-
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Failed to open PDF: ${e.toString()}"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("PDF file not available for download."),
-                          backgroundColor: Colors.orange,
-                        ),
-                      );
-                    }
-                  },
-                  customDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                    ),
-                    color: const Color(0xFF464375),
-                  ),
-                ),
-              ),
+              Expanded(child: Container()),
 
               Expanded(
                 child: widget.screenType == "3" ? Container() : CustomGradientButton(

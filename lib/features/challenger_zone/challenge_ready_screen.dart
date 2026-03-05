@@ -383,7 +383,8 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
+        child: SafeArea(
+          child: Stack(
           children: [
             // Background Decoration set
 
@@ -911,6 +912,7 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
               ),
             ),
           ],
+        ),
         ),
       ),
               ),

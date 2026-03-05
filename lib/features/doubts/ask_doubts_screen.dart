@@ -484,10 +484,10 @@ class _AskDoubtsScreenState extends State<AskDoubtsScreen> {
       return;
     }
 
-    if (_doubtController.text.trim().isEmpty) {
+    if (_doubtController.text.trim().isEmpty && _selectedImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please enter your doubt'),
+          content: Text('Please enter your doubt description or upload an image'),
           backgroundColor: AppColors.error,
         ),
       );

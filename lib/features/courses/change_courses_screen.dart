@@ -148,7 +148,8 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
                 width: double.infinity,
                 height: double.infinity,
                 color: AppColors.darkBlue,
-                child: Stack(
+                child: SafeArea(
+                  child: Stack(
                   children: [
                     // Background Decoration set
                     Positioned.fill(
@@ -242,6 +243,7 @@ class _ChangeCourseScreenState extends State<ChangeCourseScreen> {
                       ),
                     ),
                   ],
+                ),
                 ),
               ),
             ),

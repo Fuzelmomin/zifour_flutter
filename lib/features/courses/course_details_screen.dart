@@ -53,7 +53,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
+        child: SafeArea(
+          child: Stack(
           children: [
             // Background Decoration
             Positioned.fill(
@@ -106,6 +107,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

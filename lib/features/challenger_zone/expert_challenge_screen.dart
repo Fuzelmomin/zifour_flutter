@@ -84,7 +84,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.from == "course" ? "Revisit past challenges and master the toughest MCQs." : "Compete in faculty - Designed challenges and track your progress.",
+                        widget.from == "course" ? "Revisit past challenges and master the toughest MCQs." : "Compete in faculty - designed challenges and track your progress.",
                         style: AppTypography.inter16Regular.copyWith(
                           color: AppColors.white.withOpacity(0.6),
                         ),

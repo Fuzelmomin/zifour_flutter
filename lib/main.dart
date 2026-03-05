@@ -48,7 +48,7 @@ void main() async{
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
       statusBarBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarColor: Color(0xFF0A091E),
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
               statusBarColor: Colors.transparent,
               statusBarIconBrightness: Brightness.light,
               statusBarBrightness: Brightness.dark,
-              systemNavigationBarColor: Colors.transparent,
+              systemNavigationBarColor: Color(0xFF0A091E),
               systemNavigationBarIconBrightness: Brightness.light,
             ),
             child: ScreenUtilInit(
@@ -136,14 +136,7 @@ class MyApp extends StatelessWidget {
                     ),
                   ),
                 ),
-                builder: (context, child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context).copyWith(
-                      padding: EdgeInsets.zero,
-                    ),
-                    child: child!,
-                  );
-                },
+
                 home: SplashScreen(), // Start with splash screen
               );
             },

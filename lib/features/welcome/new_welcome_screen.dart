@@ -302,7 +302,7 @@ class _NewWelcomeScreenState extends State<NewWelcomeScreen> with TickerProvider
                                   SizedBox(height: 10.h),
                                   CustomGradientButton(
                                     text: canGoNext
-                                        ? 'Skip Now'
+                                        ? 'Next'
                                         : '${AppLocalizations.of(context)?.getStarted}',
                                     onPressed: () {
                                       if (canGoNext) {

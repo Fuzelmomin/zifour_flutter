@@ -42,7 +42,8 @@ class _ChallengerZoneScreenState extends State<ChallengerZoneScreen> {
         width: double.infinity,
         height: double.infinity,
         color: AppColors.darkBlue,
-        child: Stack(
+        child: SafeArea(
+          child: Stack(
           children: [
             // Background Decoration set
 
@@ -121,6 +122,7 @@ class _ChallengerZoneScreenState extends State<ChallengerZoneScreen> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
