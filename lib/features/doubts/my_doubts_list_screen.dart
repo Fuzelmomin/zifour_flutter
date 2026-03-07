@@ -235,6 +235,7 @@ class _MyDoubtsListScreenState extends State<MyDoubtsListScreen> {
                               return MyDoubtsItem(
                                 title: doubt.dbtMessage,
                                 isReplied: isReplied,
+                                imageUrl: doubt.dbtAttachment,
                               );
                             },
                             separatorBuilder: (_, __) => Container(

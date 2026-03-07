@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
+import 'package:zifour_sourcecode/features/challenger_zone/new_result_screen.dart';
 import 'package:zifour_sourcecode/features/india_test_series/test_analysis_screen.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -200,7 +201,7 @@ class _AllIndiaTestSeriesScreenState extends State<AllIndiaTestSeriesScreen> {
                                     onPerformanceClick: (){
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => ChallengeResultScreen(
+                                        MaterialPageRoute(builder: (context) => NewResultScreen(
                                           title: "Test Series Results 🏆",
                                           crtChlId: "",
                                           screenType: "4", // 4 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type

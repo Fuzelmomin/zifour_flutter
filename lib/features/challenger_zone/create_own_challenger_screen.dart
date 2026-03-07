@@ -40,6 +40,7 @@ class _SubjectSelection {
   List<String> selectedChapters = [];
   List<String> selectedTopics = [];
   List<ChapterModel> chapters = []; // Store chapters for this subject
+  List<TopicModel> availableTopics = []; // Store fetched topics for this subject
 }
 
 class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
@@ -449,6 +450,13 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                     "STEP 3"),
                                 BlocBuilder<TopicBloc, TopicState>(
                                   builder: (context, state) {
+                                    // Store fetched topics for active subject
+                                    if (state.hasData && _activeSubjectId != null &&
+                                        _subjectSelections.containsKey(_activeSubjectId)) {
+                                      _subjectSelections[_activeSubjectId!]!.availableTopics =
+                                          List.from(state.data!.topicList);
+                                    }
+
                                     if (state.isLoading) {
                                       return _buildShimmerLoading();
                                     }
@@ -624,10 +632,54 @@ class _CreateOwnChallengerScreenState extends State<CreateOwnChallengerScreen> {
                                 return;
                               }
                               
-                              if (allSelectedTopicIds.isEmpty) {
+                              // Per-chapter topic validation:
+                              // For each selected chapter, check if topics exist.
+                              // If topics exist for that chapter but none are selected, show error.
+                              final List<String> chaptersWithMissingTopics = [];
+                              
+                              for (var entry in _subjectSelections.entries) {
+                                final selection = entry.value;
+                                if (selection.selectedChapters.isEmpty) continue;
+                                
+                                // Get available topics for this subject
+                                final availableTopics = selection.availableTopics;
+                                if (availableTopics.isEmpty) continue; // No topics fetched yet, skip
+                                
+                                // For each selected chapter, check if it has topics and if any are selected
+                                for (final chapterId in selection.selectedChapters) {
+                                  // Find chapter name from stored chapters
+                                  final chapterModel = selection.chapters
+                                      .where((c) => c.chpId == chapterId)
+                                      .firstOrNull;
+                                  if (chapterModel == null) continue;
+                                  
+                                  // Get topics available for this chapter (API uses chapter name)
+                                  final chapterTopics = availableTopics
+                                      .where((t) => t.chapter == chapterModel.name)
+                                      .toList();
+                                  
+                                  // If this chapter has topics but none are selected
+                                  if (chapterTopics.isNotEmpty) {
+                                    final chapterTopicIds = chapterTopics
+                                        .map((t) => t.tpcId ?? '')
+                                        .where((id) => id.isNotEmpty)
+                                        .toSet();
+                                    final hasSelectedTopic = selection.selectedTopics
+                                        .any((id) => chapterTopicIds.contains(id));
+                                    
+                                    if (!hasSelectedTopic) {
+                                      chaptersWithMissingTopics.add(chapterModel.name);
+                                    }
+                                  }
+                                }
+                              }
+                              
+                              if (chaptersWithMissingTopics.isNotEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text('Please select at least one topic from any subject.'),
+                                    content: Text(
+                                      'Please select topics for: ${chaptersWithMissingTopics.join(", ")}',
+                                    ),
                                     backgroundColor: AppColors.error,
                                   ),
                                 );

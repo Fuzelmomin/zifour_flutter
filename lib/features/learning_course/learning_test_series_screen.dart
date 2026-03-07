@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
+import 'package:zifour_sourcecode/features/challenger_zone/new_result_screen.dart';
 import 'package:zifour_sourcecode/features/india_test_series/test_analysis_screen.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -73,7 +74,7 @@ class _LearningTestSeriesScreenState extends State<LearningTestSeriesScreen> {
                       onTap: (){
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ChallengeResultScreen(
+                          MaterialPageRoute(builder: (context) => NewResultScreen(
                             title: "Test Series Results 🏆",
                             crtChlId: "",
                             screenType: "1", // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type

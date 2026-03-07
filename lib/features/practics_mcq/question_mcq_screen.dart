@@ -1,12 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:html_unescape_xx/html_unescape.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/dialogs/add_note_dialog.dart';
+import 'package:zifour_sourcecode/features/challenger_zone/new_result_screen.dart';
 import 'package:zifour_sourcecode/features/practics_mcq/mcq_feedback_dialog.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
@@ -162,6 +165,30 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     _mcqBookmarkBloc.close();
     takeTime.close();
     super.dispose();
+  }
+
+  /// Converts chemical formula patterns in text to proper HTML subscripts/superscripts.
+  /// e.g. "H2O" → "H<sub>2</sub>O", "I2" → "I<sub>2</sub>", "Ca2+" → "Ca<sup>2+</sup>"
+  static String _formatChemicalFormulas(String text) {
+    // Skip if text already contains <sub> or <sup> tags (API already formatted)
+    if (text.contains('<sub>') || text.contains('<sup>')) return text;
+
+    // Step 1: Convert subscript patterns — element symbol followed by digits
+    // Matches: H2, O2, I2, CO2, Na2, CH3, C6H12O6, etc.
+    // Pattern: uppercase letter (optionally followed by lowercase letter) then 1-3 digits
+    text = text.replaceAllMapped(
+      RegExp(r'([A-Z][a-z]?)(\d{1,3})(?![\d\.])'),
+      (match) => '${match.group(1)}<sub>${match.group(2)}</sub>',
+    );
+
+    // Step 2: Convert superscript patterns for ionic charges — digit followed by +/-
+    // Matches: 2+, 3-, etc.
+    text = text.replaceAllMapped(
+      RegExp(r'(\d+)([+\-])(?=\s|,|\.|$)'),
+      (match) => '<sup>${match.group(1)}${match.group(2)}</sup>',
+    );
+
+    return text;
   }
 
   void _startTimer() {
@@ -478,7 +505,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChallengeResultScreen(
+                      builder: (context) => NewResultScreen(
                         title: widget.mcqType == "1" ? "Practice Results 🏆" : "Test Series Results 🏆",
                         crtChlId: "",
                         screenType: widget.mcqType, // 1 = Test Series, 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
@@ -504,7 +531,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ChallengeResultScreen(
+                      builder: (context) => NewResultScreen(
                         title: 'Challenge Results',
                         crtChlId: widget.crtChlId ?? "",
                         screenType: widget.mcqType, // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
@@ -754,7 +781,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Html(
-                data: currentMcq.mcQuestion.trim(),
+                //data: currentMcq.mcQuestion.trim(),
+                data: _formatChemicalFormulas(currentMcq.mcQuestion.trim()),
+                //data: HtmlUnescapeAll().convert(currentMcq.mcQuestion.trim()),
                 style: {
                   "body": Style(
                     color: Colors.white,
@@ -777,7 +806,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Html(
-                  data: currentMcq.mcDescription.trim(),
+                  data: _formatChemicalFormulas(currentMcq.mcDescription.trim()),
                   style: {
                     "body": Style(
                       color: Colors.white70,
@@ -1038,7 +1067,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
             const SizedBox(width: 14),
             Expanded(
               child: Html(
-                data: text,
+                data: _formatChemicalFormulas(text),
                 style: {
                   "body": Style(
                     color: Colors.white,

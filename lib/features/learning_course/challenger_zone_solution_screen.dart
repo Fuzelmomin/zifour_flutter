@@ -7,6 +7,7 @@ import 'package:zifour_sourcecode/core/dialogs/create_reminder_dialog.dart';
 import 'package:zifour_sourcecode/core/widgets/course_item.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/challenger_zone/challenge_result_screen.dart';
+import 'package:zifour_sourcecode/features/challenger_zone/new_result_screen.dart';
 import 'package:zifour_sourcecode/features/payment/payment_status_screen.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -152,7 +153,7 @@ class _ChallengerZoneSolutionScreenState
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ChallengeResultScreen(
+                                  builder: (context) => NewResultScreen(
                                     title: "Challenger Test Results 🏆",
                                     crtChlId: challenge.crtChlId,
                                     screenType: "3", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type

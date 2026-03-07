@@ -22,6 +22,7 @@ import '../../core/widgets/line_label_row.dart';
 import '../../l10n/app_localizations.dart';
 import 'bloc/challenges_list_bloc.dart';
 import 'challenge_result_screen.dart';
+import 'new_result_screen.dart';
 
 class ChallengesListScreen extends StatefulWidget {
   String challengeType;
@@ -149,7 +150,7 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChallengeResultScreen(
+                  builder: (context) => NewResultScreen(
                     title: 'Challenge Result 🏆',
                     crtChlId: challenge.crtChlId,
                     solution: challenge.solutionVideo,

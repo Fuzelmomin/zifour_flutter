@@ -61,6 +61,10 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
   final Map<String, List<String>> _selectedChaptersBySubject = {};
   final Map<String, List<String>> _selectedTopicsBySubject = {};
 
+  // Store chapter models and available topics per subject (for per-chapter validation)
+  final Map<String, List<ChapterModel>> _chapterModelsBySubject = {};
+  final Map<String, List<TopicModel>> _availableTopicsBySubject = {};
+
   late final ChapterBloc _chapterBloc;
   late final TopicBloc _topicBloc;
   late final UpdateChallengeBloc _updateChallengeBloc;
@@ -211,10 +215,58 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
       return;
     }
 
-    if (uniqueTopicIds.isEmpty) {
+    // Per-chapter topic validation:
+    // For each selected chapter, check if topics exist.
+    // If topics exist for that chapter but none are selected, show error.
+    final List<String> chaptersWithMissingTopics = [];
+    
+    for (final subId in _selectedSubjectIds) {
+      final selectedChapterIds = _selectedChaptersBySubject[subId] ?? const [];
+      if (selectedChapterIds.isEmpty) continue;
+      
+      // Get available topics for this subject
+      final availableTopics = _availableTopicsBySubject[subId] ?? const [];
+      if (availableTopics.isEmpty) continue; // No topics fetched yet, skip
+      
+      // Get chapter models for this subject
+      final chapterModels = _chapterModelsBySubject[subId] ?? const [];
+      
+      // For each selected chapter, check if it has topics and if any are selected
+      for (final chapterId in selectedChapterIds) {
+        // Find chapter name from stored chapters
+        final chapterModel = chapterModels
+            .where((c) => c.chpId == chapterId)
+            .firstOrNull;
+        if (chapterModel == null) continue;
+        
+        // Get topics available for this chapter (API uses chapter name)
+        final chapterTopics = availableTopics
+            .where((t) => t.chapter == chapterModel.name)
+            .toList();
+        
+        // If this chapter has topics but none are selected
+        if (chapterTopics.isNotEmpty) {
+          final chapterTopicIds = chapterTopics
+              .map((t) => t.tpcId ?? '')
+              .where((id) => id.isNotEmpty)
+              .toSet();
+          final selectedTopics = _selectedTopicsBySubject[subId] ?? const [];
+          final hasSelectedTopic = selectedTopics
+              .any((id) => chapterTopicIds.contains(id));
+          
+          if (!hasSelectedTopic) {
+            chaptersWithMissingTopics.add(chapterModel.name);
+          }
+        }
+      }
+    }
+    
+    if (chaptersWithMissingTopics.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${AppLocalizations.of(context)?.pleaseSelectTopic ?? "Please select at least one topic"}'),
+          content: Text(
+            'Please select topics for: ${chaptersWithMissingTopics.join(", ")}',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -569,6 +621,14 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                         "STEP 2"),
                                     BlocBuilder<ChapterBloc, ChapterState>(
                                       builder: (context, state) {
+                                        // Cache chapter models for active subject (for validation)
+                                        if (state.hasData && _activeSubjectId != null) {
+                                          final subjectChapters = state.data!.chapterList
+                                              .where((c) => c.subId == _activeSubjectId)
+                                              .toList();
+                                          _chapterModelsBySubject[_activeSubjectId!] = subjectChapters;
+                                        }
+
                                         if (state.isLoading) {
                                           return _buildShimmerLoading();
                                         }
@@ -677,6 +737,12 @@ class _ChallengeReadyScreenState extends State<ChallengeReadyScreen> {
                                         "STEP 3"),
                                     BlocBuilder<TopicBloc, TopicState>(
                                       builder: (context, state) {
+                                        // Cache available topics for active subject (for validation)
+                                        if (state.hasData && _activeSubjectId != null) {
+                                          _availableTopicsBySubject[_activeSubjectId!] =
+                                              List.from(state.data!.topicList);
+                                        }
+
                                         if (state.isLoading) {
                                           return _buildShimmerLoading();
                                         }

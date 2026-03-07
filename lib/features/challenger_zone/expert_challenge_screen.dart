@@ -6,6 +6,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
 import 'package:zifour_sourcecode/features/challenger_zone/challenge_result_screen.dart';
+import 'package:zifour_sourcecode/features/challenger_zone/new_result_screen.dart';
 import 'package:zifour_sourcecode/features/practics_mcq/question_mcq_screen.dart';
 
 import '../../core/constants/app_colors.dart';
@@ -214,7 +215,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChallengeResultScreen(
+                  builder: (context) => NewResultScreen(
                     title: "Challenge Result 🏆",
                     crtChlId: challenge.crtChlId,
                     solution: challenge.solutionVideo,
