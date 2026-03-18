@@ -27,6 +27,22 @@ class LiveClassScreen extends StatefulWidget {
 class _LiveClassScreenState extends State<LiveClassScreen> {
   int selectedTab = 0;
   final SubjectService _subjectService = SubjectService();
+  final PageController _pageController = PageController();
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _onTabTap(int index) {
+    setState(() => selectedTab = index);
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +67,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
 
               // App Bar
               Positioned(
-                  top: 20.h,
+                  top: 8.h,
                   left: 15.w,
                   right: 20.w,
                   child: CustomAppBar(
@@ -61,7 +77,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
 
               // Main Content with BLoC
               Positioned(
-                top: 90.h,
+                top: 77.h,
                 left: 20.w,
                 right: 20.w,
                 bottom: 50.h,
@@ -94,7 +110,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
 
                     const SizedBox(height: 15),
 
-                    /// Class Cards List
+                    /// Class Cards List with swipe support
                     subjects.isEmpty
                         ? Expanded(
                             child: Center(
@@ -106,74 +122,24 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
                               ),
                             ),
                           )
-                        : selectedTab == 0
-                            ? Expanded(
-                                /*child: ListView.separated(
-                                  itemCount: subjects.length,
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(height: 14),
-                                  itemBuilder: (context, index) {
-                                    final subject = subjects[index];
-                                    return _classCard(
-                                      subject: subject,
-                                      subtitle: "Live Class",
-                                      time: "",
-                                      date: null,
-                                      type: "today",
-                                      btnName: "Join Now!",
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                LiveClassDetailsScreen(
-                                              subjectName: subject.name,
-                                              subId: subject.subId,
-                                              lvCls: "1",
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),*/
-
-                                child: LiveClassDetailsScreen(
+                        : Expanded(
+                            child: PageView(
+                              controller: _pageController,
+                              onPageChanged: (index) {
+                                setState(() => selectedTab = index);
+                              },
+                              children: [
+                                LiveClassDetailsScreen(
                                   key: const ValueKey('today'),
                                   lvCls: "1",
                                 ),
-                              )
-                            : Expanded(
-                                /*child: ListView.separated(
-                                  itemCount: subjects.length,
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(height: 14),
-                                  itemBuilder: (context, index) {
-                                    final subject = subjects[index];
-                                    return _classCard(
-                                      subject: subject,
-                                      subtitle: "Upcoming Class",
-                                      time: "",
-                                      date: "",
-                                      btnName: "Remind Me",
-                                      type: "upcoming",
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          barrierDismissible: true,
-                                          builder: (_) =>
-                                              const CreateReminderDialog(),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),*/
-
-                                child: LiveClassDetailsScreen(
+                                LiveClassDetailsScreen(
                                   key: const ValueKey('upcoming'),
                                   lvCls: "2",
                                 ),
-                              )
+                              ],
+                            ),
+                          ),
                   ],
                 ),
               ),
@@ -189,7 +155,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
     bool active = selectedTab == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => selectedTab = index),
+        onTap: () => _onTabTap(index),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(

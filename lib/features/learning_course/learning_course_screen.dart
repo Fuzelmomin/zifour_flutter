@@ -38,7 +38,7 @@ class _LearningCourseScreenState extends State<LearningCourseScreen> {
     ),
     _LearningCard(
       title: "Challenger Zone Solutions",
-      subtitle: "Video solutions of all challenger zone MCQs",
+      subtitle: "Video solutions of all expert's challenges",
       buttonText: "View Lecture",
       iconPath: AssetsPath.svgChallengerSolution,
       iconBg: Color(0xFFFF9F00),

@@ -8,9 +8,28 @@ class ProfileOptionWidget extends StatelessWidget {
   String? title;
   Function()? itemClick;
   String? icon;
+  bool? isPractice;
+  String? mcqCount;
+  String? videoCount;
+  String? textCount;
 
 
-  ProfileOptionWidget({super.key, this.title, this.itemClick, this.icon});
+  ProfileOptionWidget({
+    super.key,
+    this.title,
+    this.itemClick,
+    this.icon,
+    this.isPractice,
+    this.mcqCount,
+    this.videoCount,
+    this.textCount,
+  });
+
+  bool get _hasStats =>
+      isPractice == true &&
+      ((mcqCount != null && mcqCount!.isNotEmpty) ||
+       (videoCount != null && videoCount!.isNotEmpty) ||
+       (textCount != null && textCount!.isNotEmpty));
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +40,11 @@ class ProfileOptionWidget extends StatelessWidget {
       child: SignupFieldBox(
         margin: EdgeInsets.only(bottom: 20.h),
         child: Container(
-          height: 45.h,
-          padding: EdgeInsets.symmetric(horizontal: 5.0),
+          padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: _hasStats ? 10.h : 0),
+          constraints: BoxConstraints(minHeight: 45.h),
           width: double.infinity,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: _hasStats ? CrossAxisAlignment.center : CrossAxisAlignment.center,
             children: [
               icon != null ? Image.asset(
                  icon ?? '',
@@ -35,13 +53,49 @@ class ProfileOptionWidget extends StatelessWidget {
                 color: AppColors.white.withOpacity(0.8),
               ) : Container(),
               //SizedBox(width: icon != null ? 5.0 : 0.0),
-              SizedBox(
-                width: icon != null ? MediaQuery.sizeOf(context).width - 150.w : MediaQuery.sizeOf(context).width - 100.w,
-                child: Text(
-                  title ?? '',
-                  style: AppTypography.inter16Medium.copyWith(
-                    color: AppColors.white.withOpacity(0.8)
-                  ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title ?? '',
+                      style: AppTypography.inter16Medium.copyWith(
+                        color: AppColors.white.withOpacity(0.8)
+                      ),
+                    ),
+                    if (_hasStats) ...[
+                      SizedBox(height: 8.h),
+                      Row(
+                        children: [
+                          if (mcqCount != null && mcqCount!.isNotEmpty)
+                            _buildStatPill(
+                              Icons.bar_chart_rounded,
+                              '$mcqCount MCQs',
+                              const Color(0xFF2551b4),
+                            ),
+                          if (mcqCount != null && mcqCount!.isNotEmpty &&
+                              videoCount != null && videoCount!.isNotEmpty)
+                            SizedBox(width: 6.w),
+                          if (videoCount != null && videoCount!.isNotEmpty)
+                            _buildStatPill(
+                              Icons.play_circle_filled,
+                              '$videoCount Video',
+                              const Color(0xFFdd6b41),
+                            ),
+                          if (videoCount != null && videoCount!.isNotEmpty &&
+                              textCount != null && textCount!.isNotEmpty)
+                            SizedBox(width: 6.w),
+                          if (textCount != null && textCount!.isNotEmpty)
+                            _buildStatPill(
+                              Icons.description_rounded,
+                              '$textCount Text',
+                              const Color(0xFF78389f),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ],
                 ),
               ),
 
@@ -53,6 +107,31 @@ class ProfileOptionWidget extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatPill(IconData icon, String label, Color bgColor) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(6.r),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: Colors.white, size: 12),
+          SizedBox(width: 4.w),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

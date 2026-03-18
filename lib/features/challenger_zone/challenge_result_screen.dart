@@ -12,6 +12,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/services/subject_service.dart';
 import '../../core/utils/download_utils.dart';
+import '../../core/utils/user_preference.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/info_row.dart';
@@ -469,8 +470,9 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
               Expanded(
                 child: widget.screenType == "3" ? Container() : CustomGradientButton(
                   text: 'View Solutions',
-                  onPressed: () {
+                  onPressed: () async{
                     print("View Solutions: ${widget.solution}");
+                    final user = await UserPreference.getUserData();
 
                     if(widget.screenType == "2"){
                       _showSubjectDialog(context, widget.crtChlId, "", "expert");
@@ -492,7 +494,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                         showDialog(
                           context: context,
                           barrierDismissible: true,
-                          builder: (context) => VideoSolutionUnavailableDialog(from: "solution", mcqType: widget.screenType,),
+                          builder: (context) => VideoSolutionUnavailableDialog(from: "solution", mcqType: widget.screenType, medType: user?.stuMedId ?? '2',),
                         );
                       }
                     }

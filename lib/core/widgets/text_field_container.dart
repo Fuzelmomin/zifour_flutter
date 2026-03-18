@@ -175,7 +175,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             : widget.type == 'email'
             ? TextInputType.emailAddress
             : TextInputType.text,
-        maxLength: widget.maxLength ?? 50,
+        maxLength: widget.maxLength ?? null,
         maxLines: widget.isMessageTextField == true ? null : 1,
         obscureText: isPasswordField ? _obscureText : false,
         style: AppTypography.inter14Medium.copyWith(color: Colors.white),

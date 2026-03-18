@@ -136,7 +136,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                 child: SafeArea(
                   top: false,
                   child: SizedBox(
-                height: 70.h,
+                height: 70.0,
                 width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -202,17 +202,17 @@ class DashboardScreenState extends State<DashboardScreen> {
           children: [
             SvgPicture.asset(
               isSelected ? icon : unselectedIcon,
-              width: index == 0 && isSelected == false ? 20.h : 24.h,
-              height: index == 0 && isSelected == false ? 20.h : 24.h,
+              width: index == 0 && isSelected == false ? 20.0 : 24.0,
+              height: index == 0 && isSelected == false ? 20.0 : 24.0,
             ),
-            SizedBox(height: 4.h),
+            SizedBox(height: 4.0),
             Text(
               label,
               style: TextStyle(
                 color: isSelected
                     ? AppColors.pinkColor
                     : Colors.white.withOpacity(0.6),
-                fontSize: 12.sp,
+                fontSize: 12.0,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),

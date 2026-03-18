@@ -106,17 +106,18 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
 
                 // App Bar
                 Positioned(
-                    top: 20.h,
+                    top: 7.h,
                     left: 15.w,
                     right: 20.w,
                     child: CustomAppBar(
                       isBack: true,
+                      title: widget.subjectName,
                     )
                 ),
 
                 // Main Content with BLoC
                 Positioned(
-                  top: 90.h,
+                  top: 77.h,
                   left: 0,
                   right: 0,
                   bottom: 0,
@@ -133,6 +134,10 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                           subtitle: 'Select a Chapter',
                           iconPath: AssetsPath.icPhysics,
                           iconUrl: widget.subjectIcon ?? '',
+                          isPractice: widget.from == "practice" ? true : false,
+                          mcqCount: "100",
+                          videoCount: "45",
+                          textCount: "25",
                         ),
                         SizedBox(height: 20.h),
                         // Dynamic chapter list based on from parameter
@@ -242,6 +247,10 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
 
                                       }
                                     },
+                                    isPractice: widget.from == "practice" ? true : false,
+                                    mcqCount: "100",
+                                    videoCount: "45",
+                                    textCount: "25",
                                   );
                                 }).toList(),
                               );

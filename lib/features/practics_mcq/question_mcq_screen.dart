@@ -17,6 +17,7 @@ import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/utils/connectivity_helper.dart';
+import '../../core/utils/user_preference.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/custom_loading_widget.dart';
@@ -78,6 +79,11 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
 
   final BehaviorSubject<String> takeTime =
   BehaviorSubject<String>.seeded("00:00");
+
+  // Total elapsed time stream & counter
+  final BehaviorSubject<String> totalTime =
+  BehaviorSubject<String>.seeded("00:00");
+  int _totalElapsedSeconds = 0;
   
   Timer? _timer;
   int _currentQuestionSeconds = 0;
@@ -164,6 +170,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     _submitMcqAnswerBloc.close();
     _mcqBookmarkBloc.close();
     takeTime.close();
+    totalTime.close();
     super.dispose();
   }
 
@@ -200,6 +207,12 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       final minutes = (_currentQuestionSeconds ~/ 60).toString().padLeft(2, '0');
       final seconds = (_currentQuestionSeconds % 60).toString().padLeft(2, '0');
       takeTime.add("$minutes:$seconds");
+
+      // Update total elapsed time
+      _totalElapsedSeconds++;
+      final totalMin = (_totalElapsedSeconds ~/ 60).toString().padLeft(2, '0');
+      final totalSec = (_totalElapsedSeconds % 60).toString().padLeft(2, '0');
+      totalTime.add("$totalMin:$totalSec");
     });
   }
 
@@ -245,6 +258,12 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       // Move to next question
       final nextIndex = _currentQuestionIndex + 1;
       final nextMcq = mcqList[nextIndex];
+      
+      // For Practice MCQ, reset the next question so user can re-attempt
+      if (widget.mcqType == "1") {
+        _allAnswers.remove(nextMcq.mcId);
+      }
+      
       final savedAnswer = _allAnswers[nextMcq.mcId];
       
       setState(() {
@@ -254,7 +273,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       
       _saveProgressLocally();
       
-      // Restore saved answer for next question if exists
+      // Restore saved answer for next question if exists (null for Practice MCQ)
       selectedOption.add(savedAnswer);
 
       // Reset timer for next question
@@ -278,6 +297,12 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       
       final previousIndex = _currentQuestionIndex - 1;
       final previousMcq = mcqList[previousIndex];
+      
+      // For Practice MCQ, reset the previous question so user can re-attempt
+      if (widget.mcqType == "1") {
+        _allAnswers.remove(previousMcq.mcId);
+      }
+      
       final savedAnswer = _allAnswers[previousMcq.mcId];
       
       setState(() {
@@ -287,7 +312,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
       
       _saveProgressLocally();
       
-      // Restore saved answer for previous question
+      // Restore saved answer for previous question (null for Practice MCQ)
       selectedOption.add(savedAnswer);
 
       // Reset timer for previous question
@@ -427,13 +452,17 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
             BlocListener<ChallengeMcqListBloc, ChallengeMcqListState>(
               listener: (context, state) {
             if (state.status == ChallengeMcqListStatus.success && _timer == null) {
-                  if (widget.mcqType == "1") {
-                    _loadSavedProgress().then((_) {
-                      _startTimer();
-                    });
-                  } else {
-                    _startTimer();
-                  }
+
+              // Comment code of Local Save practice MCQ
+              // if (widget.mcqType == "1") {
+                  //   _loadSavedProgress().then((_) {
+                  //     _startTimer();
+                  //   });
+                  // } else {
+                  //   _startTimer();
+                  // }
+
+                  _startTimer();
                 }
               },
             ),
@@ -573,7 +602,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                             ),
 
                             Positioned(
-                              top: 20.h,
+                              top: 5.h,
                               left: 15.w,
                               right: 15.w,
                               child: CustomAppBar(
@@ -601,6 +630,47 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                                   ),
                                 ),
                                 actionClick: () {},
+                              ),
+                            ),
+
+                            // Total elapsed timer at the top
+                            Positioned(
+                              top: 50.h,
+                              left: 20.w,
+                              right: 20.w,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      color: Colors.white.withOpacity(0.1),
+                                      border: Border.all(color: Colors.white.withOpacity(0.1)),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.timer_outlined, color: Colors.orange, size: 16.sp),
+                                        SizedBox(width: 5.w),
+                                        Text("Total: ", style: TextStyle(color: Colors.white54, fontSize: 12.sp)),
+                                        StreamBuilder<String>(
+                                          stream: totalTime,
+                                          builder: (context, asyncSnapshot) {
+                                            return Text(
+                                              asyncSnapshot.data ?? "00:00",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
 
@@ -700,6 +770,46 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            widget.mcqType == "3" || widget.mcqType == "4" ?
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Question ${_currentQuestionIndex + 1} of $totalQuestions',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '${((_currentQuestionIndex + 1) / totalQuestions * 100).toInt()}%',
+                          style: TextStyle(
+                            color: AppColors.pinkColor3,
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.h),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(6.r),
+                      child: LinearProgressIndicator(
+                        value: (_currentQuestionIndex + 1) / totalQuestions,
+                        minHeight: 6.h,
+                        backgroundColor: Colors.white.withOpacity(0.1),
+                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.pinkColor3),
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                  ],
+                )
+                : Container(),
 
             widget.mcqType == "1" ? Row(
               spacing: 15.w,
@@ -863,7 +973,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                       Expanded(
                         child: CustomGradientButton(
                           text: 'Video Solution',
-                          onPressed: (){
+                          onPressed: () async{
+
+                            final user = await UserPreference.getUserData();
                             if(currentMcq.videoSolution != null && currentMcq.videoSolution!.isNotEmpty){
                               Navigator.push(
                                 context,
@@ -880,7 +992,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                                 barrierDismissible: true,
                                 builder: (context) => VideoSolutionUnavailableDialog(
                                   from:  "videoSolution" ?? "",
-                                  mcqType: widget.mcqType
+                                  mcqType: widget.mcqType,
+                                  medType: user?.stuMedId ?? '2',
                                 ),
                               );
                             }
@@ -1268,7 +1381,8 @@ class _SolutionDialogState extends State<SolutionDialog>
 class VideoSolutionUnavailableDialog extends StatefulWidget {
   final String from;
   final String mcqType;
-  const VideoSolutionUnavailableDialog({super.key, required this.from, required this.mcqType});
+  final String medType;
+  const VideoSolutionUnavailableDialog({super.key, required this.from, required this.mcqType, required this.medType});
 
   @override
   State<VideoSolutionUnavailableDialog> createState() => _VideoSolutionUnavailableDialogState();
@@ -1335,9 +1449,7 @@ class _VideoSolutionUnavailableDialogState extends State<VideoSolutionUnavailabl
                 ),
                 const SizedBox(height: 15),
                 Text(
-                  widget.mcqType == "1"
-                      ? "Intentionally marked as Self-Assessment to strengthen exam-ready thinking. Text solution is available. Video explanation coming soon."
-                  : "This question is marked as self-assessment to build exam-ready confidence. A ${widget.from == 'solution' ? "" : "video"} solution will be added soon",
+                  _getAssessmentText(context),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
@@ -1357,5 +1469,19 @@ class _VideoSolutionUnavailableDialogState extends State<VideoSolutionUnavailabl
         ),
       ),
     );
+  }
+
+  String _getAssessmentText(BuildContext context) {
+
+    final isGujarati = widget.medType == "1" ? true : false;
+
+    if (isGujarati) {
+      return "આ પ્રશ્નને તમારા Self Assessment માટે અને પરીક્ષા માટે આત્મવિશ્વાસ વધારવા માટે રાખવામાં આવ્યો છે. વિડિયો સોલ્યુશન ટૂંક સમયમાં જ ઉપલબ્ધ કરવામાં આવશે.";
+    }
+
+    if (widget.mcqType == "1") {
+      return "Intentionally marked as Self-Assessment to strengthen exam-ready thinking. Text solution is available. Video explanation coming soon.";
+    }
+    return "This question is marked as self-assessment to build exam-ready confidence. A ${widget.from == 'solution' ? "" : "video"} solution will be added soon";
   }
 }

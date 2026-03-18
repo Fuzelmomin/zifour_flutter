@@ -8,7 +8,7 @@ import 'package:zifour_sourcecode/core/widgets/custom_gradient_button.dart';
 class DialogsUtils {
 
 
-  static Future<void> confirmDialog(BuildContext context,
+  static Future<void>   confirmDialog(BuildContext context,
       {String? title, String? message, String? positiveBtnName, String? negativeBtnName, Function()? positiveClick, Function()? negativeClick}) async {
     return showDialog(
       context: context,
@@ -16,7 +16,9 @@ class DialogsUtils {
       barrierColor: Colors.black.withOpacity(0.90), // dim background
       builder: (context) {
         return Center(
-          child: ClipRRect(
+          child: Material(
+            type: MaterialType.transparency,
+            child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
@@ -93,6 +95,7 @@ class DialogsUtils {
                 ),
               ),
             ),
+          ),
           ),
         );
       },

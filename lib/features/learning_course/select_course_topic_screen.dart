@@ -112,6 +112,7 @@ class _SelectCourseTopicScreenState extends State<SelectCourseTopicScreen> {
                           subtitle: 'Select a Topic',
                           iconPath: AssetsPath.icPhysics,
                           iconUrl: widget.subjectIcon ?? "",
+                          isPractice: false,
                         ),
 
                         /*Container(

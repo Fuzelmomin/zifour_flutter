@@ -10,6 +10,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/services/subject_service.dart';
+import '../../core/utils/user_preference.dart';
 import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../l10n/app_localizations.dart';
@@ -407,12 +408,50 @@ class _NewResultViewState extends State<_NewResultView>
           SizedBox(height: 25.h),
 
           // ── Action Button ──
-          if (widget.screenType != "3")
-            CustomGradientButton(
-              text:
-                  '⚡ Re-Practice This Topic Again ($total MCQs)',
-              onPressed: () => _onViewSolutions(),
-            ),
+          // if (widget.screenType != "3")
+          //   CustomGradientButton(
+          //     text:
+          //         '⚡ Re-Practice This Topic Again ($total MCQs)',
+          //     onPressed: () => _onViewSolutions(),
+          //   ),
+
+          widget.screenType == "3" ? Container() : CustomGradientButton(
+            text: 'View Solutions',
+            onPressed: () async{
+              print("View Solutions: ${widget.solution}");
+              final user = await UserPreference.getUserData();
+
+              if(widget.screenType == "2"){
+                _showSubjectDialog(context, widget.crtChlId, "", "expert");
+              }else if(widget.screenType == "4"){
+                _showSubjectDialog(context, "", widget.paperId ?? '', "test_series");
+              }
+              else {
+                if(widget.solution != null && widget.solution!.isNotEmpty){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VideoPlayerScreen(
+                        videoId: widget.solution ?? '',
+                        videoTitle: "",
+                      ),
+                    ),
+                  );
+                }else {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (context) => VideoSolutionUnavailableDialog(
+                      from: "solution",
+                      mcqType: widget.screenType,
+                      medType: user?.stuMedId ?? '2',
+                    ),
+                  );
+                }
+              }
+
+            },
+          ),
 
           SizedBox(height: 70.h),
         ],
@@ -504,7 +543,8 @@ class _NewResultViewState extends State<_NewResultView>
     );
   }
 
-  void _onViewSolutions() {
+  void _onViewSolutions() async{
+    final user = await UserPreference.getUserData();
     if (widget.screenType == "2") {
       _showSubjectDialog(context, widget.crtChlId, "", "expert");
     } else if (widget.screenType == "4") {
@@ -527,6 +567,7 @@ class _NewResultViewState extends State<_NewResultView>
           builder: (context) => VideoSolutionUnavailableDialog(
             from: "solution",
             mcqType: widget.screenType,
+            medType: user?.stuMedId ?? '2',
           ),
         );
       }

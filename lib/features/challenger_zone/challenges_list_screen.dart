@@ -20,6 +20,7 @@ import '../../core/widgets/custom_app_bar.dart';
 import '../../core/widgets/custom_gradient_button.dart';
 import '../../core/widgets/line_label_row.dart';
 import '../../l10n/app_localizations.dart';
+import '../dashboard/video_player_screen.dart';
 import 'bloc/challenges_list_bloc.dart';
 import 'challenge_result_screen.dart';
 import 'new_result_screen.dart';
@@ -142,7 +143,7 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
         final challenge = challenges[index];
         return ChallengesItemWidget(
           challenge: challenge,
-          btnName: challenge.erFlag == "2" ? "View Results" : "Start Exam",
+          btnName: challenge.erFlag == "2" ? "My Performance " : "Start Exam",
           onTap: () {
 
             if(challenge.erFlag == "2"){
@@ -181,15 +182,29 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
             }
 
           },
-          btnName2: "Edit Challenge",
+          btnName2: challenge.erFlag == "2" ? "View Solution" : "Edit Challenge",
           onEditTap: (){
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) =>
-                    ChallengeReadyScreen(
+
+            if(challenge.erFlag == "2"){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VideoPlayerScreen(
+                    videoId: challenge.solutionVideo!,
+                    videoTitle: challenge.oeChaName ?? "",
+                  ),
+                ),
+              );
+            }else {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) =>
+                      ChallengeReadyScreen(
                         crtChlId: int.parse(challenge.crtChlId),
                         challengeType: widget.challengeType,
-                      from: "edit",
-                    )));
+                        from: "edit",
+                      )));
+            }
+
           },
         );
       },

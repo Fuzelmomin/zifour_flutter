@@ -93,22 +93,28 @@ class ChallengesItemWidget extends StatelessWidget {
               Expanded(
                 child: CustomGradientArrowButton(
                   text: btnName ?? '',
+                  textStyle: AppTypography.inter12Bold.copyWith(
+                      fontSize: 13.0
+                  ),
                   onPressed: () {
                     onTap();
                   },
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  padding: EdgeInsets.symmetric(horizontal: 7.w),
                 ),
               ),
 
-              challenge?.erFlag == "1" ? Expanded(
+              Expanded(
                 child: CustomGradientArrowButton(
                   text: btnName2 ?? '',
+                  textStyle: AppTypography.inter12Bold.copyWith(
+                    fontSize: 13.0
+                  ),
                   onPressed: () {
                     onEditTap();
                   },
-                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  padding: EdgeInsets.symmetric(horizontal: 7.w),
                 ),
-              ) : Container(width: 0.0, height: 0.0,),
+              )
             ],
           ),
         ],

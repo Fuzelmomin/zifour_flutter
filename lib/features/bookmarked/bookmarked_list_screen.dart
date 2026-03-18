@@ -118,7 +118,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
 
                 // App Bar
                 Positioned(
-                  top: 30.h,
+                  top: 15.h,
                   left: 15.w,
                   right: 5.w,
                   child: CustomAppBar(
@@ -134,9 +134,9 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                             .toList();
                       },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.r),
+                          borderRadius: BorderRadius.circular(10.r),
                           gradient: LinearGradient(
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
@@ -159,7 +159,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                               selectedFilter,
                               style: const TextStyle(color: Colors.white),
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: 3),
                             const Icon(Icons.keyboard_arrow_down, color: Colors.white),
                           ],
                         ),
@@ -171,7 +171,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
 
                 // Main Content with BLoC
                 Positioned(
-                  top: 100.h,
+                  top: 85.h,
                   left: 20.w,
                   right: 20.w,
                   bottom: 0,
@@ -208,7 +208,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                                   state.errorMessage ?? 'Unable to load bookmarks.',
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.7),
-                                    fontSize: 14.sp,
+                                    fontSize: 14.0,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -237,8 +237,8 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                                 children: [
                                   Lottie.network(
                                     'https://lottie.host/b60fe9e0-8c77-4ece-b056-4d5aa54e53fa/KLlnG0PoUp.json',
-                                    width: 200.w,
-                                    height: 200.h,
+                                    width: 200.0,
+                                    height: 200.0,
                                     fit: BoxFit.contain,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Icon(
@@ -290,7 +290,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                                   children: [
                                     Icon(
                                       Icons.filter_alt_off,
-                                      size: 80.sp,
+                                      size: 80.0,
                                       color: Colors.white.withOpacity(0.3),
                                     ),
                                     SizedBox(height: 16.h),
@@ -298,7 +298,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                                       'No bookmarks found for "$selectedFilter"',
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(0.7),
-                                        fontSize: 16.sp,
+                                        fontSize: 16.0,
                                         fontWeight: FontWeight.w500,
                                       ),
                                       textAlign: TextAlign.center,
@@ -308,7 +308,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                                       'Try selecting a different filter.',
                                       style: TextStyle(
                                         color: Colors.white.withOpacity(0.5),
-                                        fontSize: 12.sp,
+                                        fontSize: 12.0,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),

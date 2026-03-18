@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zifour_sourcecode/core/utils/user_preference.dart';
 import 'package:zifour_sourcecode/core/widgets/subscription_dialogs.dart';
 import 'package:zifour_sourcecode/features/doubts/my_doubts_list_screen.dart';
@@ -115,6 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (bloc.state.status == HomeStatus.initial) {
         bloc.add(const HomeRequested());
       }
+      _checkAndShowPromoDialog();
     });
   }
 
@@ -880,5 +882,159 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     
     return "Free 7-Day Access\nto Excellence";
+  }
+
+  // ─── Promotional Image Dialog ───
+
+  static const String _promoLastShownKey = 'promo_dialog_last_shown';
+  static const String _promoImageUrl =
+      'https://plus.unsplash.com/premium_photo-1723568428336-4b4e21ec91af?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+
+  Future<void> _checkAndShowPromoDialog() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastShown = prefs.getInt(_promoLastShownKey) ?? 0;
+    final now = DateTime.now().millisecondsSinceEpoch;
+    //const oneHourMs = 60 * 60 * 1000; // 1 hour in milliseconds
+    const oneHourMs = 5 * 60 * 1000; // 5 Min in milliseconds
+
+
+    if (now - lastShown >= oneHourMs) {
+      await prefs.setInt(_promoLastShownKey, now);
+      if (mounted) {
+        Future.delayed(const Duration(milliseconds: 2500), () {
+          if (mounted) _showPromoDialog();
+        });
+      }
+    }
+  }
+
+  void _showPromoDialog() {
+    Navigator.of(context).push(
+      _SlideUpRoute(
+        page: _PromoDialogPage(imageUrl: _promoImageUrl),
+      ),
+    );
+  }
+}
+
+// ─── Slide-Up Route Animation ───
+
+class _SlideUpRoute extends PageRouteBuilder {
+  final Widget page;
+
+  _SlideUpRoute({required this.page})
+      : super(
+          opaque: false,
+          barrierDismissible: true,
+          barrierColor: Colors.black54,
+          transitionDuration: const Duration(milliseconds: 400),
+          reverseTransitionDuration: const Duration(milliseconds: 300),
+          pageBuilder: (context, animation, secondaryAnimation) => page,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final offsetAnimation = Tween<Offset>(
+              begin: const Offset(0, 1),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+            ));
+            return SlideTransition(
+              position: offsetAnimation,
+              child: child,
+            );
+          },
+        );
+}
+
+// ─── Promo Dialog Full Page ───
+
+class _PromoDialogPage extends StatelessWidget {
+  final String imageUrl;
+
+  const _PromoDialogPage({required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.5),
+      body: GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: Container(
+          color: Colors.transparent,
+          child: Center(
+            child: GestureDetector(
+              onTap: () {}, // absorb taps on the dialog itself
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // Image card
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16.r),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          height: 400.h,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          height: 350.h,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          child: const Icon(
+                            Icons.broken_image,
+                            color: Colors.white38,
+                            size: 60,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Close button (top-right)
+                    Positioned(
+                      top: -12,
+                      right: -12,
+                      child: GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black.withOpacity(0.7),
+                            border: Border.all(color: Colors.white24, width: 1),
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

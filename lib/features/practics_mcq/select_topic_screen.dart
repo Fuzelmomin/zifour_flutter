@@ -79,17 +79,18 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
 
                 // App Bar
                 Positioned(
-                  top: 20.h,
+                  top: 8.h,
                   left: 15.w,
                   right: 20.w,
                   child: CustomAppBar(
                     isBack: true,
+                    title: widget.chapterName,
                   ),
                 ),
 
                 // Main Content with BLoC
                 Positioned(
-                  top: 90.h,
+                  top: 77.h,
                   left: 0,
                   right: 0,
                   bottom: 0,
@@ -106,6 +107,10 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
                           subtitle: 'Select a Topic',
                           iconPath: AssetsPath.icPhysics,
                           iconUrl: widget.subjectIcon ?? '',
+                          isPractice: widget.from == "practice" ? true : false,
+                          mcqCount: "100",
+                          videoCount: "45",
+                          textCount: "25",
                         ),
                         SizedBox(height: 20.h),
                         
@@ -171,6 +176,10 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
                                         ),
                                       );
                                     },
+                                    isPractice: widget.from == "practice" ? true : false,
+                                    mcqCount: "100",
+                                    videoCount: "45",
+                                    textCount: "25",
                                   );
                                 }).toList(),
                               );
