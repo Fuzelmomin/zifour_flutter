@@ -30,6 +30,9 @@ ChapterModel _$ChapterModelFromJson(Map<String, dynamic> json) => ChapterModel(
       exam: json['exam'] as String,
       subId: json['sub_id'] as String?,
       chpPdf: json['chp_pdf'] as String?,
+      chpTotMcq: json['chp_tot_mcq'] as int?,
+      chpTotLectures: json['chp_tot_lectures'] as int?,
+      chpTotTest: json['chp_tot_test'] as int?,
     );
 
 Map<String, dynamic> _$ChapterModelToJson(ChapterModel instance) =>
@@ -41,4 +44,7 @@ Map<String, dynamic> _$ChapterModelToJson(ChapterModel instance) =>
       'exam': instance.exam,
       'sub_id': instance.subId,
       'chp_pdf': instance.chpPdf,
+      'chp_tot_mcq': instance.chpTotMcq,
+      'chp_tot_lectures': instance.chpTotLectures,
+      'chp_tot_test': instance.chpTotTest,
     };

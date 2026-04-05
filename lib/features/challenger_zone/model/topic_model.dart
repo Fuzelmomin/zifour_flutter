@@ -31,12 +31,21 @@ class TopicModel {
 
   final String name;
   final String chapter;
+  @JsonKey(name: 'tpc_tot_mcq')
+  final int? tpcTotMcq;
+  @JsonKey(name: 'tpc_tot_lectures')
+  final int? tpcTotLectures;
+  @JsonKey(name: 'tpc_tot_test')
+  final int? tpcTotTest;
 
   TopicModel({
     this.tpcId,
     required this.name,
     required this.chapter,
     this.letpId,
+    this.tpcTotMcq,
+    this.tpcTotLectures,
+    this.tpcTotTest,
   });
 
   factory TopicModel.fromJson(Map<String, dynamic> json) =>

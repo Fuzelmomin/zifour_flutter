@@ -25,9 +25,11 @@ Map<String, dynamic> _$SubjectResponseToJson(SubjectResponse instance) =>
 SubjectModel _$SubjectModelFromJson(Map<String, dynamic> json) => SubjectModel(
       subId: json['sub_id'] as String,
       name: json['name'] as String,
-  icon: json['icon'] as String,
+      icon: json['icon'] as String,
       totalLectures: json['total_lectures'] as String?,
       totalChapter: json['total_chapter'] as String?,
+      totalMcq: json['total_mcq'] as String?,
+      totalTest: json['total_test'] as String?,
     );
 
 Map<String, dynamic> _$SubjectModelToJson(SubjectModel instance) =>
@@ -37,4 +39,6 @@ Map<String, dynamic> _$SubjectModelToJson(SubjectModel instance) =>
       'icon': instance.icon,
       'total_lectures': instance.totalLectures,
       'total_chapter': instance.totalChapter,
+      'total_mcq': instance.totalMcq,
+      'total_test': instance.totalTest,
     };

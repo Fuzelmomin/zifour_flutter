@@ -28,7 +28,7 @@ class _MyNotesListScreenState extends State<MyNotesListScreen> {
   late McqNotesDeleteBloc _mcqNotesDeleteBloc;
   final McqTypeService _mcqTypeService = McqTypeService();
 
-  String selectedFilter = "Practice Mcq";
+  String selectedFilter = "Practice MCQs";
 
   @override
   void initState() {

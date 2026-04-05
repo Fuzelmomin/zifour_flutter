@@ -12,7 +12,7 @@ class SubjectHeaderWidget extends StatelessWidget {
   final bool isPractice;
   final String? mcqCount;
   final String? videoCount;
-  final String? textCount;
+  final String? testCount;
 
   const SubjectHeaderWidget({
     super.key,
@@ -23,13 +23,13 @@ class SubjectHeaderWidget extends StatelessWidget {
     required this.isPractice,
     this.mcqCount,
     this.videoCount,
-    this.textCount,
+    this.testCount,
   });
 
   bool get _hasStats =>
       (mcqCount != null && mcqCount!.isNotEmpty) ||
       (videoCount != null && videoCount!.isNotEmpty) ||
-      (textCount != null && textCount!.isNotEmpty);
+      (testCount != null && testCount!.isNotEmpty);
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +92,10 @@ class SubjectHeaderWidget extends StatelessWidget {
                           if (videoCount != null && videoCount!.isNotEmpty)
                             _buildStatItem(Icons.play_circle_outline, videoCount!, 'Video', const Color(0xFFFF8A65)),
                           if (videoCount != null && videoCount!.isNotEmpty &&
-                              textCount != null && textCount!.isNotEmpty)
+                              testCount != null && testCount!.isNotEmpty)
                             _buildDivider(),
-                          if (textCount != null && textCount!.isNotEmpty)
-                            _buildStatItem(Icons.description_outlined, textCount!, 'Text', const Color(0xFFA5D6A7)),
+                          if (testCount != null && testCount!.isNotEmpty)
+                            _buildStatItem(Icons.description_outlined, testCount!, 'Test', const Color(0xFFA5D6A7)),
                         ],
                       ),
                     ),

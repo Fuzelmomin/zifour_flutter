@@ -32,6 +32,10 @@ class SubjectModel {
   final String? totalLectures;
   @JsonKey(name: 'total_chapter')
   final String? totalChapter;
+  @JsonKey(name: 'total_mcq')
+  final String? totalMcq;
+  @JsonKey(name: 'total_test')
+  final String? totalTest;
 
   SubjectModel({
     required this.subId,
@@ -39,6 +43,8 @@ class SubjectModel {
     required this.icon,
     this.totalLectures,
     this.totalChapter,
+    this.totalMcq,
+    this.totalTest,
   });
 
   factory SubjectModel.fromJson(Map<String, dynamic> json) =>

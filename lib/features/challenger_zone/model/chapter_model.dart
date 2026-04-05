@@ -33,6 +33,12 @@ class ChapterModel {
   final String? subId;
   @JsonKey(name: 'chp_pdf')
   final String? chpPdf;
+  @JsonKey(name: 'chp_tot_mcq')
+  final int? chpTotMcq;
+  @JsonKey(name: 'chp_tot_lectures')
+  final int? chpTotLectures;
+  @JsonKey(name: 'chp_tot_test')
+  final int? chpTotTest;
 
   ChapterModel({
     required this.chpId,
@@ -42,6 +48,9 @@ class ChapterModel {
     required this.exam,
     this.subId,
     this.chpPdf,
+    this.chpTotMcq,
+    this.chpTotLectures,
+    this.chpTotTest,
   });
 
   ChapterModel copyWith({
@@ -52,6 +61,9 @@ class ChapterModel {
     String? exam,
     String? subId,
     String? chpPdf,
+    int? chpTotMcq,
+    int? chpTotLectures,
+    int? chpTotTest,
   }) {
     return ChapterModel(
       chpId: chpId ?? this.chpId,
@@ -61,6 +73,9 @@ class ChapterModel {
       exam: exam ?? this.exam,
       subId: subId ?? this.subId,
       chpPdf: chpPdf ?? this.chpPdf,
+      chpTotMcq: chpTotMcq ?? this.chpTotMcq,
+      chpTotLectures: chpTotLectures ?? this.chpTotLectures,
+      chpTotTest: chpTotTest ?? this.chpTotTest,
     );
   }
 

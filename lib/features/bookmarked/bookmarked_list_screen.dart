@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:zifour_sourcecode/core/widgets/signup_field_box.dart';
+import 'package:zifour_sourcecode/features/bookmarked/view_mcq_screen.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
@@ -28,7 +29,7 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
   late McqBookmarkDeleteBloc _mcqBookmarkDeleteBloc;
   final McqTypeService _mcqTypeService = McqTypeService();
 
-  String selectedFilter = "Practice Mcq";
+  String selectedFilter = "Practice MCQs";
 
   @override
   void initState() {
@@ -327,8 +328,26 @@ class _BookmarkedListScreenState extends State<BookmarkedListScreen> {
                                     title: bookmark.mcQuestion,
                                     description: bookmark.mcDescription,
                                     bookmarkType: bookmark.type,
+                                    mcOption1: bookmark.mcOption1,
+                                    mcOption2: bookmark.mcOption2,
+                                    mcOption3: bookmark.mcOption3,
+                                    mcOption4: bookmark.mcOption4,
+                                    mcAnswer: bookmark.mcAnswer,
+                                    mcSolution: bookmark.mcSolution,
+                                    chpName: bookmark.chpName,
+                                    tpcName: bookmark.tpcName,
                                     deleteClick: () {
                                       _showDeleteConfirmation(bookmark.mcqId);
+                                    },
+                                    onViewMcq: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ViewMcqScreen(
+                                            bookmark: bookmark,
+                                          ),
+                                        ),
+                                      );
                                     },
                                   );
                                 },

@@ -27,12 +27,18 @@ TopicModel _$TopicModelFromJson(Map<String, dynamic> json) => TopicModel(
       letpId: json['letp_id'] as String?,
       name: json['name'] as String,
       chapter: json['chapter'] as String,
+      tpcTotMcq: json['tpc_tot_mcq'] as int?,
+      tpcTotLectures: json['tpc_tot_lectures'] as int?,
+      tpcTotTest: json['tpc_tot_test'] as int?,
     );
 
 Map<String, dynamic> _$TopicModelToJson(TopicModel instance) =>
     <String, dynamic>{
       'tpc_id': instance.tpcId,
-      'letp_id': instance.tpcId,
+      'letp_id': instance.letpId,
       'name': instance.name,
       'chapter': instance.chapter,
+      'tpc_tot_mcq': instance.tpcTotMcq,
+      'tpc_tot_lectures': instance.tpcTotLectures,
+      'tpc_tot_test': instance.tpcTotTest,
     };

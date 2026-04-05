@@ -23,6 +23,10 @@ class SelectTopicScreen extends StatefulWidget {
   final String? chapterName;
   final String? subjectIcon;
 
+  final String? chapMcq;
+  final String? chapVideos;
+  final String? chapTest;
+
   const SelectTopicScreen({
     super.key,
     this.from,
@@ -31,6 +35,10 @@ class SelectTopicScreen extends StatefulWidget {
     this.chapterId,
     this.chapterName,
     this.subjectIcon,
+
+    this.chapMcq,
+    this.chapVideos,
+    this.chapTest,
   });
 
   @override
@@ -108,9 +116,9 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
                           iconPath: AssetsPath.icPhysics,
                           iconUrl: widget.subjectIcon ?? '',
                           isPractice: widget.from == "practice" ? true : false,
-                          mcqCount: "100",
-                          videoCount: "45",
-                          textCount: "25",
+                          mcqCount: widget.chapMcq ?? "",
+                          videoCount: widget.chapVideos ?? "",
+                          testCount: widget.chapTest ?? "",
                         ),
                         SizedBox(height: 20.h),
                         
@@ -177,9 +185,9 @@ class _SelectTopicScreenState extends State<SelectTopicScreen> {
                                       );
                                     },
                                     isPractice: widget.from == "practice" ? true : false,
-                                    mcqCount: "100",
-                                    videoCount: "45",
-                                    textCount: "25",
+                                    mcqCount: topic.tpcTotMcq?.toString() ?? "",
+                                    videoCount: topic.tpcTotLectures?.toString() ?? "",
+                                    testCount: topic.tpcTotTest?.toString() ?? "",
                                   );
                                 }).toList(),
                               );

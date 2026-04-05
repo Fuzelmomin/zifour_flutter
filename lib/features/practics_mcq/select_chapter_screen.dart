@@ -32,12 +32,20 @@ class SelectChapterScreen extends StatefulWidget {
   final String? subjectName;
   final String? subjectIcon;
 
+  final String? subMcq;
+  final String? subVideos;
+  final String? subTest;
+
   SelectChapterScreen({
     super.key, 
     this.from,
     this.subjectId,
     this.subjectName,
     this.subjectIcon,
+
+    this.subMcq,
+    this.subVideos,
+    this.subTest,
   });
 
   @override
@@ -135,9 +143,9 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                           iconPath: AssetsPath.icPhysics,
                           iconUrl: widget.subjectIcon ?? '',
                           isPractice: widget.from == "practice" ? true : false,
-                          mcqCount: "100",
-                          videoCount: "45",
-                          textCount: "25",
+                          mcqCount: widget.subMcq ?? "",
+                          videoCount: widget.subVideos ?? "",
+                          testCount: widget.subTest ?? "",
                         ),
                         SizedBox(height: 20.h),
                         // Dynamic chapter list based on from parameter
@@ -211,6 +219,10 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                               chapterId: chapter.chpId,
                                               chapterName: chapter.name,
                                               subjectIcon: widget.subjectIcon,
+
+                                              chapMcq: chapter.chpTotMcq?.toString() ?? '',
+                                              chapTest: chapter.chpTotTest?.toString() ?? '',
+                                              chapVideos: chapter.chpTotLectures?.toString() ?? '',
                                             ),
                                           ),
                                         );
@@ -248,9 +260,9 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                       }
                                     },
                                     isPractice: widget.from == "practice" ? true : false,
-                                    mcqCount: "100",
-                                    videoCount: "45",
-                                    textCount: "25",
+                                    mcqCount: chapter.chpTotMcq?.toString() ?? "",
+                                    videoCount: chapter.chpTotLectures?.toString() ?? "",
+                                    testCount: chapter.chpTotTest?.toString() ?? "",
                                   );
                                 }).toList(),
                               );
@@ -264,7 +276,10 @@ class _SelectChapterScreenState extends State<SelectChapterScreen> {
                                 itemClick: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => SelectTopicScreen(subjectIcon: widget.subjectIcon,)),
+                                    MaterialPageRoute(builder: (context) => SelectTopicScreen(
+                                      subjectIcon: widget.subjectIcon,
+
+                                    )),
                                   );
                                 },
                               );

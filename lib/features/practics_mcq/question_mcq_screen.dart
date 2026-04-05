@@ -14,6 +14,7 @@ import 'package:zifour_sourcecode/features/practics_mcq/mcq_feedback_dialog.dart
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
 
+import '../../core/api_client/api_constans.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/assets_path.dart';
 import '../../core/utils/connectivity_helper.dart';
@@ -196,6 +197,15 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
     );
 
     return text;
+  }
+
+  /// Converts relative image `src` paths in HTML to absolute URLs.
+  /// e.g. `src="uploads/image.png"` → `src="https://zifour.com/api/uploads/image.png"`
+  static String _resolveImageUrls(String html) {
+    return html.replaceAllMapped(
+      RegExp(r'src\s*=\s*"(?!https?://)(.*?)"'),
+      (match) => 'src="https://zifour.com/ka-admin/${match.group(1)}"',
+    );
   }
 
   void _startTimer() {
@@ -892,7 +902,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
               ),
               child: Html(
                 //data: currentMcq.mcQuestion.trim(),
-                data: _formatChemicalFormulas(currentMcq.mcQuestion.trim()),
+                data: _resolveImageUrls(_formatChemicalFormulas(currentMcq.mcQuestion.trim())),
                 //data: HtmlUnescapeAll().convert(currentMcq.mcQuestion.trim()),
                 style: {
                   "body": Style(
@@ -916,7 +926,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Html(
-                  data: _formatChemicalFormulas(currentMcq.mcDescription.trim()),
+                  data: _resolveImageUrls(_formatChemicalFormulas(currentMcq.mcDescription.trim())),
                   style: {
                     "body": Style(
                       color: Colors.white70,
@@ -1180,7 +1190,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
             const SizedBox(width: 14),
             Expanded(
               child: Html(
-                data: _formatChemicalFormulas(text),
+                data: _resolveImageUrls(_formatChemicalFormulas(text)),
                 style: {
                   "body": Style(
                     color: Colors.white,
@@ -1343,7 +1353,7 @@ class _SolutionDialogState extends State<SolutionDialog>
                     child: SingleChildScrollView(
                       physics: const BouncingScrollPhysics(),
                       child: Html(
-                        data: widget.solution,
+                        data: _QuestionMcqScreenState._resolveImageUrls(widget.solution),
                         style: {
                           "body": Style(
                             color: Colors.white.withOpacity(0.9),

@@ -90,6 +90,9 @@ class _PracticeSubjectScreenState extends State<PracticeSubjectScreen> {
                                       subjectId: subject.subId,
                                       subjectName: subject.name,
                                       subjectIcon: subject.icon,
+                                      subMcq: subject.totalMcq,
+                                      subTest: subject.totalLectures,
+                                      subVideos: subject.totalTest,
                                     ),
                                   ),
                                 );

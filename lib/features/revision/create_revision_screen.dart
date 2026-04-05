@@ -83,6 +83,10 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
   }
 
   Future<void> _loadChapters(List<String> subIds) async {
+    // Save old selections before clearing
+    final oldSelectedChpIds = List<String>.from(_selectedChpIds);
+    final oldSelectedTpcIds = List<String>.from(_selectedTpcIds);
+
     setState(() {
       _isLoadingDropdowns = true;
       _chapters = [];
@@ -97,20 +101,34 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
     );
     
     if (mounted) {
-      setState(() => _isLoadingDropdowns = false);
       List<ChapterModel> allChapters = [];
       for (var response in responses) {
         if (response.status == ApiStatus.success && response.data != null) {
           allChapters.addAll(response.data!.chapterList);
         }
       }
+
+      // Restore previously selected chapters that still exist in the new list
+      final newChpIdSet = allChapters.map((c) => c.chpId).toSet();
+      final restoredChpIds = oldSelectedChpIds.where((id) => newChpIdSet.contains(id)).toList();
+
       setState(() {
         _chapters = allChapters;
+        _selectedChpIds = restoredChpIds;
+        _isLoadingDropdowns = false;
       });
+
+      // If there are restored chapter selections, reload topics to restore topic selections too
+      if (restoredChpIds.isNotEmpty) {
+        await _loadTopics(restoredChpIds, previousSelectedTpcIds: oldSelectedTpcIds);
+      }
     }
   }
 
-  Future<void> _loadTopics(List<String> chpIds) async {
+  Future<void> _loadTopics(List<String> chpIds, {List<String>? previousSelectedTpcIds}) async {
+    // Save old selections before clearing
+    final oldSelectedTpcIds = previousSelectedTpcIds ?? List<String>.from(_selectedTpcIds);
+
     setState(() {
       _isLoadingDropdowns = true;
       _topics = [];
@@ -120,11 +138,20 @@ class _CreateRevisionScreenState extends State<CreateRevisionScreen> {
     final response = await _topicRepository.fetchTopics(chapterIds: chpIds);
     
     if (mounted) {
-      setState(() => _isLoadingDropdowns = false);
       if (response.status == ApiStatus.success && response.data != null) {
+        final newTopics = response.data!.topicList;
+
+        // Restore previously selected topics that still exist in the new list
+        final newTpcIdSet = newTopics.map((t) => t.tpcId).toSet();
+        final restoredTpcIds = oldSelectedTpcIds.where((id) => newTpcIdSet.contains(id)).toList();
+
         setState(() {
-          _topics = response.data!.topicList;
+          _topics = newTopics;
+          _selectedTpcIds = restoredTpcIds;
+          _isLoadingDropdowns = false;
         });
+      } else {
+        setState(() => _isLoadingDropdowns = false);
       }
     }
   }

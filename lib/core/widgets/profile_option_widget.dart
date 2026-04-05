@@ -11,7 +11,7 @@ class ProfileOptionWidget extends StatelessWidget {
   bool? isPractice;
   String? mcqCount;
   String? videoCount;
-  String? textCount;
+  String? testCount;
 
 
   ProfileOptionWidget({
@@ -22,14 +22,14 @@ class ProfileOptionWidget extends StatelessWidget {
     this.isPractice,
     this.mcqCount,
     this.videoCount,
-    this.textCount,
+    this.testCount,
   });
 
   bool get _hasStats =>
       isPractice == true &&
       ((mcqCount != null && mcqCount!.isNotEmpty) ||
        (videoCount != null && videoCount!.isNotEmpty) ||
-       (textCount != null && textCount!.isNotEmpty));
+       (testCount != null && testCount!.isNotEmpty));
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +84,12 @@ class ProfileOptionWidget extends StatelessWidget {
                               const Color(0xFFdd6b41),
                             ),
                           if (videoCount != null && videoCount!.isNotEmpty &&
-                              textCount != null && textCount!.isNotEmpty)
+                              testCount != null && testCount!.isNotEmpty)
                             SizedBox(width: 6.w),
-                          if (textCount != null && textCount!.isNotEmpty)
+                          if (testCount != null && testCount!.isNotEmpty)
                             _buildStatPill(
                               Icons.description_rounded,
-                              '$textCount Text',
+                              '$testCount Test',
                               const Color(0xFF78389f),
                             ),
                         ],

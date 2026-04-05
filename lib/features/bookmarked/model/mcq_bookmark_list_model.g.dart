@@ -30,6 +30,14 @@ McqBookmarkListItem _$McqBookmarkListItemFromJson(Map<String, dynamic> json) =>
       mcqId: json['mcq_id'] as String,
       mcQuestion: json['mc_question'] as String,
       mcDescription: json['mc_description'] as String,
+      mcOption1: json['mc_option1'] as String? ?? '',
+      mcOption2: json['mc_option2'] as String? ?? '',
+      mcOption3: json['mc_option3'] as String? ?? '',
+      mcOption4: json['mc_option4'] as String? ?? '',
+      mcAnswer: json['mc_answer'] as String? ?? '',
+      mcSolution: json['mc_solution'] as String? ?? '',
+      chpName: json['chp_name'] as String? ?? '',
+      tpcName: json['tpc_name'] as String? ?? '',
       type: json['type'] as String,
     );
 
@@ -40,5 +48,13 @@ Map<String, dynamic> _$McqBookmarkListItemToJson(
       'mcq_id': instance.mcqId,
       'mc_question': instance.mcQuestion,
       'mc_description': instance.mcDescription,
+      'mc_option1': instance.mcOption1,
+      'mc_option2': instance.mcOption2,
+      'mc_option3': instance.mcOption3,
+      'mc_option4': instance.mcOption4,
+      'mc_answer': instance.mcAnswer,
+      'mc_solution': instance.mcSolution,
+      'chp_name': instance.chpName,
+      'tpc_name': instance.tpcName,
       'type': instance.type,
     };

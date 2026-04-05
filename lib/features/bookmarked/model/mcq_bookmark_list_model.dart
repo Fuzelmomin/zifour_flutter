@@ -31,6 +31,22 @@ class McqBookmarkListItem {
   final String mcQuestion;
   @JsonKey(name: 'mc_description')
   final String mcDescription;
+  @JsonKey(name: 'mc_option1', defaultValue: '')
+  final String mcOption1;
+  @JsonKey(name: 'mc_option2', defaultValue: '')
+  final String mcOption2;
+  @JsonKey(name: 'mc_option3', defaultValue: '')
+  final String mcOption3;
+  @JsonKey(name: 'mc_option4', defaultValue: '')
+  final String mcOption4;
+  @JsonKey(name: 'mc_answer', defaultValue: '')
+  final String mcAnswer;
+  @JsonKey(name: 'mc_solution', defaultValue: '')
+  final String mcSolution;
+  @JsonKey(name: 'chp_name', defaultValue: '')
+  final String chpName;
+  @JsonKey(name: 'tpc_name', defaultValue: '')
+  final String tpcName;
   final String type;
 
   McqBookmarkListItem({
@@ -38,6 +54,14 @@ class McqBookmarkListItem {
     required this.mcqId,
     required this.mcQuestion,
     required this.mcDescription,
+    required this.mcOption1,
+    required this.mcOption2,
+    required this.mcOption3,
+    required this.mcOption4,
+    required this.mcAnswer,
+    required this.mcSolution,
+    required this.chpName,
+    required this.tpcName,
     required this.type,
   });
 
@@ -45,5 +69,7 @@ class McqBookmarkListItem {
       _$McqBookmarkListItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$McqBookmarkListItemToJson(this);
+
+  List<String> get options => [mcOption1, mcOption2, mcOption3, mcOption4];
 }
 
