@@ -24,6 +24,7 @@ class SubmitMcqAnswerRepository {
     String? tpcId,
     String? pkId,
     String? paperId,
+    String? totalTime,
   }) async {
     try {
       final isConnected = await ConnectivityHelper.checkConnectivity();
@@ -48,6 +49,7 @@ class SubmitMcqAnswerRepository {
             'stu_id': user.stuId,
             'tpc_id': tpcId,
             'sample_test': "0",
+            'tot_time_submt': totalTime,
             'mcq_list': jsonEncode(mcqList),
           },
         );
@@ -60,6 +62,7 @@ class SubmitMcqAnswerRepository {
             'chp_id': "0",
             'pk_id': pkId,
             'g_pa_id': paperId,
+            'tot_time_submt': totalTime,
             'mcq_list': jsonEncode(mcqList),
           },
         );
@@ -70,6 +73,7 @@ class SubmitMcqAnswerRepository {
           queryParameters: {
             'stu_id': user.stuId,
             'crt_chl_id': crtChlId,
+            'tot_time_submt': totalTime,
             'mcq_list': jsonEncode(mcqList),
           },
         );

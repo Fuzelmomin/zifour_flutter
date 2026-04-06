@@ -85,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     final Widget destination =
-        isLoggedIn ? const DashboardScreen() : LanguageSelectionScreen();
+        isLoggedIn ? DashboardScreen(from: "init",) : LanguageSelectionScreen();
         //isLoggedIn ? const DashboardScreen() : ChallengerZoneScreen();
 
     Navigator.pushReplacement(

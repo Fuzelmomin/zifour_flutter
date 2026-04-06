@@ -113,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
             // Navigate to dashboard/home screen
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const DashboardScreen()),
+              MaterialPageRoute(builder: (context) => DashboardScreen(from: "init")),
               (route) => false,
             );
           } else if (state is LoginError) {

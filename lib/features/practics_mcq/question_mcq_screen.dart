@@ -201,10 +201,17 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
 
   /// Converts relative image `src` paths in HTML to absolute URLs.
   /// e.g. `src="uploads/image.png"` → `src="https://zifour.com/api/uploads/image.png"`
+  // static String _resolveImageUrls(String html) {
+  //   return html.replaceAllMapped(
+  //     RegExp(r'src\s*=\s*"(?!https?://)(.*?)"'),
+  //     (match) => 'src="https://zifour.com/ka-admin/${match.group(1)}"',
+  //   );
+  // }
+
   static String _resolveImageUrls(String html) {
     return html.replaceAllMapped(
       RegExp(r'src\s*=\s*"(?!https?://)(.*?)"'),
-      (match) => 'src="https://zifour.com/ka-admin/${match.group(1)}"',
+          (match) => '${match.group(1)}"',
     );
   }
 
@@ -444,7 +451,8 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
         apiType: widget.mcqType,
         tpcId: widget.topicId,
         paperId: widget.paperId,
-        pkId: widget.pkId
+        pkId: widget.pkId,
+        totalTime: _totalElapsedSeconds.toString(),
       ),
     );
   }

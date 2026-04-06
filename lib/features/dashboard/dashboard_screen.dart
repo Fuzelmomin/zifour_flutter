@@ -19,7 +19,8 @@ import 'modules_screen.dart';
 import 'profile_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  String? from;
+  DashboardScreen({super.key, this.from});
 
   @override
   State<DashboardScreen> createState() => DashboardScreenState();
@@ -65,7 +66,7 @@ class DashboardScreenState extends State<DashboardScreen> {
     return [
       BlocProvider.value(
         value: _homeBloc,
-        child: const HomeScreen(),
+        child: HomeScreen(from: widget.from ?? '',),
       ),
      // MentorsListScreen(),
       //const AllCoursesScreen(),

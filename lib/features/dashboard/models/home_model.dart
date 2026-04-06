@@ -10,6 +10,7 @@ class HomeResponse {
   final String? pkId;
   final String? stuTrialDay;
   final String? trialMsg;
+  final String? popImage;
   final List<MentorVideo> mentorVideos;
   final List<HomeSlider> sliders;
   final List<CoursePackage> packages;
@@ -27,6 +28,7 @@ class HomeResponse {
     this.pkId,
     this.stuTrialDay,
     this.trialMsg,
+    this.popImage,
   });
 
   factory HomeResponse.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class HomeResponse {
       stuTrialDay: json['stu_trial_day']?.toString() ?? '',
       //stuTrialDay: '0',
       trialMsg: json['trial_msg']?.toString() ?? '',
+      popImage: json['pop_image']?.toString() ?? '',
       notificationIcon: _parseInt(json['ntf_icon']),
       lectureCrash: _parseInt(json['lec_crsh']),
       lectureReport: _parseInt(json['lec_rept']),

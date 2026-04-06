@@ -42,7 +42,8 @@ import 'models/home_model.dart';
 import 'video_player_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String? from;
+  const HomeScreen({super.key, this.from});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -116,7 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (bloc.state.status == HomeStatus.initial) {
         bloc.add(const HomeRequested());
       }
-      _checkAndShowPromoDialog();
     });
   }
 
@@ -186,6 +186,10 @@ class _HomeScreenState extends State<HomeScreen> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _startBannerAutoScroll(state.data!.sliders);
             });
+
+            if(widget.from == "init"){
+              _checkAndShowPromoDialog(state.data?.popImage ?? '');
+            }
           }
         },
         child: Scaffold(
@@ -583,103 +587,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildHomeOptionSection() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 15.h,
-        children: [
-          HomeOptionsItem(
-            title: 'Start your free trial',
-            subTitle: 'Free 7-Day Access to Excellence',
-            imagePath: AssetsPath.svgFreeTrial,
-          ),
-          HomeOptionsItem(
-            title: 'Live Classes',
-            subTitle: 'Learn Live With Experts',
-            imagePath: AssetsPath.svgLiveClass,
-            itemClick: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const LiveClassScreen()),
-              );
-            },
-          ),
-          HomeOptionsItem(
-            title: 'My Courses',
-            subTitle: 'Live Classes Learn Live with mentors',
-            imagePath: AssetsPath.svgMyCourse,
-            itemClick: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LearningCourseScreen()),
-              );
-            },
-          ),
-          HomeOptionsItem(
-            title: 'Practice MCQS',
-            subTitle: 'Master Every Concept',
-            imagePath: AssetsPath.svgPractice,
-            itemClick: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const PracticeSubjectScreen()),
-              );
-            },
-          ),
-          HomeOptionsItem(
-            title: 'All india Challenger Zone',
-            subTitle: 'Compete Across India',
-            imagePath: AssetsPath.svgChallenger,
-            itemClick: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ChallengerZoneScreen()),
-              );
-            },
-          ),
-          HomeOptionsItem(
-            title: 'Test Series',
-            subTitle: 'Full Syllabus Mock Test',
-            imagePath: AssetsPath.svgTestSeries,
-            itemClick: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AllIndiaTestSeriesScreen(
-                  pkId: pkId,
-
-                )),
-              );
-            },
-          ),
-          HomeOptionsItem(
-            title: 'AI Based Performance Analysis',
-            subTitle: 'Know Your Complete Progress',
-            imagePath: AssetsPath.svgAIBase,
-            itemClick: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AiPerformanceAnalysisScreen()),
-              );
-            },
-          ),
-          HomeOptionsItem(
-            title: 'Ask Your Doubts',
-            subTitle: 'Get Expert Solutions',
-            imagePath: AssetsPath.svgAskDoubts,
-            itemClick: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AskDoubtsScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildHomeOptionNewSection() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -873,6 +780,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final homeState = context.read<HomeBloc>().state;
     final stuTrialDayStr = homeState.data?.stuTrialDay ?? '0';
     final int stuTrialDay = int.tryParse(stuTrialDayStr) ?? 0;
+
     
     if (stuTrialDay > 0) {
       if (stuTrialDay == 1) {
@@ -887,10 +795,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // ─── Promotional Image Dialog ───
 
   static const String _promoLastShownKey = 'promo_dialog_last_shown';
-  static const String _promoImageUrl =
-      'https://plus.unsplash.com/premium_photo-1723568428336-4b4e21ec91af?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
-  Future<void> _checkAndShowPromoDialog() async {
+
+  Future<void> _checkAndShowPromoDialog(String _promoImageUrl) async {
     final prefs = await SharedPreferences.getInstance();
     final lastShown = prefs.getInt(_promoLastShownKey) ?? 0;
     final now = DateTime.now().millisecondsSinceEpoch;
@@ -902,13 +809,13 @@ class _HomeScreenState extends State<HomeScreen> {
       await prefs.setInt(_promoLastShownKey, now);
       if (mounted) {
         Future.delayed(const Duration(milliseconds: 2500), () {
-          if (mounted) _showPromoDialog();
+          if (mounted) _showPromoDialog(_promoImageUrl);
         });
       }
     }
   }
 
-  void _showPromoDialog() {
+  void _showPromoDialog(String _promoImageUrl) {
     Navigator.of(context).push(
       _SlideUpRoute(
         page: _PromoDialogPage(imageUrl: _promoImageUrl),

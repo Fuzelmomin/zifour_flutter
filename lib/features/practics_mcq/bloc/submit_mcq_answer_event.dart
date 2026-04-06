@@ -10,6 +10,7 @@ class SubmitMcqAnswerRequested extends SubmitMcqAnswerEvent {
   final String? tpcId;
   final String? pkId;
   final String? paperId;
+  final String? totalTime;
   final List<Map<String, String>> mcqList;
 
   const SubmitMcqAnswerRequested({
@@ -19,6 +20,7 @@ class SubmitMcqAnswerRequested extends SubmitMcqAnswerEvent {
     this.tpcId,
     this.pkId,
     this.paperId,
+    this.totalTime,
   });
 }
 

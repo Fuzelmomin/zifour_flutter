@@ -984,7 +984,7 @@ class _SignupScreenState extends State<SignupScreen> {
               // Navigate to dashboard
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const DashboardScreen()),
+                MaterialPageRoute(builder: (context) => DashboardScreen(from: "init")),
                 (route) => false,
               );
             } else {

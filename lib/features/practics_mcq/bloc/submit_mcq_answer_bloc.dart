@@ -33,6 +33,7 @@ class SubmitMcqAnswerBloc
       tpcId: event.tpcId,
       pkId: event.pkId,
       paperId: event.paperId,
+      totalTime: event.totalTime,
     );
 
     if (response.status == ApiStatus.success && response.data != null) {
