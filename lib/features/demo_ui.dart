@@ -5,7 +5,7 @@ class DashboardScreen extends StatelessWidget {
 
   final List<Map<String, dynamic>> menuItems = [
     {
-      "title": "Start Your Free Trial",
+      "title": "Upgrade for unlimited learning",
       "subtitle": "",
       "icon": Icons.bolt,
       "color": const Color(0xFF6857F9),

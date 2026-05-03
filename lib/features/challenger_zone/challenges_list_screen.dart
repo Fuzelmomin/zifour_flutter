@@ -152,7 +152,7 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => NewResultScreen(
-                    title: 'Challenge Result 🏆',
+                    title: 'Challenger Result 🏆',
                     crtChlId: challenge.crtChlId,
                     solution: challenge.solutionVideo,
                     screenType: "3", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
@@ -182,19 +182,23 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
             }
 
           },
-          btnName2: challenge.erFlag == "2" ? "View Solution" : "Edit Challenge",
+          btnName2: challenge.erFlag == "2" ? widget.from == "zone" && widget.challengeType == "1" ? "Text Solution" : "View Solution" : "Edit Challenge",
           onEditTap: (){
 
             if(challenge.erFlag == "2"){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VideoPlayerScreen(
-                    videoId: challenge.solutionVideo!,
-                    videoTitle: challenge.oeChaName ?? "",
+              if(challenge.textSolution != null && challenge.textSolution!.isNotEmpty){
+                _showSolutionDialog(challenge.textSolution!);
+              }else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VideoPlayerScreen(
+                      videoId: challenge.solutionVideo!,
+                      videoTitle: challenge.oeChaName ?? "",
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             }else {
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) =>
@@ -211,6 +215,14 @@ class _ChallengesListScreenState extends State<ChallengesListScreen> {
       separatorBuilder: (BuildContext context, int index) {
         return SizedBox(height: 15.h);
       },
+    );
+  }
+
+  void _showSolutionDialog(String solution) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => SolutionDialog(solution: solution),
     );
   }
 

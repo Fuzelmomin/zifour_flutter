@@ -46,6 +46,9 @@ class ChallengeListItem {
   final String solutionVideo;
   final String date;
 
+  @JsonKey(name: 'text_solution')
+  final String? textSolution;
+
   ChallengeListItem({
     required this.crtChlId,
     required this.stuId,
@@ -60,6 +63,7 @@ class ChallengeListItem {
     required this.oeChaName,
     required this.solutionVideo,
     required this.date,
+    this.textSolution,
   });
 
   factory ChallengeListItem.fromJson(Map<String, dynamic> json) =>

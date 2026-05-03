@@ -24,12 +24,12 @@ Map<String, dynamic> _$TopicResponseToJson(TopicResponse instance) =>
 
 TopicModel _$TopicModelFromJson(Map<String, dynamic> json) => TopicModel(
       tpcId: json['tpc_id'] as String?,
-      letpId: json['letp_id'] as String?,
       name: json['name'] as String,
       chapter: json['chapter'] as String,
-      tpcTotMcq: json['tpc_tot_mcq'] as int?,
-      tpcTotLectures: json['tpc_tot_lectures'] as int?,
-      tpcTotTest: json['tpc_tot_test'] as int?,
+      letpId: json['letp_id'] as String?,
+      tpcTotMcq: (json['tpc_tot_mcq'] as num?)?.toInt(),
+      tpcTotLectures: (json['tpc_tot_lectures'] as num?)?.toInt(),
+      tpcTotTest: (json['tpc_tot_test'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$TopicModelToJson(TopicModel instance) =>

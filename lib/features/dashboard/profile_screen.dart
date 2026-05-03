@@ -354,7 +354,7 @@ class _ProfileScreenContentState extends State<_ProfileScreenContent> {
                     ),
                     SizedBox(height: 20.h),
                     ProfileOptionWidget(
-                      title: '${AppLocalizations.of(context)?.studentInfo}',
+                      title: 'My Info',
                       itemClick: (){
                         Navigator.push(
                           context,

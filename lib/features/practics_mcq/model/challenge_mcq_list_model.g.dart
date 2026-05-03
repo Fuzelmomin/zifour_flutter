@@ -37,7 +37,6 @@ Map<String, dynamic> _$ChallengeMcqListResponseToJson(
 McqItem _$McqItemFromJson(Map<String, dynamic> json) => McqItem(
       mcId: json['mc_id'] as String,
       mcQuestion: json['mc_question'] as String,
-      //mcQuestion: "An organic compound &lsquo;X&rsquo; on treatment with pyridinium chloro chromate in dichloromethane gives compound &lsquo;Y&rsquo;. Compound &lsquo;Y&rsquo; reacts with I<sub>2</sub> and alkali to form triiodomethane.",
       mcDescription: json['mc_description'] as String,
       mcOption1: json['mc_option1'] as String,
       mcOption2: json['mc_option2'] as String,

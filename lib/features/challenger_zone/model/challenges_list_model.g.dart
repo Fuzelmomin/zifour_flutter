@@ -39,6 +39,7 @@ ChallengeListItem _$ChallengeListItemFromJson(Map<String, dynamic> json) =>
       updatedAt: json['updated_at'] as String,
       oeChaName: json['oe_cha_name'] as String,
       solutionVideo: json['solution_video'] as String,
+      textSolution: json['text_solution'] as String?,
       date: json['date'] as String,
     );
 
@@ -55,5 +56,6 @@ Map<String, dynamic> _$ChallengeListItemToJson(ChallengeListItem instance) =>
       'updated_at': instance.updatedAt,
       'oe_cha_name': instance.oeChaName,
       'solution_video': instance.solutionVideo,
+      'text_solution': instance.textSolution,
       'date': instance.date,
     };

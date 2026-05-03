@@ -125,6 +125,9 @@ class _ModulesScreenState extends State<ModulesScreen> {
                         ),
                       ),
                       SizedBox(height: isLandscape ? 6 : 10.h),
+                      Text('Modules will be available from June', textAlign: TextAlign.left,
+                        style: AppTypography.inter12Regular.copyWith(color: AppColors.white, fontSize: 13.sp),),
+                      SizedBox(height: isLandscape ? 6 : 10.h),
                       CustomGradientButton(
                         text: "Buy Modules",
                         onPressed: (){

@@ -86,16 +86,16 @@ class SubjectHeaderWidget extends StatelessWidget {
                         children: [
                           if (mcqCount != null && mcqCount!.isNotEmpty)
                             _buildStatItem(Icons.quiz_outlined, mcqCount!, 'MCQs', const Color(0xFF4FC3F7)),
-                          if (mcqCount != null && mcqCount!.isNotEmpty &&
-                              videoCount != null && videoCount!.isNotEmpty)
-                            _buildDivider(),
-                          if (videoCount != null && videoCount!.isNotEmpty)
-                            _buildStatItem(Icons.play_circle_outline, videoCount!, 'Video', const Color(0xFFFF8A65)),
-                          if (videoCount != null && videoCount!.isNotEmpty &&
-                              testCount != null && testCount!.isNotEmpty)
-                            _buildDivider(),
-                          if (testCount != null && testCount!.isNotEmpty)
-                            _buildStatItem(Icons.description_outlined, testCount!, 'Test', const Color(0xFFA5D6A7)),
+                          // if (mcqCount != null && mcqCount!.isNotEmpty &&
+                          //     videoCount != null && videoCount!.isNotEmpty)
+                          //   _buildDivider(),
+                          // if (videoCount != null && videoCount!.isNotEmpty)
+                          //   _buildStatItem(Icons.play_circle_outline, videoCount!, 'Video', const Color(0xFFFF8A65)),
+                          // if (videoCount != null && videoCount!.isNotEmpty &&
+                          //     testCount != null && testCount!.isNotEmpty)
+                          //   _buildDivider(),
+                          // if (testCount != null && testCount!.isNotEmpty)
+                          //   _buildStatItem(Icons.description_outlined, testCount!, 'Test', const Color(0xFFA5D6A7)),
                         ],
                       ),
                     ),

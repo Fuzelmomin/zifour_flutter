@@ -284,7 +284,7 @@ class _NewResultViewState extends State<_NewResultView>
                               Text(
                                 '${(percentage * _gaugeAnimation.value).round()}%',
                                 style: AppTypography.inter24Bold.copyWith(
-                                  fontSize: 36.sp,
+                                  fontSize: 36.0,
                                   color: AppColors.white,
                                 ),
                               ),
@@ -357,63 +357,61 @@ class _NewResultViewState extends State<_NewResultView>
           if (wrong > 0) SizedBox(height: 15.h),
 
           // ── 2×2 Metric Cards ──
-          Row(
-            spacing: 12.w,
-            children: [
-              Expanded(
-                child: _metricCard(
-                  icon: Icons.speed_rounded,
-                  iconColor: const Color(0xFFBB86FC),
-                  label: 'Speed',
-                  labelBold: 'Score',
-                  value: '$speedScore / 100',
-                ),
-              ),
-              Expanded(
-                child: _metricCard(
-                  icon: Icons.track_changes_rounded,
-                  iconColor: const Color(0xFF4CAF50),
-                  label: 'Accuracy',
-                  labelBold: 'Score',
-                  value: '$accuracyScore / 100',
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            spacing: 12.w,
-            children: [
-              Expanded(
-                child: _metricCard(
-                  icon: Icons.timer_outlined,
-                  iconColor: const Color(0xFFFF9800),
-                  label: 'Time',
-                  labelBold: 'Pressure',
-                  value: '$timePressure%',
-                ),
-              ),
-              Expanded(
-                child: _metricCard(
-                  icon: Icons.trending_up_rounded,
-                  iconColor: const Color(0xFF29B6F6),
-                  label: 'Consistent',
-                  labelBold: 'Effort',
-                  value: '$consistentEffort%',
-                ),
-              ),
-            ],
-          ),
+          // Row(
+          //   spacing: 12.w,
+          //   children: [
+          //     Expanded(
+          //       child: _metricCard(
+          //         icon: Icons.speed_rounded,
+          //         iconColor: const Color(0xFFBB86FC),
+          //         label: 'Speed',
+          //         labelBold: 'Score',
+          //         value: '$speedScore / 100',
+          //       ),
+          //     ),
+          //     Expanded(
+          //       child: _metricCard(
+          //         icon: Icons.track_changes_rounded,
+          //         iconColor: const Color(0xFF4CAF50),
+          //         label: 'Accuracy',
+          //         labelBold: 'Score',
+          //         value: '$accuracyScore / 100',
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          // SizedBox(height: 12.h),
+          // Row(
+          //   spacing: 12.w,
+          //   children: [
+          //     Expanded(
+          //       child: _metricCard(
+          //         icon: Icons.timer_outlined,
+          //         iconColor: const Color(0xFFFF9800),
+          //         label: 'Time',
+          //         labelBold: 'Pressure',
+          //         value: '$timePressure%',
+          //       ),
+          //     ),
+          //     Expanded(
+          //       child: _metricCard(
+          //         icon: Icons.trending_up_rounded,
+          //         iconColor: const Color(0xFF29B6F6),
+          //         label: 'Consistent',
+          //         labelBold: 'Effort',
+          //         value: '$consistentEffort%',
+          //       ),
+          //     ),
+          //   ],
+          // ),
 
           SizedBox(height: 25.h),
 
-          // ── Action Button ──
-          // if (widget.screenType != "3")
-          //   CustomGradientButton(
-          //     text:
-          //         '⚡ Re-Practice This Topic Again ($total MCQs)',
-          //     onPressed: () => _onViewSolutions(),
-          //   ),
+          // ── MCQ Type-wise Accuracy List (Practice only) ──
+          if (widget.screenType == "1" &&
+              widget.result?.mcqTypeList != null &&
+              widget.result!.mcqTypeList!.isNotEmpty)
+            _buildMcqTypeAccuracySection(widget.result!.mcqTypeList!),
 
           widget.screenType == "3" ? Container() : CustomGradientButton(
             text: 'View Solutions',
@@ -676,7 +674,7 @@ class _NewResultViewState extends State<_NewResultView>
     } else if (widget.screenType == "4") {
       appBarTitle = 'Test Series Completed! 🏆';
     } else {
-      appBarTitle = widget.title ?? 'Challenge Result 🏆';
+      appBarTitle = widget.title ?? 'Challenger Result 🏆';
     }
 
     return Scaffold(
@@ -814,6 +812,122 @@ class _NewResultViewState extends State<_NewResultView>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // ──────────────────────── MCQ Type Accuracy Section ────────────────────────
+
+  /// Returns gradient colors based on accuracy value:
+  /// Green (≥70%), Orange (40–69%), Red (<40%)
+  List<Color> _accuracyGradient(double accuracyValue) {
+    if (accuracyValue >= 75) {
+      // Green gradient – excellent accuracy
+      return const [Color(0xFF43E97B), Color(0xFF38F9D7)];
+    } else if (accuracyValue >= 50) {
+      // Yellow gradient – good accuracy
+      return const [Color(0xFFFFD54F), Color(0xFFFFC107)];
+    } else if (accuracyValue >= 25) {
+      // Orange gradient – average accuracy
+      return const [Color(0xFFFFA726), Color(0xFFFF7043)];
+    } else {
+      // Red gradient – poor accuracy
+      return const [Color(0xFFFF5252), Color(0xFFFF1744)];
+    }
+  }
+
+  Widget _buildMcqTypeAccuracySection(List<McqTypeItem> items) {
+    return Column(
+      children: [
+        _glassCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Type-wise Accuracy',
+                style: AppTypography.inter16SemiBold.copyWith(
+                  color: AppColors.white,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              ...List.generate(items.length, (index) {
+                final item = items[index];
+                final accuracyValue = _parseNum(item.accuracy);
+                final gradientColors = _accuracyGradient(accuracyValue);
+                return _buildAccuracyRow(
+                  name: item.name ?? 'Unknown',
+                  accuracy: item.accuracy ?? '0%',
+                  accuracyValue: accuracyValue,
+                  gradientColors: gradientColors,
+                  isLast: index == items.length - 1,
+                );
+              }),
+            ],
+          ),
+        ),
+        SizedBox(height: 20.h),
+      ],
+    );
+  }
+
+  Widget _buildAccuracyRow({
+    required String name,
+    required String accuracy,
+    required double accuracyValue,
+    required List<Color> gradientColors,
+    required bool isLast,
+  }) {
+    // Ensure accuracy text always ends with '%'
+    final displayAccuracy =
+        accuracy.contains('%') ? accuracy : '${accuracyValue.round()}%';
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: isLast ? 0 : 14.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Name
+          SizedBox(
+            //width: 110.w,
+            child: Text(
+              name,
+              style: AppTypography.inter14Regular.copyWith(
+                color: AppColors.white.withOpacity(0.85),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6.r),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6.r),
+                gradient: LinearGradient(
+                  colors: gradientColors,
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: gradientColors.first.withOpacity(0.4),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Text(
+                '$displayAccuracy accuracy',
+                style: AppTypography.inter12Medium.copyWith(
+                  color: AppColors.white.withOpacity(0.9),
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

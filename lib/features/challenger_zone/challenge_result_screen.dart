@@ -219,7 +219,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data.subject ?? "${widget.screenType == "1" ? "Practice Result" : widget.screenType == "4" ? "Test series Result" : "Challenge Result"}",
+                  data.subject ?? "${widget.screenType == "1" ? "Practice Result" : widget.screenType == "4" ? "Test series Result" : "Challenger Result"}",
                   style: AppTypography.inter16Medium,
                 ),
                 SizedBox(height: 4),
@@ -636,7 +636,7 @@ class _ChallengeResultViewState extends State<_ChallengeResultView> {
                   right: 5.w,
                   child: CustomAppBar(
                     isBack: true,
-                    title: widget.title ?? "${widget.screenType == "1" ? "Test series Result" : 'Challenge Result 🏆'}",
+                    title: widget.title ?? "${widget.screenType == "1" ? "Test series Result" : 'Challenger Result 🏆'}",
                   )),
               // Main Content with BLoC
               Positioned(

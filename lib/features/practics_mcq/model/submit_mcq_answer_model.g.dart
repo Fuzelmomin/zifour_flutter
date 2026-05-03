@@ -11,8 +11,8 @@ SubmitMcqAnswerResponse _$SubmitMcqAnswerResponseFromJson(
     SubmitMcqAnswerResponse(
       status: json['status'] as bool,
       message: json['message'] as String,
+      tpcName: json['tpc_name'] as String?,
       chpName: json['chp_name'] as String?,
-      pdfFile: json['pdf_file'] as String?,
       standard: json['standard'] as String?,
       medium: json['medium'] as String?,
       subject: json['subject'] as String?,
@@ -24,6 +24,10 @@ SubmitMcqAnswerResponse _$SubmitMcqAnswerResponseFromJson(
       wrong: json['wrong'] as String?,
       marks: json['marks'] as String?,
       percentage: json['percentage'] as String?,
+      pdfFile: json['pdf_file'] as String?,
+      mcqTypeList: (json['mcq_type_list'] as List<dynamic>?)
+          ?.map((e) => McqTypeItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$SubmitMcqAnswerResponseToJson(
@@ -31,6 +35,7 @@ Map<String, dynamic> _$SubmitMcqAnswerResponseToJson(
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
+      'tpc_name': instance.tpcName,
       'chp_name': instance.chpName,
       'standard': instance.standard,
       'medium': instance.medium,
@@ -43,5 +48,19 @@ Map<String, dynamic> _$SubmitMcqAnswerResponseToJson(
       'wrong': instance.wrong,
       'marks': instance.marks,
       'percentage': instance.percentage,
-          'pdf_file': instance.pdfFile,
+      'pdf_file': instance.pdfFile,
+      'mcq_type_list': instance.mcqTypeList,
+    };
+
+McqTypeItem _$McqTypeItemFromJson(Map<String, dynamic> json) => McqTypeItem(
+      typeId: json['type_id'] as String?,
+      name: json['name'] as String?,
+      accuracy: json['accuracy'] as String?,
+    );
+
+Map<String, dynamic> _$McqTypeItemToJson(McqTypeItem instance) =>
+    <String, dynamic>{
+      'type_id': instance.typeId,
+      'name': instance.name,
+      'accuracy': instance.accuracy,
     };

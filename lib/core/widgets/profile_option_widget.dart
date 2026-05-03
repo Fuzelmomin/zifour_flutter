@@ -77,21 +77,21 @@ class ProfileOptionWidget extends StatelessWidget {
                           if (mcqCount != null && mcqCount!.isNotEmpty &&
                               videoCount != null && videoCount!.isNotEmpty)
                             SizedBox(width: 6.w),
-                          if (videoCount != null && videoCount!.isNotEmpty)
-                            _buildStatPill(
-                              Icons.play_circle_filled,
-                              '$videoCount Video',
-                              const Color(0xFFdd6b41),
-                            ),
+                          // if (videoCount != null && videoCount!.isNotEmpty)
+                          //   _buildStatPill(
+                          //     Icons.play_circle_filled,
+                          //     '$videoCount Video',
+                          //     const Color(0xFFdd6b41),
+                          //   ),
                           if (videoCount != null && videoCount!.isNotEmpty &&
                               testCount != null && testCount!.isNotEmpty)
                             SizedBox(width: 6.w),
-                          if (testCount != null && testCount!.isNotEmpty)
-                            _buildStatPill(
-                              Icons.description_rounded,
-                              '$testCount Test',
-                              const Color(0xFF78389f),
-                            ),
+                          // if (testCount != null && testCount!.isNotEmpty)
+                          //   _buildStatPill(
+                          //     Icons.description_rounded,
+                          //     '$testCount Test',
+                          //     const Color(0xFF78389f),
+                          //   ),
                         ],
                       ),
                     ],

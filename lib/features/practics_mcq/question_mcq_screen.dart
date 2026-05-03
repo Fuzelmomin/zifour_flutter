@@ -13,6 +13,7 @@ import 'package:zifour_sourcecode/features/challenger_zone/new_result_screen.dar
 import 'package:zifour_sourcecode/features/practics_mcq/mcq_feedback_dialog.dart';
 import 'package:zifour_sourcecode/core/theme/app_typography.dart';
 import 'package:zifour_sourcecode/features/dashboard/dashboard_screen.dart';
+import 'package:zifour_sourcecode/features/practics_mcq/practice_subject_screen.dart';
 
 import '../../core/api_client/api_constans.dart';
 import '../../core/constants/app_colors.dart';
@@ -548,6 +549,10 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                   print('Paper MCQ Test Id PKID: ${widget.pkId}');
                   print('Paper MCQ Test Id PaperId: ${widget.paperId}');
                   print('Practice Result: ${result!.toJson()}');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const PracticeSubjectScreen()),
+                  );
 
                   Navigator.push(
                     context,
@@ -579,7 +584,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => NewResultScreen(
-                        title: 'Challenge Results',
+                        title: 'Challenger Result',
                         crtChlId: widget.crtChlId ?? "",
                         screenType: widget.mcqType, // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
                         result: result,
@@ -627,7 +632,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                                 isBack: true,
                                 title: state.hasData
                                     ? 'Question ${_currentQuestionIndex + 1}/${state.data!.mcqList.length}'
-                                    : 'MCQ Challenge',
+                                    : widget.mcqType == "1" ? '' : 'MCQ Challenge',
                                 isActionWidget: true,
                                 actionWidget: PopupMenuButton<String>(
                                   onSelected: _handleMenuSelection,
@@ -660,7 +665,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+                                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.r),
                                       color: Colors.white.withOpacity(0.1),
@@ -669,9 +674,9 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(Icons.timer_outlined, color: Colors.orange, size: 16.sp),
-                                        SizedBox(width: 5.w),
-                                        Text("Total: ", style: TextStyle(color: Colors.white54, fontSize: 12.sp)),
+                                        Icon(Icons.timer_outlined, color: Colors.orange, size: 16.0),
+                                        SizedBox(width: 5.0),
+                                        Text("Total: ", style: TextStyle(color: Colors.white54, fontSize: 12.0)),
                                         StreamBuilder<String>(
                                           stream: totalTime,
                                           builder: (context, asyncSnapshot) {
@@ -679,7 +684,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                                               asyncSnapshot.data ?? "00:00",
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 13.sp,
+                                                fontSize: 13.0,
                                                 fontWeight: FontWeight.w600,
                                               ),
                                             );
@@ -693,7 +698,7 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                             ),
 
                             Positioned(
-                              top: 90.h,
+                              top: 95.h,
                               left: 20.w,
                               right: 20.w,
                               bottom: 0,
@@ -829,23 +834,56 @@ class _QuestionMcqScreenState extends State<QuestionMcqScreen> {
                 )
                 : Container(),
 
-            widget.mcqType == "1" ? Row(
-              spacing: 15.w,
-              children: [
-                Expanded(
-                  child: InfoRow(
-                    title: "Chapter",
-                    value: state.data?.chpName ?? "",
+            // widget.mcqType == "1" ? Row(
+            //   spacing: 15.w,
+            //   children: [
+            //     Expanded(
+            //       child: InfoRow(
+            //         title: "Chapter",
+            //         value: state.data?.chpName ?? "",
+            //       ),
+            //     ),
+            //     Expanded(
+            //       child: InfoRow(
+            //         title: "Topic",
+            //         value: state.data?.tpcName ?? "",
+            //       ),
+            //     ),
+            //   ],
+            // ) : Container(),
+
+            widget.mcqType == "1" ? Container(
+              padding: EdgeInsets.all(12.0),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                border: Border.all(color: AppColors.white.withOpacity(0.1)),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: InfoRow(
+                      title: "Chapter",
+                      value: state.data?.chpName ?? "",
+                      padding: 0.0,
+                      isDecoration: false,
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: InfoRow(
-                    title: "Topic",
-                    value: state.data?.tpcName ?? "",
+
+                  Expanded(
+                    child: InfoRow(
+                      title: "Topic",
+                      value: state.data?.tpcName ?? "",
+                      padding: 0.0,
+                      isDecoration: false,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ) : Container(),
+
             SizedBox(height: widget.mcqType == "1" ? 10.h : 0.0),
 
             /*Container(

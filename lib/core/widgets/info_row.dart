@@ -8,13 +8,15 @@ class InfoRow extends StatelessWidget {
   String title;
   String value;
   TextStyle? subTitleStyle;
-  InfoRow({super.key, required this.title, required this.value, this.subTitleStyle});
+  bool? isDecoration;
+  double? padding;
+  InfoRow({super.key, required this.title, required this.value, this.subTitleStyle, this.isDecoration, this.padding});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(14.0),
-      decoration: BoxDecoration(
+      padding: EdgeInsets.all(padding ?? 14.0),
+      decoration: isDecoration == null || isDecoration == false ? null : BoxDecoration(
         color: Color(0xFF0D0B2F).withOpacity(0.4),
         border: Border.all(color: AppColors.white.withOpacity(0.1)),
         borderRadius: BorderRadius.circular(12.r),

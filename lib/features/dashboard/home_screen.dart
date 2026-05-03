@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Map<String, dynamic>> menuItems = [
     {
-      "title": "Start Your Free Trial",
+      "title": "Upgrade for unlimited learning",
       "subtitle": "Free 7-Day Access to Excellence",
       "icon": AssetsPath.svgFreeTrial,
       "color": const Color(0xFF6857F9),
@@ -862,6 +862,7 @@ class _PromoDialogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.5),
       body: GestureDetector(
@@ -872,7 +873,7 @@ class _PromoDialogPage extends StatelessWidget {
             child: GestureDetector(
               onTap: () {}, // absorb taps on the dialog itself
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
@@ -881,11 +882,12 @@ class _PromoDialogPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16.r),
                       child: CachedNetworkImage(
                         imageUrl: imageUrl,
-                        width: double.infinity,
+                        width: isLandscape ? MediaQuery.sizeOf(context).width - 200.0 : double.infinity,
+                        height: isLandscape ? 300.0 : null,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
-                          height: 400.h,
-                          width: double.infinity,
+                          height: isLandscape ? 100.0 : 400.h,
+                          width: isLandscape ? MediaQuery.sizeOf(context).width - 100.0 : double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16.r),
@@ -898,7 +900,7 @@ class _PromoDialogPage extends StatelessWidget {
                           ),
                         ),
                         errorWidget: (context, url, error) => Container(
-                          height: 350.h,
+                          height: isLandscape ? 100.0 : 350.h,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.1),

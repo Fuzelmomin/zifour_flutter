@@ -210,13 +210,29 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
           status: status,
           statusColor: statusColor,
           buttonText: buttonText,
+          onTapReattempt: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QuestionMcqScreen(
+                  type: 'Start Exam',
+                  crtChlId: challenge.crtChlId,
+                  mcqType: "2", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
+                ),
+              ),
+            ).then((value) {
+              _challengesListBloc.add(
+                ChallengesListRequested(challengeType: '2'),
+              );
+            });
+          },
           onTap: () {
             if (challenge.erFlag == "2") {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => NewResultScreen(
-                    title: "Challenge Result 🏆",
+                    title: "Challenger Result 🏆",
                     crtChlId: challenge.crtChlId,
                     solution: challenge.solutionVideo,
                     screenType: "2", // 3 = Own Challenge MCQ Type AND 2 = Expert Challenge MCQ Type
@@ -255,6 +271,7 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
     required Color statusColor,
     required String buttonText,
     required Function() onTap,
+    required Function() onTapReattempt,
   }) {
     return SignupFieldBox(
       padding: EdgeInsets.all(15.0),
@@ -262,23 +279,41 @@ class _ExpertChallengeScreenState extends State<ExpertChallengeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// Status Badge
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: statusColor,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Text(
-                status,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w600,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              status == "COMPLETED" ?
+              GestureDetector(
+                onTap: onTapReattempt,
+                child: Text(
+                  "Reattempt",
+                  style: TextStyle(
+                    color: AppColors.pinkColor2,
+                    fontSize: 13.sp,
+                    fontWeight: FontWeight.w600,
+                    decoration: TextDecoration.underline,
+                    decorationColor: AppColors.pinkColor2
+                  ),
+                ),
+              ) : Container(),
+
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  status,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
           SizedBox(height: 5.h),
 
